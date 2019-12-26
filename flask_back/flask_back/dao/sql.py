@@ -1,11 +1,10 @@
 from flask_back import db
 
-
-
 class AAssociateRQ(db.Model):
     __tablename__ = 'a_associate_rq' #数据库表名
 
     id = db.Column(db.BIGINT, autoincrement=True, primary_key=True)
+    time = db.Column(db.DateTime, default=db.TIMESTAMP)
     pdu_length = db.Column(db.INT)
     protocol_version = db.Column(db.String)
     called_ae_title = db.Column(db.String)
@@ -13,6 +12,8 @@ class AAssociateRQ(db.Model):
     a_context_length = db.Column(db.INT)
     a_context_name = db.Column(db.String)
     user_info_length = db.Column(db.INT)
+    send_ip_port = db.Column(db.String)
+    receive_ip_port = db.Column(db.String)
 
 class PContext(db.Model):
     __tablename__ = 'p_context'
@@ -141,6 +142,7 @@ class AAssociateAC(db.Model):
     __tablename__ = 'a_associate_ac'  # 数据库表名
 
     id = db.Column(db.BIGINT, autoincrement=True, primary_key=True)
+    time = db.Column(db.DateTime, default=db.TIMESTAMP)
     pdu_length = db.Column(db.INT)
     protocol_version = db.Column(db.String)
     a_context_length = db.Column(db.INT)
@@ -149,6 +151,8 @@ class AAssociateAC(db.Model):
     p_context_id = db.Column(db.INT)
     result_reason = db.Column(db.INT)
     user_info_length = db.Column(db.INT)
+    send_ip_port = db.Column(db.String)
+    receive_ip_port = db.Column(db.String)
 
 
 class UserIdentityNegotiationSubitemAC(db.Model):
@@ -164,39 +168,54 @@ class AAssociateRJ(db.Model):
     __tablename__ = 'a_associate_rj'  # 数据库表名
 
     id = db.Column(db.INT, autoincrement=True, primary_key=True)
+    time = db.Column(db.DateTime, default=db.TIMESTAMP)
     pdu_length = db.Column(db.INT)
     result = db.Column(db.INT)
     source = db.Column(db.INT)
     reason_diag = db.Column(db.INT)
+    send_ip_port = db.Column(db.String)
+    receive_ip_port = db.Column(db.String)
 
 
 class AReleaseRQ(db.Model):
     __tablename__ = 'a_release_rq'  # 数据库表名
 
     id = db.Column(db.INT, autoincrement=True, primary_key=True)
+    time = db.Column(db.DateTime, default=db.TIMESTAMP)
     pdu_length = db.Column(db.INT)
+    send_ip_port = db.Column(db.String)
+    receive_ip_port = db.Column(db.String)
 
 
 class AReleaseRP(db.Model):
     __tablename__ = 'a_release_rp'  # 数据库表名
 
     id = db.Column(db.INT, autoincrement=True, primary_key=True)
+    time = db.Column(db.DateTime, default=db.TIMESTAMP)
     pdu_length = db.Column(db.INT)
+    send_ip_port = db.Column(db.String)
+    receive_ip_port = db.Column(db.String)
 
 
 class ABort(db.Model):
     __tablename__ = 'a_bort'  # 数据库表名
 
     id = db.Column(db.INT, autoincrement=True, primary_key=True)
+    time = db.Column(db.DateTime, default=db.TIMESTAMP)
     pdu_length = db.Column(db.INT)
     source = db.Column(db.INT)
     reason_diag = db.Column(db.INT)
+    send_ip_port = db.Column(db.String)
+    receive_ip_port = db.Column(db.String)
 
 class PDataTF(db.Model):
     __tablename__ = 'p_data_tf'  # 数据库表名
 
     id = db.Column(db.INT, autoincrement=True, primary_key=True)
+    time = db.Column(db.DateTime, default=db.TIMESTAMP)
     pdu_length = db.Column(db.INT)
+    send_ip_port = db.Column(db.String)
+    receive_ip_port = db.Column(db.String)
 
 class PresentationDataValue(db.Model):
     __tablename__ = 'presentation_data_value'  # 数据库表名
@@ -219,10 +238,9 @@ class MessageMain(db.Model):
     complete_status = db.Column(db.Boolean)
     seqnumber = db.Column(db.INT)
     type = db.Column(db.String)
-    time = db.Column(db.DateTime)
+    time = db.Column(db.DateTime, default=db.TIMESTAMP)
     version = db.Column(db.String)
     dsc_status = db.Column(db.Boolean)
-
     pass
 
 
@@ -262,6 +280,13 @@ class RuleDicom(db.Model):
     value = db.Column(db.INT)
     pass
 
+class RuleHttp(db.Model):
+    __tablename__ = 'rule_http'
+
+    id = db.Column(db.BIGINT, primary_key=True)
+    value = db.Column(db.String)
+    pass
+
 class CollectResult(db.Model):
     __tablename__ = 'collect_result'
 
@@ -273,63 +298,64 @@ class CollectResult(db.Model):
     start_time = db.Column(db.DATETIME)
     end_time = db.Column(db.DATETIME)
     size = db.Column(db.INT)
+    pass
 
-# class MonitorRule(db.Model):
-#     __tablename__ = 'monitor_rule'
-#
-#     id = db.Column(db.BIGINT)
-#     ip = db.Column(db.String)
-#     port = db.Column(db.INT)
+class MonitorRule(db.Model):
+    __tablename__ = 'monitor_rule'
 
-# class MonitorResult(db.Model):
-#     __tablename__ = 'monitor_result'
+    id = db.Column(db.BIGINT, primary_key=True, autoincrement=True)
+    ip = db.Column(db.String)
+    # port = db.Column(db.INT)
+
+class MonitorResult(db.Model):
+    __tablename__ = 'monitor_result'
+
+    id = db.Column(db.BIGINT, primary_key=True)
+    rule_id = db.Column(db.BIGINT)
+    src_ip = db.Column(db.String)
+    src_port = db.Column(db.INT)
+    dst_ip = db.Column(db.String)
+    dst_port = db.Column(db.INT)
+    start_time = db.Column(db.DATETIME)
+    content = db.Column(db.BLOB)
+    trans_size = db.Column(db.INT)
 #
-#     id = db.Column(db.BIGINT)
-#     rule_id = db.Column(db.BIGINT)
-#     src_ip = db.Column(db.String)
-#     src_port = db.Column(db.INT)
-#     dst_ip = db.Column(db.String)
-#     dst_port = db.Column(db.INT)
-#     start_time = db.Column(db.DATETIME)
-#     content = db.Column(db.BLOB)
-#     trans_size = db.Column(db.INT)
-#
-# class ActiveFindIp(db.Model):
-#     __tablename__ = 'active_find_ip'
-#
-#     id = db.Column(db.BIGINT)
-#     ip = db.Column(db.String)
-#     port = db.Column(db.INT)
-#
-# class ActiveResult(db.Model):
-#     __tablename__ = 'active_result'
-#
-#     id = db.Column(db.BIGINT)
-#     active_ip_id = db.Column(db.BIGINT)
-#     src_ip = db.Column(db.String)
-#     src_port = db.Column(db.INT)
-#     dst_ip = db.Column(db.String)
-#     dst_port = db.Column(db.INT)
-#     time = db.Column(db.BIGINT)
-#
-# class Logs(db.Model):
-#     __tablename__ = 'logs'
-#
-#     id = db.Column(db.BIGINT)
-#     ip = db.Column(db.String)
-#     port = db.Column(db.INT)
-#     type = db.Column(db.INT)
-#     submit_json = db.Column(db.TEXT)
-#     response_json = db.Column(db.TEXT)
-#     create_date = db.Column(db.DATETIME)
-#
-# class IPPostition(db.Model):
-#     __tablename__ = 'ip_postition'
-#
-#     id = db.Column(db.BIGINT)
-#     src_ip = db.Column(db.String)
-#     submit_ip = db.Column(db.String)
-#     submit_time = db.Column(db.DATETIME)
-#     equipment = db.Column(db.String)
-#     address = db.Column(db.String)
-#     institution = db.Column(db.String)
+class ActiveFindIp(db.Model):
+    __tablename__ = 'active_find_ip'
+
+    id = db.Column(db.BIGINT, primary_key=True)
+    ip = db.Column(db.String)
+    port = db.Column(db.INT)
+
+class ActiveResult(db.Model):
+    __tablename__ = 'active_result'
+
+    id = db.Column(db.BIGINT, primary_key=True)
+    active_ip_id = db.Column(db.BIGINT)
+    src_ip = db.Column(db.String)
+    src_port = db.Column(db.INT)
+    dst_ip = db.Column(db.String)
+    dst_port = db.Column(db.INT)
+    time = db.Column(db.BIGINT)
+
+class Logs(db.Model):
+    __tablename__ = 'logs'
+
+    id = db.Column(db.BIGINT, primary_key=True)
+    ip = db.Column(db.String)
+    port = db.Column(db.INT)
+    type = db.Column(db.INT)
+    submit_json = db.Column(db.TEXT)
+    response_json = db.Column(db.TEXT)
+    create_date = db.Column(db.DATETIME)
+
+class IPPostition(db.Model):
+    __tablename__ = 'ip_postition'
+
+    id = db.Column(db.BIGINT, primary_key=True)
+    src_ip = db.Column(db.String)
+    submit_ip = db.Column(db.String)
+    submit_time = db.Column(db.DATETIME)
+    equipment = db.Column(db.String)
+    address = db.Column(db.String)
+    institution = db.Column(db.String)
