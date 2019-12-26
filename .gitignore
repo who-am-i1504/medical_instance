@@ -2,3 +2,5 @@
 ./flask_back/*.xlsx
 ./flask_back/.idea
 ./flask_back/__pycache__
+./venv/*
+./venv
