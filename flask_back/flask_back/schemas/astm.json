@@ -1,0 +1,53 @@
+{
+    "add":{
+        "type":"object",
+        "properties":{
+            "value":{
+                "type":"string"
+            }
+        },
+        "required":["value"]
+    },
+    "get":{
+        "type":"object",
+        "properties":{
+            "page":{
+                "type":"integer"
+            }
+        },
+        "required":["page"]
+    },
+    "update":{
+        "type":"object",
+        "properties":{
+            "id":{
+                "type":"integer"
+            },
+            "value":{
+                "type":"string"
+            }
+        },
+        "required":["id", "value"]
+    },
+    "delete":{
+        "type":"object",
+        "properties":{
+            "id":{
+                "type":"integer"
+            },
+            "value":{
+                "type":"string"
+            }
+        },
+        "required":["id", "value"]
+    },
+    "getOne":{
+        "type":"object",
+        "properties":{
+            "id":{
+                "type":"integer"
+            }
+        },
+        "required":["id"]
+    }
+}

@@ -1,0 +1,125 @@
+{
+    "get":{
+        "type":"object",
+        "properties":{
+            "page":{
+                "type":"integer"
+            }
+        },
+        "required":["page"]
+    },
+    "add":{
+        "type":"object",
+        "properties":{
+            "ip":{
+                "type":"string",
+                "pattern": "((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})(\\.((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})){3}"
+            },
+            "port": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 65525
+            }
+        }
+    },
+    "update":{
+        "type":"object",
+        "properties":{
+            "id":{
+                "type":"integer"
+            },
+            "ip":{
+                "type":"string",
+                "pattern": "((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})(\\.((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})){3}"
+            },
+            "port": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 65525
+            }
+        },
+        "required":["id", "ip"]
+    },
+    "delete":{
+        "type":"object",
+        "properties":{
+            "id":{
+                "type":"integer"
+            },
+            "ip":{
+                "type":"string",
+                "pattern":"((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})(\\.((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})){3}"
+            },
+            "port": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 65525
+            }
+        },
+        "required":["id"]
+    },
+    "result_get":{
+        "type":"object",
+        "properties":{
+            "ip":{
+                "type":"string",
+                "pattern":"((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})(\\.((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})){3}"
+            },
+            "port": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 65525
+            }
+        },
+        "required":["ip"]
+    },
+    "dicom_result":{
+        "type":"object",
+        "properties":{
+            "id":{
+                "type":"integer"
+            },
+            "pdu_type":{
+                "type":"integer"
+            }
+        },
+        "required":["id", "pdu_type"]
+    },
+    "hl7_result":{
+        "type":"object",
+        "properties":{
+            "id":{
+                "type":"integer"
+            }
+        },
+        "required":["id"]
+    },
+    "astm_result": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "integer"
+            }
+        },
+        "required": ["id"]
+    },
+    "active_find":{
+        "type": "object",
+        "properties": {
+            "ip": {
+                "type": "string",
+                "pattern": "((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})(\\.((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})){3}"
+            },
+            "port": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 65525
+            },
+            "page":{
+                "type":"integer",
+                "minimum": 1
+            }
+        },
+        "required": ["ip", "port", "page"]
+    }
+}

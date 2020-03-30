@@ -1,0 +1,65 @@
+{
+    "delete":{
+        "type":"object",
+        "properties":{
+            "id":{
+                "type":"integer"
+            },
+            "value":{
+                "type":"integer"
+            }
+        },
+        "required":["id"]
+    },
+    "get": {
+        "type": "object",
+        "properties": {
+            "page": {
+                "type": "integer"
+            }
+        },
+        "required": ["page"]
+    },
+    "update":{
+        "type":"object",
+        "properties":{
+            "id":{
+                "type":"integer"
+            },
+            "value":{
+                "type":"integer"
+            }
+        },
+        "required":["id", "value"]
+    },
+    "add":{
+        "type":"object",
+        "properties":{
+            "value":{
+                "type":"integer"
+            }
+        },
+        "required":["value"]
+    },
+    "getOne": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "integer"
+            }
+        },
+        "required": ["id"]
+    },
+    "add_string":{
+        "type":"object",
+        "properties":{
+            "id":{
+                "type":"integer"
+            },
+            "value":{
+                "type":"string"
+            }
+        },
+        "required":["id", "value"]
+    }
+}
