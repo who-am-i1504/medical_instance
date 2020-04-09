@@ -33,7 +33,7 @@ def monitor_get():
         log.info(cnts.databaseSuccess(addr, path, '`monitor_result`'))
 
         data = result.fetchall()
-        back_data['data'] = []
+        back['data'] = []
         if not data == None:
             for i in data:
                 a = {}
@@ -43,9 +43,54 @@ def monitor_get():
     except:
         back['message'] = cnts.database_error_message
         back['status'] = cnts.database_error
+
+        log.error(cnts.errorLog(addr, path))
+
         return jsonify(back)
 
     back['page'] = json_data['page']
+
+    log.info(cnts.successLog(addr, path))
+
+    return jsonify(back)
+
+
+@bp.route('/rule/getOne', methods=['POST'])
+@jsonschema.validate('monitor', 'getOne')
+def monitor_getOne():
+    back = copy.deepcopy(cnts.back_message)
+    page_size = cnts.page_size
+    json_data = request.get_json()
+
+    addr = request.remote_addr
+    path = request.path
+    log.info(cnts.requestStart(addr, path, json_data))
+
+    try:
+
+        result = db.session.execute(
+            'select * from `monitor_rule` where `id` = %d;' % (json_data['id']))
+        db.session.commit()
+
+        log.info(cnts.databaseSuccess(addr, path, '`monitor_rule`'))
+
+        data = result.fetchall()
+        if not data == None:
+            for i in data:
+                a = {}
+                a['id'] = i.id
+                a['ip'] = i.ip
+                back['data'] = a
+    except:
+        back['message'] = cnts.database_error_message
+        back['status'] = cnts.database_error
+
+        log.error(cnts.errorLog(addr, path))
+
+        return jsonify(back)
+
+    log.info(cnts.successLog(addr, path))
+
     return jsonify(back)
 
 
@@ -76,7 +121,12 @@ def monitor_add():
     except:
         back['message'] = cnts.database_error_message
         back['status'] = cnts.database_error
+        
+        log.error(cnts.errorLog(addr, path))
+
         return jsonify(back)
+
+    log.info(cnts.successLog(addr, path))
 
     return jsonify(back)
 
@@ -104,7 +154,13 @@ def monitor_update():
     except:
         back['status'] = cnts.database_error
         back['message'] = cnts.database_error_message
+
+        log.error(cnts.errorLog(addr, path))
+
         return jsonify(back)
+    
+    log.info(cnts.successLog(addr, path))
+
     return jsonify(back)
 
 
@@ -133,10 +189,16 @@ def monitor_delete():
             if current.ip != json_data['ip']:
                 back['status'] = cnts.monitor_delete
                 back['message'] = cnts.monitor_delete_message
+
+                log.info(cnts.successLog(addr, path))
+
                 return jsonify(back)
         except:
             back['status'] = cnts.database_error
             back['message'] = cnts.database_error_message
+
+            log.error(cnts.errorLog(addr, path))
+
             return jsonify(back)
     try:
         db.session.execute(
@@ -152,6 +214,9 @@ def monitor_delete():
         log.error(cnts.errorLog(addr, path))
 
         return jsonify(back)
+    
+    log.info(cnts.successLog(addr, path))
+
     return jsonify(back)
 
 @bp.route('/work', methods=['POST'])
@@ -190,6 +255,9 @@ def monitor_work():
         log.error(cnts.errorLog(addr, path))
 
         return jsonify(back)
+    
+    log.info(cnts.successLog(addr, path))
+
     return back
 
 
@@ -229,6 +297,9 @@ def monitor_dicom():
         log.error(cnts.errorLog(addr, path))
 
         return jsonify(back)
+    
+    log.info(cnts.successLog(addr, path))
+
     return jsonify(back)
 
 def dicom_fliter(ip):
@@ -254,7 +325,10 @@ def dicom_fliter(ip):
         if i[1] == None:
             sum += 0
         else:
-            sum +=i[1] 
+            sum += i[1]
+    
+    log.info(cnts.successLog(addr, path))
+
     return num1, sum1, number, sum
 
 @bp.route('/dicom_list', methods=['POST'])
@@ -288,6 +362,8 @@ def get_dicom_list():
 
         return jsonify(back)
 
+    log.info(cnts.successLog(addr, path))
+
     return jsonify(back)
 
 def dicom_list(ip):
@@ -318,7 +394,7 @@ def dicom_result(id, pdu_type):
 @bp.route('active_find', methods=['POST'])
 @jsonschema.validate('monitor', 'active_find')
 def active_find():
-    page_size = 10
+    page_size = cnts.page_size
     back = copy.deepcopy(cnts.back_message)
     json_data = request.get_json()
 
@@ -358,6 +434,9 @@ def active_find():
 
         return jsonify(back)
     back['page'] = json_data['page']
+
+    log.info(cnts.successLog(addr, path))
+    
     return jsonify(back)
 
 

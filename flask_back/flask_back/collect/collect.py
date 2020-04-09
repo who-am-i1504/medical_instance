@@ -49,7 +49,7 @@ def start():
 @bp.route('/result/get_by_page', methods=['POST'])
 @jsonschema.validate('collect', 'getByPage')
 def getByPage():
-    page_size = 10
+    page_size = cnts.page_size
     back = copy.deepcopy(cnts.back_message)
     json_data = request.get_json()
 

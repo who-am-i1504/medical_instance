@@ -8,6 +8,15 @@
         },
         "required":["page"]
     },
+    "getOne":{
+        "type":"object",
+        "properties":{
+            "id":{
+                "type": "integer"
+            }
+        },
+        "required":["id"]
+    },
     "add":{
         "type":"object",
         "properties":{

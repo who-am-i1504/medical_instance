@@ -1,5 +1,5 @@
 
-page_size = 8
+page_size = 10
 
 ip_not_found = 408
 ip_not_found_message = '您给定的ip地址不在黑名单中'
@@ -43,14 +43,17 @@ dicom_tables = ['`a_associate_rq`', '`a_associate_ac`',
                '`a_associate_rj`', '`p_data_tf`', '`a_release_rq`', '`a_release_rp`', '`a_bort`']
 
 def requestStart(addr, path, inJson):
-
-    return '%s request for %s with params: %s, It is running' % (addr, path, inJson)
+    return '%s request for %s with params: %s, It is running......' % (addr, path, inJson)
 
 def databaseSuccess(addr, path, database):
-
-    return '%s request for %s, It is Visit DataBase: %s' % (addr, path, database)
+    return '%s request for %s, It is Visit DataBase: %s.' % (addr, path, database)
 
 def errorLog(addr, path, error):
-    return '%s request for %s It is have a error %s' % (addr, path, error)
+    return '%s request for %s It is have a error %s. ' % (addr, path, error)
+
 def successLog(addr, path):
     return '%s request for %s success return message.'%(addr, path)
+
+# import os
+# import time
+# log_file_name = 'logger-' + time.strftime('%Y-%m-%d', time.localtime(time.time())) + '.log'

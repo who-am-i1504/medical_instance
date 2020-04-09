@@ -6,6 +6,7 @@ db = SQLAlchemy()
 
 
 from flask_jsonschema import JsonSchema, ValidationError
+from .logger.log import Logger
 
 # create and configure the app
 app = Flask(__name__, instance_relative_config=True)
@@ -21,6 +22,10 @@ app.config['JSONSCHEMA_DIR'] = os.path.join(app.root_path, 'schemas')
 #     app.config.from_mapping(test_config)
 db.init_app(app)
 jsonschema = JsonSchema(app)
+# log = Logger()
+handler = logging.FileHandler('current.log', encoding='UTF-8')
+handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(filename)s - %(funcName)s - %(lineno)s - %(message)s'))
+app.logger.addHandler(handler)
 log = app.logger
 from .rule import hl7_rule, dicom_rule, http_rule, astm_rule
 from .collect import collect

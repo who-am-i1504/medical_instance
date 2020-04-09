@@ -3,3 +3,25 @@
 /.vscode/
 *.pyc
 *__pycache__/
+
+/d2-admin-start-kit/.DS_Store
+/d2-admin-start-kit/node_modules
+/d2-admin-start-kit/dist
+
+# local env files
+/d2-admin-start-kit/.env.local
+/d2-admin-start-kit/.env.*.local
+
+# Log files
+/d2-admin-start-kit/npm-debug.log*
+/d2-admin-start-kit/yarn-debug.log*
+/d2-admin-start-kit/yarn-error.log*
+
+# Editor directories and files
+/d2-admin-start-kit/.idea
+/d2-admin-start-kit/.vscode
+/d2-admin-start-kit/*.suo
+/d2-admin-start-kit/*.ntvs*
+/d2-admin-start-kit/*.njsproj
+/d2-admin-start-kit/*.sln
+/d2-admin-start-kit/*.sw?

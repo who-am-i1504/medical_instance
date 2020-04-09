@@ -176,7 +176,7 @@ def hl7_rule_delete():
 @bp.route('/get', methods=['POST'])
 @jsonschema.validate('hl7', 'get')
 def hl7_rule_get():
-    page_size = 20
+    page_size = cnts.page_size
     size = 0
     back = copy.deepcopy(cnts.back_message)
     data = None
