@@ -30,6 +30,7 @@ log = app.logger
 from .rule import hl7_rule, dicom_rule, http_rule, astm_rule
 from .collect import collect
 from .monitor_rule import monitor
+from .picture import download
 import flask_back.helloworld as ap
 app.register_blueprint(ap.bp)
 app.register_blueprint(hl7_rule.bp)
@@ -37,6 +38,7 @@ app.register_blueprint(dicom_rule.bp)
 app.register_blueprint(astm_rule.bp)
 app.register_blueprint(monitor.bp)
 app.register_blueprint(collect.bp)
+app.register_blueprint(download.bp)
 try:
     os.makedirs(app.instance_path)
 except OSError:

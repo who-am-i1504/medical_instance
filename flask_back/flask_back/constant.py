@@ -54,6 +54,7 @@ def errorLog(addr, path, error):
 def successLog(addr, path):
     return '%s request for %s success return message.'%(addr, path)
 
+PicturePath = ''
 # import os
 # import time
 # log_file_name = 'logger-' + time.strftime('%Y-%m-%d', time.localtime(time.time())) + '.log'
