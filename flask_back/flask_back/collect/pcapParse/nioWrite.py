@@ -15,13 +15,21 @@ class NIOWriter:
         self.loop = asyncio.new_event_loop()
         # self.loop.set_default_executor(self.executor)
         self.dic = {}
-        self.tagQue = queue.Queue()
+        self.tagQue = queue.Queue(maxsize=semaNumber)
         self.Tag = False
 
     async def write(self, absPath, fileName, data):
         length = 0
         for i in data:
-            if not len(i) == 0:
+            if isinstance(i, list):
+                for j in i:
+                    if len(j) == 0:
+                        continue
+                    else:
+                        length = 1
+                        break
+                continue
+            if not len(i) == 0 or length == 1:
                 length = 1
                 break
         if length == 0:
@@ -87,7 +95,7 @@ class NIOWriter:
                     self.tagQue.task_done()
                 elif self.Tag:
                     if len(self.dic) == 0:
-                        print(len(self.dic))
+                        # print(len(self.dic))
                         self.loop.stop()
                         self.executor.shutdown()
                         break
@@ -97,4 +105,5 @@ class NIOWriter:
         self.queue.put(item)
     
     def quit(self):
-        self.tagQue.put(True)
+        if not self.tagQue.full():
+            self.tagQue.put(True)
