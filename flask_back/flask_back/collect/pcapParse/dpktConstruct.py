@@ -193,22 +193,14 @@ def construct(absPath, target, typer):
                 dic[key1] = value
                 dic[key2] = value
                 continue
-                    
-    # for key in list(dic.keys()):
-    #     value = dic.pop(key, None)
-    #     if value is None:
-    #         continue
-    #     item = {}
-    #     item['fileName'] = 'N_%s_%s_%s' % (str(time.time()), value[srcPort], value[dstPort])
-    #     item['absPath'] = os.path.join(absPath, typer)
-    #     item['data']=value[content:]
-    #     writer.put(item)
-    #     dic.pop(value[head],None)
-    #     dic.pop(value[after],None)
-    print(time.time() - allTime)
-    writer.quit()
+
+    # print(time.time() - allTime)
+    while t.isAlive():
+        writer.quit()
+        time.sleep(1)
 
 if __name__ == '__main__':
     # construct('E:\\29161\\Destop\\medical_instance\\pcap', 'test.pcap', 'http')
-    # construct('E:\\29161\\Destop\\medical_instance\\pcap', 'ftp_download.pcap', 'ftp')
-    construct('E:\\29161\\Destop\\medical_instance\\pcap', 'http_download.pcap', 'http')
+    construct('E:\\29161\\Destop\\medical_instance\\pcap', 'ftp_download.pcap', 'ftp')
+    # construct('E:\\29161\\Destop\\medical_instance\\pcap', 'http_download.pcap', 'http')
+    # construct('E:\\29161\\Destop\\medical_instance\\pcap', 'http_download.pcap', 'http')

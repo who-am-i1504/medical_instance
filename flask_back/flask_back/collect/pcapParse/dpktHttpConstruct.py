@@ -312,8 +312,10 @@ def construct(absPath, target, typer, filter = False):
                 dic[key2] = value
                 continue
     # 输出运行时间
-    print(time.time() - allTime, i)
-    writer.quit()
+    # print(time.time() - allTime, i)
+    while t.isAlive():
+        writer.quit()
+        time.sleep(1)
 
 if __name__ == '__main__':
     # construct('E:\\29161\\Destop\\medical_instance\\pcap', 'test6.pcap', 'http')
