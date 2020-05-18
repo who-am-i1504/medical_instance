@@ -1,12 +1,15 @@
 from database.tables import *
 from constant import Escape, Component, Field, Repeat, HChar2Value, AstmSeparator, TokenType, AstmDelimiterOrder
 import os
-from state import State, Token, Lexer, FileReader
+from state import State, Token, Lexer, FileReader, dealIPPort
 import copy
 
 class LexerAstm(Lexer):
-    def __init__(self, dataPath):
-        super(LexerAstm, self).__init__(FileReader(dataPath), copy.deepcopy(AstmSeparator))
+    def __init__(self, dataPath, fileOperator=None):
+        if fileOperator is None:
+            super(LexerAstm, self).__init__(FileReader(dataPath), copy.deepcopy(AstmSeparator))
+        else:
+            super(LexerAstm, self).__init__(FileReader(dataPath, fileOperator), copy.deepcopy(AstmSeparator))
     
     def set_separator(self):
         super().set_separator(copy.deepcopy(AstmSeparator))
@@ -25,29 +28,28 @@ class LexerAstm(Lexer):
             str_list = self.peek
             self.read_alpha()
             return Token(str_list, TokenType['delitimter'])
-        # elif self.peek == EB:
-        #     str_list = EB
-        #     self.read_alpha()
-        #     return str_list
         else:
-            while not self.peek in self.separator :
+            while not self.peek in self.separator:
+                if (self.peek[0] > 0 and self.peek[0] < 29) or (self.peek[0] > 30 and self.peek[0] < 32) or self.peek[0] >= 129:
+                    return Token(b''.join(str_list), TokenType['syntx'])
                 str_list.append(self.peek)
                 self.read_alpha()
+            if (len(str_list) == 0 and self.peek[0] == 0):
+                return Token(self.peek, TokenType['string'])
             return Token(b''.join(str_list), TokenType['string'])
         pass
 
 class StateAstm(State):
 
-    def __init__(self, file):
-        lexer = LexerAstm(file)
-        result = {
-            'main': AstmMain(),
-            'records': [],
-            'status': False,
-            'record_num': 0
-        }
+    def __init__(self, file, fileOperator=None):
+        if fileOperator==None:
+            self.lexer = LexerAstm(file)
+        else:
+            self.lexer = LexerAstm(file, fileOperator)
+        self.initData()
+        src, sport, dst, dport = dealIPPort(file)
         super(StateAstm, self).__init__(
-            lexer, result, '127.0.0.1', '8080', '127.0.0.1', '8081')
+            self.lexer, self.result, src, sport, dst, dport)
         self.cRecord = None
         self.peek = None
         self.cRecordHeader = ' '
@@ -56,7 +58,23 @@ class StateAstm(State):
         self.record = []
         self.deli_functions = [self.lexer.set_field,
                                self.lexer.set_repeat, self.lexer.set_component, self.lexer.set_escape]
-        
+    
+    def initData(self):
+        self.result = {
+            'main': AstmMain(),
+            'records': [],
+            'status': False,
+            'record_num': 0
+        }
+        self.cRecord = None
+        self.peek = None
+        self.cRecordHeader = ' '
+        self.field_num = 0
+        # self.component_num = 0
+        self.record = []
+        self.lexer.set_separator()
+        self.lexer.set_state(0)
+
     def getHeader(self):
         self.result['record_num'] = 0
         self.lexer.set_separator()
@@ -225,4 +243,23 @@ class StateAstm(State):
             session.add(item)
             pass
         session.commit()
-        print('success!')
+        # print('success!')
+
+
+def testTotalFile():
+    s = StateAstm('HL7Test/astm_1589277228.7895925_205.167.25.101-21_10.246.229.255-52466')
+    s.state()
+    pass
+def testPartFile():
+    s = StateAstm('HL7Test/astmpart_1589277228.7895925_205.167.25.101-21_10.246.229.255-52466')
+    s.state()
+    pass
+def testServalFiles():
+    s = StateAstm('HL7Test/astmserval_1589277228.7895925_205.167.25.101-21_10.246.229.255-52466')
+    s.state()
+    pass
+
+if __name__ == '__main__':
+    testTotalFile()
+    testPartFile()
+    testServalFiles()

@@ -48,6 +48,7 @@ def rule_add_string():
     data = None
     back = copy.deepcopy(cnts.back_message)
     json_data = request.get_json()
+    json_data['value'] = json_data['value'].replace('\\r', '\r')
 
     addr = request.remote_addr
     path = request.path
@@ -65,8 +66,8 @@ def rule_add_string():
 
         data = inSql
         back['data'] = {}
-        back_data['data']['id'] = data.id
-        back_data['data']['value'] = data.value
+        back['data']['id'] = data.id
+        back['data']['value'] = data.value
     except:
 
         log.error(cnts.errorLog(addr, path))
@@ -85,6 +86,7 @@ def rule_add_string():
 def dicom_rule_update():
     back = copy.deepcopy(cnts.back_message)
     json_data = request.get_json()
+    json_data['value'] = json_data['value'].replace('\\r', '\r')
 
     addr = request.remote_addr
     path = request.path
@@ -252,6 +254,6 @@ def get_one():
 
 @bp.errorhandler(ValidationError)
 def dicom_error(e):
-    log.warning('%s request %s have a error in its request Json' %
-                (request.remote_addr, request.path))
+    log.warning('%s request %s have a error in its request Json  %s' %
+                (request.remote_addr, request.path, request.get_json()))
     return jsonify(cnts.params_exception)

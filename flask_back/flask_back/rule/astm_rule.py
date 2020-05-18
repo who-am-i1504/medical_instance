@@ -16,7 +16,7 @@ def astm_rule_add():
     addr = request.remote_addr
     path = request.path
     log.info(cnts.requestStart(addr, path, json_data))
-
+    json_data['value'] = json_data['value'].replace('\\r', '\r')
     inSql = RuleAstm()
     # inSql.id = 10
     inSql.value = json_data['value']
@@ -28,8 +28,8 @@ def astm_rule_add():
         log.info(cnts.databaseSuccess(addr, path, '`rule_astm`'))
 
         back['data'] = {}
-        back_data['data']['id'] = inSql.id
-        back_data['data']['value'] = inSql.value
+        back['data']['id'] = inSql.id
+        back['data']['value'] = inSql.value
     except:
         
         log.error(cnts.errorLog(addr, path))
@@ -47,6 +47,7 @@ def astm_rule_add():
 def astm_rule_update():
     back = copy.deepcopy(cnts.back_message)
     json_data = request.get_json()
+    json_data['value'] = json_data['value'].replace('\\r', '\r')
 
     addr = request.remote_addr
     path = request.path
@@ -214,6 +215,6 @@ def get_one():
 
 @bp.errorhandler(ValidationError)
 def astm_error(e):
-    log.warning('%s request %s have a error in its request Json' %
-                (request.remote_addr, request.path))
+    log.warning('%s request %s have a error in its request Json  %s' %
+                (request.remote_addr, request.path, request.get_json()))
     return jsonify(cnts.params_exception)

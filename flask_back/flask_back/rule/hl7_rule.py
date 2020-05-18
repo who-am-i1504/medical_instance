@@ -62,7 +62,7 @@ def hl7_rule_add():
     back = copy.deepcopy(cnts.back_message)
     data = None
     json_data = request.get_json()
-
+    json_data['value'] = json_data['value'].replace('\\r', '\r')
     addr = request.remote_addr
     path = request.path
     log.info(cnts.requestStart(addr, path, json_data))
@@ -96,6 +96,7 @@ def hl7_rule_add():
 def hl7_rule_update():
     back = copy.deepcopy(cnts.back_message)
     json_data = request.get_json()
+    json_data['value'] = json_data['value'].replace('\\r', '\r')
 
     addr = request.remote_addr
     path = request.path
@@ -242,6 +243,6 @@ def getOne():
 
 @bp.errorhandler(ValidationError)
 def on_validation_error(e):
-    log.warning('%s request %s have a error in its request Json' %
-                (request.remote_addr, request.path))
+    log.warning('%s request %s have a error in its request Json  %s' %
+                (request.remote_addr, request.path, request.get_json()))
     return jsonify(cnts.params_exception)

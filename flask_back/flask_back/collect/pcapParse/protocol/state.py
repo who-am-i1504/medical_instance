@@ -1,5 +1,6 @@
 from constant import TokenType 
 import os
+import asyncio
 
 class Token:
     # type 类型
@@ -28,6 +29,9 @@ class State:
         self.result = result
         pass
 
+    def initData(self):
+        print('Instance in SubClass!')
+
     def setMainIpPort(self, inIP, inPort, outIP, outPort):
         self.setMainInIpPort(inIP, inPort)
         self.setMainOutIpPort(outIP, outPort)
@@ -48,8 +52,12 @@ class State:
 
         self.get_next()
 
-        while self.peek.getToken() != b'\x00' and isinstance(self.peek, Token) :
+        while isinstance(self.peek, Token) and self.peek.getToken() != b'\x00':
             # self.peek = self.lexer.get_alpha()
+            if self.peek.getType() == TokenType['syntx']:
+                self.initData()
+                self.get_next()
+                continue
             if self.peek.getType() == TokenType['start']:
                 self.getHeader()
             elif self.peek.getToken() == b'\x0d' or self.peek.getType() == TokenType['end']:
@@ -82,6 +90,19 @@ class State:
         self.inPort = inPort
         self.outIp = outIp
         self.outPort = outPort
+
+def dealIPPort(path):
+    (head, tail) = os.path.split(path)
+    ip_port = tail.split('_')
+    src_port = ip_port[2]
+    dst_port = ip_port[3]
+    src_port = src_port.split('-')
+    src = src_port[0]
+    sport = src_port[1]
+    dst_port = dst_port.split('-')
+    dst = dst_port[0]
+    dport = dst_port[1]
+    return src, sport, dst, dport
 
 
 class Lexer:
@@ -160,9 +181,11 @@ class FileReader:
 
     __fileSize__ = 1024*1024
 
-    def __init__(self, filePath):
-        if os.path.exists(filePath):
+    def __init__(self, filePath, fileObject=None):
+        if fileObject == None and os.path.exists(filePath):
             self.file = open(filePath, 'rb')
+        elif not fileObject is None:
+            self.file = fileObject
         else:
             return None
         self.data = None

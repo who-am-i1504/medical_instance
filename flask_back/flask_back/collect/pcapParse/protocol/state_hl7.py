@@ -1,12 +1,15 @@
-from state import State, Lexer, FileReader, Token
+from state import State, Lexer, FileReader, Token, dealIPPort
 from constant import SB, EB, Escape, Component, Field, Subcomponent, Repeat, HL7Separator, TokenType
 from database.tables import *
 import copy
 
 class LexerHL7(Lexer):
 
-    def __init__(self, datapath):
-        super(LexerHL7, self).__init__(FileReader(datapath), copy.deepcopy(HL7Separator))
+    def __init__(self, datapath, fileOperator=None):
+        if fileOperator is None:
+            super(LexerHL7, self).__init__(FileReader(datapath), copy.deepcopy(HL7Separator))
+        else:
+            super(LexerHL7, self).__init__(FileReader(datapath, fileOperator), copy.deepcopy(HL7Separator))
     
     def set_separator(self):
         super().set_separator(copy.deepcopy(HL7Separator))
@@ -32,53 +35,49 @@ class LexerHL7(Lexer):
             str_list = self.peek
             self.read_alpha()
             return Token(str_list, TokenType['delitimter'])
+        elif self.peek == SB:
+            return Token(SB, TokenType['syntx'])
         elif self.peek == EB:
             str_list = EB
             self.read_alpha()
             return Token(str_list, TokenType['end'])
         else:
-            while not (self.peek in self.separator):
-                if self.peek < 29 or (self.peek > 30 and self.peek < 33) or self.peek >= 129:
-                    return b'\x00'
+            while not (self.peek in self.separator) and self.peek[0] != 0:
+                if (self.peek[0] > 0 and self.peek[0] < 29) or (self.peek[0] > 30 and self.peek[0] < 32) or self.peek[0] >= 129:
+                    return Token(b''.join(str_list), TokenType['syntx'])
                 str_list.append(self.peek)
                 self.read_alpha()
+            if (len(str_list) == 0 and (self.peek[0] == 0 )):
+                return Token(self.peek, TokenType['string'])
             return Token(b''.join(str_list), TokenType['string'])
         pass
 
 class StateHL7(State):
-    def __init__(self, data):
-        lexer = LexerHL7(data)
-        result = {
+    def __init__(self, data, fileOperator=None):
+        if fileOperator is None:
+            self.lexer = LexerHL7(data)
+        else:
+            self.lexer = LexerHL7(data, fileOperator)
+        self.result = {
             'main': None,
             'segment': []
         }
-        self.segment = None
-        # 用于保存当前消息段的段名
-        self.seg_name = None
-        # 用于保存当前消息段在数据中的消息段位置（即第几个）
-        self.seg_seq = 1
-        # self.peek = self.lexer.get_token()
-        # 是否为批量处理
-        self.batch = False
-        # 当前的消息段内容
-        self.seg_content = []
-        # 当前的字段位置
-        self.field_num = 0
-        # 上一字段分隔符或者
-        self.field_end_place = 0
+        self.initData()
+        src, sport, dst, dport = dealIPPort(data)
         super(StateHL7, self).__init__(
-            lexer, result, '127.0.0.1', '8080', '127.0.0.1', '8081')
+            self.lexer, self.result, src, sport, dst, dport)
         self.function = [self.lexer.set_field, self.lexer.set_component,
                     self.lexer.set_repeat, self.lexer.set_escape, self.lexer.set_subcomponent]
         pass
-
+        
     def initData(self):
-        self.result['main'] = {
+        self.result = {
             'main': None,
             'segment': []
         }
         self.segment = None
         self.seg_seq = 1
+        self.seg_name = None
         self.batch = False
         self.seg_content = []
         self.field_num = 0
@@ -151,19 +150,23 @@ class StateHL7(State):
             self.get_next()
 
     def getRecord(self):
-        self.segment.content = ''.join(
-            str(x, 'utf8') for x in self.seg_content)
+        if not self.segment is None:
+            self.segment.content = ''.join(
+                str(x, 'utf8') for x in self.seg_content)
+            self.result['segment'].append(self.segment)
+            self.seg_seq = self.seg_seq + 1
+        else:
+            pass
         self.seg_content = []
         self.field_num = 1
-        self.result['segment'].append(self.segment)
-        self.seg_seq = self.seg_seq + 1
         if self.peek.getType() == TokenType['delitimter']:
             self.get_next()
-        if self.peek.getType() == TokenType['end']:
+        elif self.peek.getType() == TokenType['end']:
             self.end_state()
             self.get_next()
             return
-            pass
+        else:
+            self.get_next()
         pass
 
     def write(self):
@@ -252,3 +255,22 @@ class StateHL7(State):
             self.get_next()
             self.initData()
             return 
+
+
+def testTotalFile():
+    s = StateHL7('HL7Test/hl7_1589277228.7895925_205.167.25.101-21_10.246.229.255-52466')
+    s.state()
+    pass
+def testPartFile():
+    s = StateHL7('HL7Test/hl7part_1589277228.7895925_205.167.25.101-21_10.246.229.255-52466')
+    s.state()
+    pass
+def testServalFiles():
+    s = StateHL7('HL7Test/hl7serval_1589277228.7895925_205.167.25.101-21_10.246.229.255-52466')
+    s.state()
+    pass
+
+if __name__ == '__main__':
+    testTotalFile()
+    testPartFile()
+    testServalFiles()

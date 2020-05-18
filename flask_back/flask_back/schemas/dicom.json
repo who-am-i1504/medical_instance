@@ -53,13 +53,10 @@
     "add_string":{
         "type":"object",
         "properties":{
-            "id":{
-                "type":"integer"
-            },
             "value":{
                 "type":"string"
             }
         },
-        "required":["id", "value"]
+        "required": ["value"]
     }
 }

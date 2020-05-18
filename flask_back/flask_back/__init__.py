@@ -1,13 +1,11 @@
-import os, logging
+import logging
+from flask_jsonschema import JsonSchema, ValidationError
+import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
-
-
-from flask_jsonschema import JsonSchema, ValidationError
 from .logger.log import Logger
-
 # create and configure the app
 app = Flask(__name__, instance_relative_config=True)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:99277299@localhost:3306/medical'

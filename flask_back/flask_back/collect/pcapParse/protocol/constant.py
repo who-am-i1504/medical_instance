@@ -28,5 +28,6 @@ TokenType = {
     'field' : 3,
     'other': 4,
     'start': 5,
-    'end' : 6
+    'end' : 6,
+    'syntx': 7
 }

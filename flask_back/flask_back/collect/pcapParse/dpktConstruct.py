@@ -201,6 +201,6 @@ def construct(absPath, target, typer):
 
 if __name__ == '__main__':
     # construct('E:\\29161\\Destop\\medical_instance\\pcap', 'test.pcap', 'http')
-    construct('E:\\29161\\Destop\\medical_instance\\pcap', 'ftp_download.pcap', 'ftp')
+    construct('pcap', 'ftp_download.pcap', 'ftp')
     # construct('E:\\29161\\Destop\\medical_instance\\pcap', 'http_download.pcap', 'http')
     # construct('E:\\29161\\Destop\\medical_instance\\pcap', 'http_download.pcap', 'http')

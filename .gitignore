@@ -1,8 +1,15 @@
 /venv/
+/HL7Test/
 /.history/
 /.vscode/
+/linux_venv/
+/pcap/
+/DICOM-sample/
 *.pyc
 *__pycache__/
+*.jpg
+*.log
+/upload/
 
 /d2-admin-start-kit/.DS_Store
 /d2-admin-start-kit/node_modules
