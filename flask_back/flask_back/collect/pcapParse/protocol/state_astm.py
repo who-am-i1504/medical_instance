@@ -1,7 +1,7 @@
-from database.tables import *
-from constant import Escape, Component, Field, Repeat, HChar2Value, AstmSeparator, TokenType, AstmDelimiterOrder
+from .database.tables import *
+from .constant import Escape, Component, Field, Repeat, HChar2Value, AstmSeparator, TokenType, AstmDelimiterOrder
 import os
-from state import State, Token, Lexer, FileReader, dealIPPort
+from .state import State, Token, Lexer, FileReader, dealIPPort
 import copy
 
 class LexerAstm(Lexer):
@@ -77,8 +77,8 @@ class StateAstm(State):
 
     def getHeader(self):
         self.result['record_num'] = 0
+        self.result['main'].size = self.lexer.get_current_place() - 1
         self.lexer.set_separator()
-
         delimiter = []
         for i in range(len(AstmDelimiterOrder)):
             self.get_next()
@@ -220,6 +220,7 @@ class StateAstm(State):
         self.result['records'].append(self.cRecord)
         self.cRecord.content = b''.join(self.record)
         if self.cRecordHeader == b'L':
+            self.result['main'].size = self.lexer.get_current_place() - self.result['main'].size
             self.write()
             self.result['main'] = AstmMain()
             self.result['records'] = []

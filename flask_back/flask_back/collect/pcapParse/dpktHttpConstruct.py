@@ -11,12 +11,16 @@ import socket
 from threading import Thread
 from collections import defaultdict
 from dpkt.dpkt import NeedData, UnpackError
-
+from pydicom.errors import InvalidDicomError
 import dpkt
-
+from protocol.dcmReader import readDcm
+from protocol.state_astm import StateAstm
+from protocol.state_hl7 import StateHL7
 from nioWrite import NIOWriter 
 import time
 import re
+from dpktConstruct import readByProtocol
+
 
 pattern = re.compile(r'^H\|[\\|\^|&|~]{3,5}')
 
@@ -115,7 +119,7 @@ def construct(absPath, target, typer, filter = False):
     # 超时时间戳
     start = time.time()
     # 记录开始时间
-    allTime = start
+    # allTime = start
     # 迭代读取数据包
     for timestamp, pkt in pcap_reader:
         i += 1
@@ -316,7 +320,17 @@ def construct(absPath, target, typer, filter = False):
     while t.isAlive():
         writer.quit()
         time.sleep(1)
+    
+    for path in os.listdir(os.path.join(absPath, typer)):
+        readByProtocol(os.path.join(absPath, typer, path), typer)
 
 if __name__ == '__main__':
     # construct('E:\\29161\\Destop\\medical_instance\\pcap', 'test6.pcap', 'http')
-    construct('pcap', 'http_download.pcap', 'http', filter=True)
+    # construct('pcap', 'http_download.pcap', 'http', filter=True)
+    import threading
+    t1 = threading.Thread(target=construct, args=['pcap/1589985453/', 'http.pcap', 'DICOM|http', True])
+    import dpktConstruct
+    t2 = threading.Thread(target=dpktConstruct.construct, args=['pcap/1589985453/', 'http.pcap', 'DICOM|ftp'])
+    t1.start()
+    t2.start()
+    

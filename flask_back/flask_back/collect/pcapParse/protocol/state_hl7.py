@@ -1,6 +1,6 @@
-from state import State, Lexer, FileReader, Token, dealIPPort
-from constant import SB, EB, Escape, Component, Field, Subcomponent, Repeat, HL7Separator, TokenType
-from database.tables import *
+from .state import State, Lexer, FileReader, Token, dealIPPort
+from .constant import SB, EB, Escape, Component, Field, Subcomponent, Repeat, HL7Separator, TokenType
+from .database.tables import *
 import copy
 
 class LexerHL7(Lexer):

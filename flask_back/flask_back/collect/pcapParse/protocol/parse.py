@@ -1,11 +1,18 @@
-from database.tables import *
+from .database.tables import *
 import os
+from dpkt.ip import IP
+from dpkt.tcp import TCP
+from dpkt.dpkt import NeedData
+from dpkt.pcap import Reader as PReader
+from dpkt.ethernet import Ethernet
+from socket import inet_ntop
+from socket import AF_INET
 
 
 class Parse:
 
-    def __init__(self, filePath):
-        self.data = FileReader(filePath)
+    def __init__(self, data):
+        self.data = data
         if self.data == None:
             return None
         self.type = 0
@@ -13,6 +20,12 @@ class Parse:
         self.subitem = []
         self.size = len(self.data)
         self.write_database = True
+        self.sender = None
+        self.receiver = None
+    
+    def setIPPort(self, senderIp, senderPort, receiverIp, receiverPort):
+        self.sender = senderIp + ":" + str(senderPort)
+        self.receiver = receiverIp + ":" + str(receiverPort)
 
     def judge_brunch(self):
         startByte = 0
@@ -541,97 +554,36 @@ class Parse:
         pass
 
 
-class FileReader:
+def inet_to_str(inet):
+    """Convert inet object to a string
 
-    __fileSize__ = 1024*1024
+        Args:
+            inet (inet struct): inet network address
+        Returns:
+            str: Printable/readable IP address
+    """
+    # First try ipv4 and then ipv6
+    try:
+        return inet_ntop(AF_INET, inet)
+    except ValueError:
+        return inet_ntop(AF_INET6, inet)
 
-    def __init__(self, filePath):
-        if os.path.exists(filePath):
-            self.file = open(filePath, 'rb')
-        else:
-            return None
-        self.data = None
-        # self.pre_data = None
-        self.length = os.path.getsize(filePath)
-        self.size = 0
-        self.pre_length = 0
-        self.file_end = False
-        self.all_length = 0
-        self.update()
-    
-    # 用于设置切片和索引的起始位置，并进行响应的值的转换和数据的处理
-    def set_start(self, start):
-        if start - self.pre_length == self.size:
-            self.size = 0
-            self.update()
-            self.pre_length == 0
-            return True
-        elif start - self.pre_length < self.size and start >= self.pre_length:
-            self.size = self.size - (start - self.pre_length)
-            self.data = self.data[start - self.pre_length:]
-            self.pre_length = 0
-            return True
-        else:
-            return False
-
-    # 用于文件的固定长度读取，
-    def update(self):
-        # self.pre_data = self.data
-        self.data = self.file.read(self.__fileSize__)
-        if self.size >= 0:
-            self.pre_length = self.pre_length + self.size
-        self.size = len(self.data)
-        if self.size <= 0:
-            self.file_end = True
-        self.all_length = self.all_length + self.size
-
-    # 用于返回从当前开始位置的到文件结束的长度，基于操作系统对于文件大小的读取与读取过文件内容的差值
-    def __len__(self):
-        return self.length - self.all_length + self.size
-
-    # 本方法主要用于重写索引和切片，由于基于文件的固定长度读取，
-    # 因此文件的读取只能一直向前，所以索引的访问只能一直向前，不能向后，
-    # 同理，切片也是如此，这是本方法的一个弊端，还需要另外考虑对于图像文件的存储，
-    # 保证图像文件占用的内存在可控范围内
-    def __getitem__(self, item):
-        if type(item) == int:
-            while item - self.pre_length >= self.size and not self.file_end:
-                self.update()
-            if self.file_end:
-                return None
-            if item - self.pre_length >= 0:
-                return self.data[item - self.pre_length]
-            else:
-                return None  # 不支持向已经丢失的内容查找
-        elif type(item) == slice:
-            start = item.start - self.pre_length
-            stop = item.stop - self.pre_length
-            if self.file_end:
-                return None
-            while start >= self.size and not self.file_end:
-                self.update()
-                start = start - self.size
-                stop = start - self.size
-
-            if self.file_end or start < 0 or stop <= 0:
-                return None
-
-            if start < self.size and stop <= self.size:
-                return self.data[start:stop]
-            elif start < self.size and stop > self.size:
-                result = self.data[start:self.size]
-                while stop > self.size and not self.file_end:
-                    self.update()
-                    result = result + self.data
-                    stop = stop - self.size
-                if self.file_end and self.size <= 0:
-                    return result
-                result = result + self.data[0: stop]
-                return result
-            else:
-                return None
-        else:
-            return None
-
-    def __del__(self):
-        self.file.close()
+def parse(pcapfile):
+    pcap_reader = PReader(pcapfile)
+    for timestamp, pkt in pcap_reader:
+        eth = None
+        try:
+            eth = Ethernet(pkt)
+        except NeedData:
+            continue
+        if not isinstance(eth.data, IP):
+            continue
+        pkt = eth.data
+        if not isinstance(pkt.data, TCP):
+            continue
+        src = inet_to_str(pkt.src)
+        dst = inet_to_str(pkt.dst)
+        pkt = pkt.data
+        p = Parse(pkt.data)
+        p.setIPPort(src, pkt.sport, dst, pkt.dport)
+        p.judge_brunch()

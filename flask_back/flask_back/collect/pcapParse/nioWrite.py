@@ -3,20 +3,27 @@ import aiofiles
 import os
 import queue
 from concurrent.futures import ThreadPoolExecutor
+import threading
 
+threshold = 5
 class NIOWriter:
 
-    def __init__(self, queSize=10000, semaNumber=10, maxThreadNum = 10, executor=ThreadPoolExecutor(max_workers=9)):
+    def __init__(self, queSize=10000, semaNumber=threshold, maxThreadNum = threshold, executor=threshold-1):
         self.queue = queue.Queue(maxsize=queSize)
-        self.sema = asyncio.Semaphore(semaNumber)
         self.threadNum = 0
         self.maxThreadNum = maxThreadNum
-        self.executor = executor
+        if executor is None:
+            self.executor = None
+        else:
+            self.executor = ThreadPoolExecutor(max_workers=executor)
         self.loop = asyncio.new_event_loop()
+        self.sema = asyncio.Semaphore(semaNumber,loop=self.loop)
         # self.loop.set_default_executor(self.executor)
         self.dic = {}
         self.tagQue = queue.Queue(maxsize=semaNumber)
         self.Tag = False
+        self._lock_for_dic = threading.Lock()
+        self.task = []
 
     async def write(self, absPath, fileName, data):
         length = 0
@@ -29,17 +36,16 @@ class NIOWriter:
                         length = 1
                         break
                 continue
-            if not len(i) == 0 or length == 1:
+            if (not len(i) == 0) or length == 1:
                 length = 1
                 break
-        if length == 0:
-            self.dic.pop(os.path.join(absPath, fileName), None)
-            self.threadNum -= 1
-        else:
+        if length > 0:
             async with aiofiles.open(os.path.join(absPath, fileName), 'ab+', executor=self.executor) as f, self.sema:
                 if isinstance(data, list):
                     while len(data) > 0:
                         i = data.pop(0)
+                        if len(i) == 0:
+                            continue
                         if isinstance(i, list):
                             for j in i:
                                 # await f.write(j.tcp_payload)
@@ -47,13 +53,16 @@ class NIOWriter:
                         else:
                             # await f.write(i.tcp_data)
                             await f.write(i)
-
                 else:
                     await f.write(data)
-                self.dic.pop(os.path.join(absPath, fileName), None)
-                f.close()
-            self.queue.task_done()
+                await f.close()
+        self._lock_for_dic.acquire()
+        try:
+            self.dic.pop(os.path.join(absPath, fileName), None)
             self.threadNum -= 1
+        finally:
+            self._lock_for_dic.release()
+        self.queue.task_done()
             # return 1
 
     def start_loop(self):
@@ -70,6 +79,7 @@ class NIOWriter:
     def addInLoop(self, absPath, fileName, data):
         loop = asyncio.get_running_loop()
         task = loop.create_task(self.write(absPath, fileName, data))
+        self.task.append(task)
         # task.add_done_callback(self.callback)
     
     # def callback(self, future):
@@ -81,12 +91,16 @@ class NIOWriter:
                 while (not self.queue.empty()) and self.threadNum < self.maxThreadNum:
                     item = self.queue.get()
                     key = os.path.join(item['absPath'], item['fileName'])
-                    if key in self.dic:
-                        self.dic[key].append(item['data'])
-                    else:
-                        self.dic[key] = item['data']
-                        self.addInLoop(item['absPath'], item['fileName'], item['data'])
-                        self.threadNum += 1
+                    self._lock_for_dic.acquire()
+                    try:
+                        if key in self.dic:
+                            self.dic[key].append(item['data'])
+                        else:
+                            self.dic[key] = item['data']
+                            self.addInLoop(item['absPath'], item['fileName'], item['data'])
+                            self.threadNum += 1
+                    finally:
+                        self._lock_for_dic.release()
                 await asyncio.sleep(self.threadNum / 100)
             else:
                 if not self.tagQue.empty():
@@ -94,11 +108,16 @@ class NIOWriter:
                         self.Tag = True
                     self.tagQue.task_done()
                 elif self.Tag:
-                    if len(self.dic) == 0:
-                        # print(len(self.dic))
-                        self.loop.stop()
-                        self.executor.shutdown()
-                        break
+                    self._lock_for_dic.acquire()
+                    try:
+                        if len(self.dic) == 0:
+                            # print(len(self.dic))
+                            self.loop.stop()
+                            if not self.executor is None:
+                                self.executor.shutdown()
+                            break
+                    finally:
+                        self._lock_for_dic.release()
                 await asyncio.sleep(0.1)
 
     def put(self, item):

@@ -1,9 +1,17 @@
-import threading
-import time
+from constant import RTE_SDK, RTE_TARGET, capture_path, pdump_path
 from subprocess import Popen, PIPE
+from protocol.parse import parse as PduParse
 from queue import Queue
+import threading
+import time as tim
 import io
-
+import os
+import dpktConstruct
+import dpktHttpConstruct
+import logging
+LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
+DATE_FORMAT = "%m/%d/%Y %H:%M:%S %p"
+logging.basicConfig(filename='Control.log', level=logging.DEBUG, format=LOG_FORMAT,datefmt=DATE_FORMAT)
 # 环境变量
 # env = {
 #     'DPDKPath':'sdfsadfsa',
@@ -85,14 +93,27 @@ import io
 
 # que = queue.Queue(maxsize=3)
 
+_NoRUN_ = 1
+_Running_ = 2
+_Finished_ = 3
+device_id = 0
+
+CollectResource = threading.Lock()
+
 class CollectThread:
 
     def __init__(self, threadnum = 1):
-        self.ThreadNum = 0
+        # self.ThreadNum = 0
         self.parent_env = None
         self.ThreadPool = []
+        self.pcapThreadPool = []
+        self.pcapPath = []
         self._dealEnv()
         self.queue = Queue(maxsize=threadnum)
+        self.state= _NoRUN_
+        self.Thread = threading.Thread(target=self._runSample)
+        self.Thread.start()
+        logging.info('Main Thred Starting, And Watched Thread Starting.')
 
     def _dealEnv(self):
         Env = Popen('env', universal_newlines=True, stdout=PIPE)
@@ -103,43 +124,169 @@ class CollectThread:
         for x in outlist:
             if x.find('=') != -1:
                 self.parent_env[x[0:x.find('=')]]=x[x.find('=') + 1:]
+        self.parent_env['RTE_SDK'] = RTE_SDK
+        self.parent_env['RTE_TARGET'] = RTE_TARGET
+        logging.info('The inital Env is ' + str(self.parent_env))
+
+    def put(self, item):
+        if self.getState() == _Running_:
+            logging.info('add the collect task is Failed.')
+            return False
+        logging.info('add The Collect task is Success.')
+        self.queue.put(item)
+        return True
 
     def _startJob(self, protocol, time, path):
-        currentPath = str(int(time.time()))
-        if not os.exists(os.path.join(os.getcwd(), currentPath)):
-            os.mkdir(os.path.join(os.getcwd(), currentPath))
-        cmd = ['sudo', './dpdk-pdump', '--', '--pdump']
-        params = 'device_id='
-        params += device_id + ','
+        currentPath = tim.time()
+        currentPath = str(int(currentPath))
+        if not os.path.exists(os.path.join(capture_path, currentPath)):
+            logging.info('make a new diectory for pcap files.')
+            os.mkdir(path=os.path.join(capture_path, currentPath))
+        cmd = 'sudo '+ os.path.join(pdump_path, 'dpdk-pdump') + ' -- ' + ' --pdump '
+        params = "'device_id="
+        params += str(device_id) + ','
         params +='time='
         params += str(time) + ','
         if 'HL7' in protocol:
             params += 'hl7-dev='
-            params += os.path.join(os.getcwd(), currentPath, 'hl7.pcap')
-            params += ','
+            params += os.path.join(capture_path, currentPath, 'hl7.pcap')
+            params += "'"
         if 'DICOM' in protocol:
             params += 'dicom-dev='
-            params += os.path.join(os.getcwd(), currentPath, 'dicom.pcap')
+            params += os.path.join(capture_path, currentPath, 'dicom.pcap')
             params += ','
+            params += 'http-dev='
+            params += os.path.join(capture_path, currentPath, 'http.pcap')
+            params += ','
+            params += 'ftp-dev='
+            params += os.path.join(capture_path, currentPath, 'ftp.pcap')
+            params += "'"
         if protocol == 'ASTM':
             params += 'astm-dev='
-            params += os.path.join(os.getcwd(), currentPath, 'astm.pcap')
+            params += os.path.join(capture_path, currentPath, 'astm.pcap')
             params += ','
-        params += 'http-dev='
-        params += os.path.join(os.getcwd(), currentPath, 'http.pcap')
-        params += ','
-        params += 'ftp-dev='
-        params += os.path.join(os.getcwd(), currentPath, 'http.pcap')
-        params += ','
-        pass
+            params += 'http-dev='
+            params += os.path.join(capture_path, currentPath, 'http.pcap')
+            params += ','
+            params += 'ftp-dev='
+            params += os.path.join(capture_path, currentPath, 'ftp.pcap')
+            params += "'"
+        cmd += params
+        logging.info('create script for collect task.')
+        logging.info(cmd)
+        return cmd, currentPath
     
     def getState(self):
+        
+        try:
+            CollectResource.acquire()
+            if self.state == _NoRUN_:
+                if self.queue.empty():
+                    return _NoRUN_
+                return _Running_
+            elif self.state == _Finished_:
+                if not self.queue.empty():
+                    return _Running_
+                return self.state
+            else:
+                return self.state
+        finally:
+            CollectResource.release()
         pass
 
-    def runSample(self):
+    def _runPopen(self, script):
+        process = Popen(args=script, 
+            shell=True, 
+            env=self.parent_env, 
+            # stdin=PIPE, 
+            stdout=PIPE, 
+            stderr=PIPE, 
+            universal_newlines=True)
+        for i in process.communicate():
+            logging.info(i)
+        return process
+    
+    def _runSample(self):
+        while True:
+            try:
+                CollectResource.acquire()
+                if self.state == _NoRUN_:
+                    # 没有正在运行的数据包捕获程序
+                    if self.queue.empty() and len(self.ThreadPool) == 0:
+                        logging.info('no running collect task.')
+                    else:
+                        logging.info('have a running collect task.')
+                        item = self.queue.get()
+                        script, currentPath = self._startJob(item['protocol'], item['time'], item['path'])
+                        item['currentPath'] = currentPath
+                        self.pcapPath.append(item)
+                        process = self._runPopen(script)
+                        # process.returncode=0
+                        self.ThreadPool.append(process)
+                        self.state = _Running_
+                elif self.state == _Running_:
+                    # 若有正在运行的程序
+                    for i in self.ThreadPool:
+                        # print(i.poll())
+                        code = i.poll()
+                        if not code is None:
+                            for j in i.communicate():
+                                logging.info(j)
+                            logging.info('Have a collect Task is run success,start State move to Finished.')
+                            self.ThreadPool.remove(i)
+                            self.state = _Finished_
+                            currentMessage = self.pcapPath.pop(0)
+                            currentPath = os.path.join(capture_path, currentMessage['currentPath'])
+                            for path in os.listdir(currentPath):
+                                threadOperator = None
+                                if not os.path.isdir(os.path.join(currentPath, path)):
+                                    filepath = os.path.basename(path)
+                                    if not 'pcap' in filepath:
+                                        continue
+                                    if 'hl7' in filepath:
+                                        threadOperator = threading.Thread(name='hl7-ReConstruct'+'-' + currentPath, target=dpktConstruct.construct, args=[currentPath, filepath, 'hl7'])
+                                    elif 'dicom' in filepath:
+                                        continue
+                                        pass
+                                        # threadOperator = threading.Thread(name='dicom-ReConstruct'+'-' + currentPath,target=PduParse, args=[os.path.join(currentPath, filepath)])
+                                    elif 'astm' in filepath:
+                                        threadOperator = threading.Thread(name='astm-ReConstruct'+'-' + currentPath,target=dpktConstruct.construct, args=[currentPath, filepath, 'astm'])
+                                    elif 'http' in filepath:
+                                        threadOperator = threading.Thread(name='http-ReConstruct'+'-' + currentPath,target=dpktHttpConstruct.construct, args=[currentPath, filepath, currentMessage['protocol'] + '|http', True])
+                                        # continue
+                                    elif 'ftp' in filepath:
+                                        threadOperator = threading.Thread(name='ftp-ReConstruct'+'-' + currentPath,target=dpktConstruct.construct, args=[currentPath, filepath, currentMessage['protocol'] + '|ftp'])
+                                        # continue
+                                    self.pcapThreadPool.append(threadOperator)
+                                    threadOperator.start()
+                                    logging.info(filepath + ' pcap file reconstruct thread is starting.')
+                            self.queue.task_done()                
+                        pass
+                elif self.state == _Finished_:
+                    # 若正在处理的程序已经完成，然后处理pcap文件
+                    # 本状态可以进入运行状态
+                    for t in self.pcapThreadPool:
+                        if t.isAlive():
+                            continue
+                        self.pcapThreadPool.remove(t)
+                    if len(self.pcapThreadPool) == 0:
+                        self.state = _NoRUN_
+                        continue
+                    if not self.queue.empty():
+                        item = self.queue.get()
+                        script, currentPath = self._startJob(item['protocol'], item['time'], item['path'])
+                        self.pcapPath.append(currentPath)
+                        process = self._runPopen(script)
+                        self.ThreadPool.append(process)
+                        self.state = _Running_
+            finally:
+                CollectResource.release()
+            tim.sleep(1)
         pass
 
 
 if __name__ == '__main__':
     c = CollectThread()
-    print(c.dealEnv())
+    while not c.put({'protocol':'DICOM', 'time':1, 'path':os.path.join(os.getcwd(), 'pcap')}):
+        continue
+    # print(os.path.isfile('/home/yjn/Code/medical_instance/test6.pcap'))

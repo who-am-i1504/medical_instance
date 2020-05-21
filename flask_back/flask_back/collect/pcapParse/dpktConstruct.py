@@ -7,14 +7,42 @@ from dpkt.pcap import Reader as PReader
 from dpkt.ethernet import Ethernet
 from socket import inet_ntop
 from socket import AF_INET
+from socket import AF_INET6
 from threading import Thread
 from collections import defaultdict
-
+from protocol.dcmReader import readDcm
+from protocol.state_astm import StateAstm
+from protocol.state_hl7 import StateHL7
+from pydicom.errors import InvalidDicomError
 import dpkt
 
 from nioWrite import NIOWriter 
 import time
 
+def readByProtocol(path, protocol):
+    if os.path.isdir(path):
+        for p in os.listdir(path):
+            readByProtocol(os.path.join(path, p), protocol)
+    else:
+        if 'DICOM' in protocol or 'dicom' in protocol:
+            try:
+                readDcm(path)
+            except InvalidDicomError:
+                if 'hl7' in protocol or 'HL7' in protocol:
+                    s = StateHL7(path)
+                    s.state()
+                if 'astm' in protocol or 'ASTM' in protocol:
+                    A = StateAstm(path)
+                    A.state()
+        elif 'hl7' in protocol or 'HL7' in protocol:
+            s = StateHL7(path)
+            s.state()
+            if 'astm' in protocol or 'ASTM' in protocol:
+                A = StateAstm(path)
+                A.state()
+        elif 'astm' in protocol or 'ASTM' in protocol:
+            A = StateAstm(path)
+            A.state()
 # 一些提前定义的变量
 LengthTag = 1000
 
@@ -198,9 +226,25 @@ def construct(absPath, target, typer):
     while t.isAlive():
         writer.quit()
         time.sleep(1)
+    
+    # if 'ftp' in typer:
+    for path in os.listdir(os.path.join(absPath, typer)):
+        readByProtocol(os.path.join(absPath, typer, path), typer)
+    # elif typer == 'hl7':
+    #     for path in os.listdir(os.path.join(absPath, typer)):
+    #         s = StateHL7(os.path.join(absPath, typer, path))
+    #         s.state()
 
 if __name__ == '__main__':
     # construct('E:\\29161\\Destop\\medical_instance\\pcap', 'test.pcap', 'http')
-    construct('pcap', 'ftp_download.pcap', 'ftp')
+    # construct('pcap', 'ftp_download.pcap', 'ftp')
+    # construct('pcap/1589974224/', 'ftp.pcap', 'DICOM|ftp')
     # construct('E:\\29161\\Destop\\medical_instance\\pcap', 'http_download.pcap', 'http')
     # construct('E:\\29161\\Destop\\medical_instance\\pcap', 'http_download.pcap', 'http')
+    import threading
+    import dpktHttpConstruct
+    t1 = threading.Thread(target=dpktHttpConstruct.construct, args=['pcap/1589985453/', 'http.pcap', 'DICOM|http', True])
+    import dpktConstruct
+    t2 = threading.Thread(target=construct, args=['pcap/1589985453/', 'ftp.pcap', 'DICOM|ftp'])
+    t1.start()
+    t2.start()

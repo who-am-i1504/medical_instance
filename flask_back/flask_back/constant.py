@@ -1,3 +1,4 @@
+import ast
 
 page_size = 10
 
@@ -53,8 +54,14 @@ def errorLog(addr, path, error):
 
 def successLog(addr, path):
     return '%s request for %s success return message.'%(addr, path)
-
-PicturePath = ''
+config = None
+if config is None:
+    with open('config/config.cfg', 'r') as f:
+        data = f.read().replace('\n', '')
+        config = ast.literal_eval(data)
+PicturePath = config['PicturePath']
+mysqllink = config['mysql_username'] + ':' + config['mysql_password']+'@'+config['mysql_server']
 # import os
 # import time
 # log_file_name = 'logger-' + time.strftime('%Y-%m-%d', time.localtime(time.time())) + '.log'
+

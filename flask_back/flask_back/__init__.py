@@ -3,12 +3,13 @@ from flask_jsonschema import JsonSchema, ValidationError
 import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from .constant import mysqllink
 
 db = SQLAlchemy()
 from .logger.log import Logger
 # create and configure the app
 app = Flask(__name__, instance_relative_config=True)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:99277299@localhost:3306/medical'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://' + mysqllink
 app.config['SQLALCHEMY_POOL_SIZE'] = 10
 app.config['SQLALCHEMY_POOL_TIMEOUT'] = 15
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

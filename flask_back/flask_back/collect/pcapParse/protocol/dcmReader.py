@@ -1,7 +1,7 @@
 import os
 import pydicom
 from pydicom.errors import InvalidDicomError
-from database.tables import PatientInfo, StudyInfo, SeriesInfo, ImageInfo, DBSession
+from .database.tables import PatientInfo, StudyInfo, SeriesInfo, ImageInfo, DBSession
 # import gdcm
 import numpy
 import time
@@ -63,11 +63,11 @@ def writeImage(id, image):
 
 def readDcm(filename):
     # Dcm 文件读取
-    ds = None
-    try:
-        ds = pydicom.dcmread(filename)  # plan dataset
-    except InvalidDicomError:
-        return
+    # ds = None
+    # try:
+    ds = pydicom.dcmread(filename)  # plan dataset
+    # except InvalidDicomError:
+        
     
     # 患者信息记录
     patient = PatientInfo()
@@ -82,7 +82,9 @@ def readDcm(filename):
                 patient[map_patient[i]] = map_type[i](ds.data_element(i).value)
             else:
                 patient[map_patient[i]] = str(ds.data_element(i).value)
-
+    
+    session.add(patient)
+    session.flush()
     # 信息记录
     for i in ds.dir("stu"):
         if i in map_study.keys():
@@ -130,8 +132,6 @@ def readDcm(filename):
         image.image_path = writeImage(patient.id, ds.pixel_array)
         pass
 
-    session.add(patient)
-    session.flush()
     study.id = patient.id #改
     series.id = patient.id #改
     image.id = patient.id #改
@@ -146,8 +146,7 @@ from pydicom.data import get_testdata_files
 def prase(path):
     if os.path.isdir(path):
         for p in os.listdir(path):
-            print(p)
-            test(os.path.join(path, p))
+            prase(os.path.join(path, p))
     else:
         readDcm(path)
         # print(path)
