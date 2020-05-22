@@ -12,8 +12,8 @@ bp = Blueprint('picture_download', __name__, url_prefix='/picture')
 @bp.route('/download/<string:pic_name>', methods=['GET'])
 def download(pic_name):
     if request.method == 'GET':
-        if os.path.isfile(os.path.join(PicturePath, pic_name)):
-            return send_from_directory(PicturePath, pic_name, as_attachment=True)
+        if os.path.exists(os.path.join(PicturePath, pic_name)):
+            return send_from_directory(os.path.join(os.getcwd(), PicturePath), pic_name, as_attachment=True)
         else:
             return '<h1>NOT FOUND</h1>'
     else:
@@ -26,6 +26,8 @@ def show(pic_name):
             return '<h1>Wrong Request Function</h1><h2>You didn\'t Input The Picture Path'
             pass
         else:
+            if not os.path.exists(os.path.join(PicturePath, '%s' % pic_name)):
+                return '<h1>NOT FOUND</h1>'
             image_data = open(os.path.join(PicturePath, '%s' % pic_name), 'rb').read()
             response = make_response(image_data)
             response.headers['Content-Type'] = 'image/png'

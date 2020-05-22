@@ -10,13 +10,13 @@ from socket import AF_INET
 from socket import AF_INET6
 from threading import Thread
 from collections import defaultdict
-from protocol.dcmReader import readDcm
-from protocol.state_astm import StateAstm
-from protocol.state_hl7 import StateHL7
+from .protocol.dcmReader import readDcm
+from .protocol.state_astm import StateAstm
+from .protocol.state_hl7 import StateHL7
 from pydicom.errors import InvalidDicomError
 import dpkt
 
-from nioWrite import NIOWriter 
+from .nioWrite import NIOWriter 
 import time
 
 def readByProtocol(path, protocol):

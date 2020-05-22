@@ -2,7 +2,7 @@ import os
 import sys
 from dpkt.ip import IP
 from dpkt.tcp import TCP
-from HttpPacket import Response
+from .HttpPacket import Response
 from dpkt.pcap import Reader as PReader
 from dpkt.ethernet import Ethernet
 from socket import inet_ntop
@@ -13,13 +13,13 @@ from collections import defaultdict
 from dpkt.dpkt import NeedData, UnpackError
 from pydicom.errors import InvalidDicomError
 import dpkt
-from protocol.dcmReader import readDcm
-from protocol.state_astm import StateAstm
-from protocol.state_hl7 import StateHL7
-from nioWrite import NIOWriter 
+from .protocol.dcmReader import readDcm
+from .protocol.state_astm import StateAstm
+from .protocol.state_hl7 import StateHL7
+from .nioWrite import NIOWriter 
 import time
 import re
-from dpktConstruct import readByProtocol
+from .dpktConstruct import readByProtocol
 
 
 pattern = re.compile(r'^H\|[\\|\^|&|~]{3,5}')

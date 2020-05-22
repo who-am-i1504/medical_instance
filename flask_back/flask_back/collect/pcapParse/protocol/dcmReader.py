@@ -6,8 +6,10 @@ from .database.tables import PatientInfo, StudyInfo, SeriesInfo, ImageInfo, DBSe
 import numpy
 import time
 from pydicom import dcmread
+import matplotlib
+matplotlib.use('pdf')
 import matplotlib.pyplot as plt
-import scipy.misc
+
 
 session = DBSession()
 
@@ -50,7 +52,7 @@ map_type = {
     'HighBit':int
 }
 
-absPath = 'upload/'
+absPath = os.path.join(os.getcwd(),'upload')
 
 def writeImage(id, image):
     # print(image.shape)
@@ -76,6 +78,7 @@ def readDcm(filename):
     image = ImageInfo()
     patient.send_ip_port = '129.20.2.1:3306'
     patient.receiver_ip_port = '192.2.3.1:3306'
+    patient.size = os.path.getsize(filename)
     for i in ds.dir("pat"):
         if i in map_patient.keys():
             if i in map_type.keys():
@@ -151,6 +154,6 @@ def prase(path):
         readDcm(path)
         # print(path)
 
-if __name__ == "__main__":
-    # readDcm(get_testdata_files("CT_small.dcm")[0])
-    prase('DICOM-sample/')
+# if __name__ == "__main__":
+#     # readDcm(get_testdata_files("CT_small.dcm")[0])
+#     prase('pcap/1590114835/DICOM|http/Y_1590114897.1665974_10.246.229.255-8080_10.245.145.250-50577.unknow')

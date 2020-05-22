@@ -29,6 +29,11 @@ class AstmMain(Base):
     version = Column(String)
     message_time = Column(DateTime)
     size = Column(BIGINT)
+    
+    def __getitem__(self, item):
+        return self.__dict__[item]
+    def __setitem__(self, key, value):
+        self.__dict__[key] = value
 
     # def keys(self):
     #     return ('id','delimiter','message_id','password','sender','sender_address','type','sender_phone','sender_character','send_ip_port','receiver','receiver_type_id','receiver_ip_port','processing_id','version','message_time')
@@ -67,6 +72,12 @@ class AstmRecord(Base):
     o_continue = Column(Boolean)
     _continue = Column(Boolean)
 
+    
+    def __getitem__(self, item):
+        return self.__dict__[item]
+    def __setitem__(self, key, value):
+        self.__dict__[key] = value
+
 class MessageMain(Base):
     __tablename__ = 'message'  # 数据库表名
 
@@ -80,6 +91,11 @@ class MessageMain(Base):
     time = Column(DateTime, default=datetime.datetime.now)
     version = Column(String)
     dsc_status = Column(Boolean)
+    
+    def __getitem__(self, item):
+        return self.__dict__[item]
+    def __setitem__(self, key, value):
+        self.__dict__[key] = value
 
     pass
 
@@ -95,7 +111,11 @@ class Segment(Base):
     name = Column(String)
     add_status = Column(Boolean)
     content = Column(Text)
-
+    
+    def __getitem__(self, item):
+        return self.__dict__[item]
+    def __setitem__(self, key, value):
+        self.__dict__[key] = value
     pass
 
 
@@ -115,6 +135,7 @@ class PatientInfo(Base):
     patient_id = Column(String)
     # patient_address = Column(String)
     patient_pregnancy_status = Column(INT) #怀孕状态
+    size = Column(BIGINT)
 
     def __getitem__(self, item):
         return self.__dict__[item]
@@ -174,6 +195,23 @@ class StudyInfo(Base):
     def __setitem__(self, key, value):
         self.__dict__[key] = value
 
+class CollectResult(Base):
+    __tablename__ = 'collect_result'
+
+    id = Column(BIGINT, primary_key=True)
+    protocol = Column(String)
+    port = Column(INT)
+    time = Column(BIGINT)
+    submit = Column(DATETIME, default=datetime.datetime.now)
+    start_time = Column(DATETIME)
+    end_time = Column(DATETIME)
+    size = Column(BIGINT)
+    
+    def __getitem__(self, item):
+        return self.__dict__[item]
+    def __setitem__(self, key, value):
+        self.__dict__[key] = value
+    pass
 
 
 engine = create_engine(

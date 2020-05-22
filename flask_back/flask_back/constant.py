@@ -25,6 +25,9 @@ file_error_message = '文件传入不正确'
 
 excel_add_error = 405
 
+collect_error = 409
+collect_error_message='已有收集任务在运行，请等待当前任务完成'
+
 def excel_add_error_message(error_num, correct_num):
     return "未加入成功%d个，正确加入%d个" % (error_num, correct_num)
 
@@ -61,6 +64,11 @@ if config is None:
         config = ast.literal_eval(data)
 PicturePath = config['PicturePath']
 mysqllink = config['mysql_username'] + ':' + config['mysql_password']+'@'+config['mysql_server']
+PcapPath = config['PcapPath']
+HL7Message = ['id', 'send_ip_port', 'receiver_ip_port', 'complete_status', 'seqnumber', 'size', 'type', 'time', 'version', 'dsc_status']
+ASTMMain = ['id', 'delimiter', 'message_id', 'password', 'sender', 'sender_address',
+    'type', 'sender_phone', 'sender_character', 'send_ip_port', 'receiver_ip_port', 
+    'receiver', 'receiver_id', ]
 # import os
 # import time
 # log_file_name = 'logger-' + time.strftime('%Y-%m-%d', time.localtime(time.time())) + '.log'

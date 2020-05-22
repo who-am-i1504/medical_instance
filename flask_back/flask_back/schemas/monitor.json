@@ -4,6 +4,9 @@
         "properties":{
             "page":{
                 "type":"integer"
+            },
+            "pageSize":{
+                "type":"integer"
             }
         },
         "required":["page"]
@@ -81,6 +84,25 @@
             }
         },
         "required":["ip"]
+    },
+    "result_page":{
+        "type":"object",
+        "properties":{
+            "ip":{
+                "type":"string",
+                "pattern":"((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})(\\.((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})){3}"
+            },
+            "port": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 65525
+            },
+            "page":{
+                "type":"integer",
+                "minimum":0
+            }
+        },
+        "required":["ip", "page"]
     },
     "dicom_result":{
         "type":"object",

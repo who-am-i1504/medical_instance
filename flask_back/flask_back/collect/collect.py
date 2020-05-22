@@ -4,6 +4,10 @@ from flask_back.dao.sql import CollectResult
 import flask_back.constant as cnts
 import copy
 import datetime
+from .pcapParse.Control import CollectThread
+# from .company_ip import qcdata
+
+MainCollect = CollectThread()
 
 bp = Blueprint('collect', __name__, url_prefix='/collect')
 
@@ -22,9 +26,18 @@ def start():
     collect = CollectResult()
     collect.protocol = json_data['protocol']
     collect.time = json_data['time']
+    json_data['path'] = cnts.PcapPath
     try:
         db.session.add(collect)
         db.session.flush()
+        json_data['id'] = collect.id
+        if not MainCollect.put(json_data):
+            db.session.rollback()
+            back['status'] = cnts.collect_error
+            back['message'] = cnts.collect_error_message
+            back['data'] = {}
+            return jsonify(back)
+        
         db.session.commit()
 
         log.info(cnts.databaseSuccess(addr, path, '`collect_result`'))
@@ -36,7 +49,7 @@ def start():
         back['data']['submit'] = collect.submit.strftime('%Y-%m-%d %H:%M:%S')
     except:
         
-        log.error(cnts.errorLog(addr, path))
+        log.error(cnts.errorLog(addr, path, 'database'))
 
         back['status'] = cnts.database_error
         back['message'] = cnts.database_error_message
@@ -87,7 +100,7 @@ def getByPage():
         back['message'] = cnts.database_error_message
         back['status'] = cnts.database_error
 
-        log.error(cnts.errorLog(addr, path))
+        log.error(cnts.errorLog(addr, path, 'database'))
 
         return jsonify(back)
     back['page'] = json_data['page']
@@ -126,16 +139,19 @@ def getOne():
             else:
                 a['start_time'] = i.start_time.strftime('%Y-%m-%d %H:%M:%S')
             if i.end_time is None:
-                a['end_time'] = 'null'
+                a['end_time'] = '未完'
             else:
                 a['end_time'] = i.end_time.strftime('%Y-%m-%d %H:%M:%S')
-            a['size'] = i.size
+            if i.size is None:
+                a['size'] = "0MB"
+            else:
+                a['size'] = '%.2f'%(i.size / 1024 / 1024) + 'MB'
             back['data'] = a
     except:
         back['message'] = cnts.database_error_message
         back['status'] = cnts.database_error
 
-        log.error(cnts.errorLog(addr, path))
+        log.error(cnts.errorLog(addr, path, 'database'))
 
         return jsonify(back)
     
@@ -152,13 +168,37 @@ def getPosition():
     addr = request.remote_addr
     path = request.path
     log.info(cnts.requestStart(addr, path, json_data))
-
+    # l = [json_data['ip']]
+    # result = qcdata(l)
+    # back['data] = result.pop(0)
     back['data'] = {
         'ip': json_data['ip'],
         'address': '山东省威海市',
         'equipment': "404医院",
         'institution':"HIT"
     }
+    log.info(cnts.successLog(addr, path))
+    return jsonify(back)
+
+@bp.route('/result/ip_position_by_list', methods=['POST'])
+@jsonschema.validate('collect', 'ip_position_list')
+def getPositionByList():
+    json_data = request.get_json()
+    back = copy.deepcopy(cnts.back_message)
+
+    addr = request.remote_addr
+    path = request.path
+    log.info(cnts.requestStart(addr, path, json_data))
+    # result = qcdata(json_data['ip_list'])
+    # back['data] = result
+    back['data'] = []
+    for i in json_data['ip_list']:
+        back['data'].append({
+            'ip': i,
+            'address': '山东省威海市',
+            'equipment': "404医院",
+            'institution':"HIT"
+        })
     log.info(cnts.successLog(addr, path))
     return jsonify(back)
 
