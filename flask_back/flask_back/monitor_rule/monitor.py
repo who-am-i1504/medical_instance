@@ -568,7 +568,7 @@ def monitor_delete():
 
 def getHL7Size(ip, port = None):
     if port is None:
-        return "SELECT COUNT(1) as `sum_num`, SUM(main.size) as `sum_size`\
+        return "SELECT COUNT(1) as `sum_num`, SUM(main.`size`) as `sum_size`, MIN(main.`time`) as `start_time`, MAX(main.`time`) as `end_time`\
             FROM `message` as main\
             WHERE main.`send_ip_port` LIKE '{0}:%' or main.`receiver_ip_port` LIKE '{0}:%';".format(ip)
     else:
@@ -578,13 +578,13 @@ def getHL7Size(ip, port = None):
 
 def dealHL7Script(ip, page, page_size, port=None):
     if port is None:
-        return "SELECT main.*, GROUP_CONCAT(DISTINCT seg.`content` ORDER BY seg.`seq` SEPARATOR '\\n') as `content`\
+        return "SELECT main.`id`, main.`size`, main.`send_ip_port`, main.`receiver_ip_port`, GROUP_CONCAT(DISTINCT seg.`content` ORDER BY seg.`seq` SEPARATOR '\\n') as `content`\
             FROM `message` as main LEFT JOIN `segment` as seg ON main.`id` = seg.`id`\
             WHERE main.`send_ip_port` LIKE '{0}:%' or main.`receiver_ip_port` LIKE '{0}:%'\
             GROUP BY main.`id`\
             LIMIT {1},{2};".format(ip, (page - 1) * page_size, page_size)
     else:
-        return "SELECT main.*, GROUP_CONCAT(DISTINCT seg.`content` ORDER BY seg.`seq` SEPARATOR '\\n') as `content`\
+        return "SELECT main.`id`, main.`size`, main.`send_ip_port`, main.`receiver_ip_port`, GROUP_CONCAT(DISTINCT seg.`content` ORDER BY seg.`seq` SEPARATOR '\\n') as `content`\
             FROM `message` as main LEFT JOIN `segment` as seg ON main.`id` = seg.`id`\
             WHERE main.`send_ip_port` LIKE '{0}:{1}' or main.`receiver_ip_port` LIKE '{0}:{1}'\
             GROUP BY main.`id`\
@@ -592,7 +592,7 @@ def dealHL7Script(ip, page, page_size, port=None):
 
 def getAstmSize(ip, port = None):
     if port is None:
-        return "SELECT COUNT(1) as `sum_num`, SUM(main.size) as `sum_size`\
+        return "SELECT COUNT(1) as `sum_num`, SUM(main.`size`) as `sum_size`, MIN(main.`time`) as `start_time`, MAX(main.`time`) as `end_time`\
             FROM `astm_main` as main\
             WHERE main.`send_ip_port` LIKE '{0}:%' or main.`receiver_ip_port` LIKE '{0}:%';".format(ip)
     else:
@@ -602,13 +602,13 @@ def getAstmSize(ip, port = None):
 
 def dealAstmScript(ip, page, page_size, port=None):
     if port is None:
-        return "SELECT main.*, GROUP_CONCAT(DISTINCT seg.`content` ORDER BY seg.`id` SEPARATOR '\\n') as `content`\
+        return "SELECT main.`id`, main.`size`, main.`send_ip_port`, main.`receiver_ip_port`, GROUP_CONCAT(DISTINCT seg.`content` ORDER BY seg.`id` SEPARATOR '\\n') as `content`\
             FROM `astm_main` as main LEFT JOIN `astm_record` as seg ON main.`id` = seg.`main_id`\
             WHERE main.`send_ip_port` LIKE '{0}:%' or main.`receiver_ip_port` LIKE '{0}:%'\
             GROUP BY main.`id`\
             LIMIT {1},{2};".format(ip, (page - 1) * page_size, page_size)
     else:
-        return "SELECT main.*, GROUP_CONCAT(DISTINCT seg.`content` ORDER BY seg.`id` SEPARATOR '\\n') as `content`\
+        return "SELECT main.`id`, main.`size`, main.`send_ip_port`, main.`receiver_ip_port`, GROUP_CONCAT(DISTINCT seg.`content` ORDER BY seg.`id` SEPARATOR '\\n') as `content`\
             FROM `astm_main` as main LEFT JOIN `astm_record` as seg ON main.`id` = seg.`main_id`\
             WHERE main.`send_ip_port` LIKE '{0}:{1}' or main.`receiver_ip_port` LIKE '{0}:{1}'\
             GROUP BY main.`id`\
@@ -616,7 +616,7 @@ def dealAstmScript(ip, page, page_size, port=None):
 
 def getDICOMSize(ip, port = None):
     if port is None:
-        return "SELECT COUNT(1) as `sum_num`, SUM(main.size) as `sum_size`\
+        return "SELECT COUNT(1) as `sum_num`, SUM(main.`size`) as `sum_size`, MIN(main.`time`) as `start_time`, MAX(main.`time`) as `end_time`\
             FROM `patient_info` as main\
             WHERE main.`send_ip_port` LIKE '{0}:%' or main.`receiver_ip_port` LIKE '{0}:%';".format(ip)
     else:
@@ -679,11 +679,22 @@ def monitor_hl7_ip():
                 back['hl7_ize'] = '0MB'
             else:
                 back['hl7_size'] = '%.2f'%(size[0]['sum_size']/1024/1024) + 'MB'
+            back['start_time'] = size[0]['start_time']
+            back['end_time'] = size[0]['end_time']
             back['data'] = []
             for i in result:
                 a = {}
                 for j in i.keys():
-                    a[j] = i[j]
+                    if j == 'send_ip_port':
+                        a['src_ip'] = i[j][0:i[j].find(':')]
+                        a['src_port'] = i[j][i[j].find(':') + 1:]
+                    elif j == 'receiver_ip_port':
+                        a['dst_ip'] = i[j][0:i[j].find(':')]
+                        a['dst_port'] = i[j][i[j].find(':') + 1:]
+                    elif j == 'size':
+                        a[j] = '{:.2f}'.format(i[j]/1024) + 'KB'
+                    else:
+                        a[j] = i[j]
                 back['data'].append(a)
     except:
         back['status'] = cnts.database_error
@@ -720,7 +731,7 @@ def monitor_astm_ip():
             result = db.session.execute(dealAstmScript(json_data['ip'], json_data['page'], page_size))
         db.session.commit()
 
-        log.info(cnts.databaseSuccess(addr, path, '`message`'))
+        log.info(cnts.databaseSuccess(addr, path, '`astm_main`'))
         
         if size is None or result is None:
             back['data'] = []
@@ -735,11 +746,22 @@ def monitor_astm_ip():
                 back['astm_size'] = '0MB'
             else:
                 back['astm_size'] = '%.2f'%(size[0]['sum_size']/1024/1024) + 'MB'
+            back['start_time'] = size[0]['start_time']
+            back['end_time'] = size[0]['end_time']
             back['data'] = []
             for i in result:
                 a = {}
                 for j in i.keys():
-                    a[j] = i[j]
+                    if j == 'send_ip_port':
+                        a['src_ip'] = i[j][0:i[j].find(':')]
+                        a['src_port'] = i[j][i[j].find(':') + 1:]
+                    elif j == 'receiver_ip_port':
+                        a['dst_ip'] = i[j][0:i[j].find(':')]
+                        a['dst_port'] = i[j][i[j].find(':') + 1:]
+                    elif j == 'size':
+                        a[j] = '{:.2f}'.format(i[j]/1024) + 'KB'
+                    else:
+                        a[j] = i[j]
                 back['data'].append(a)
     except Exception as e:
         back['status'] = cnts.database_error
@@ -791,11 +813,24 @@ def monitor_dicom_ip():
                 back['dicom_size'] = '0MB'
             else:
                 back['dicom_size'] = '%.2f'%(size[0]['sum_size']/1024/1024) + 'MB'
+            back['start_time'] = size[0]['start_time']
+            back['end_time'] = size[0]['end_time']
             back['data'] = []
             for i in result:
                 a = {}
+                b = {}
+                a['content'] = b
                 for j in i.keys():
-                    a[j] = i[j]
+                    if j == 'send_ip_port':
+                        a['src_ip'] = i[j][0:i[j].find(':')]
+                        a['src_port'] = i[j][i[j].find(':') + 1:]
+                    elif j == 'receiver_ip_port':
+                        a['dst_ip'] = i[j][0:i[j].find(':')]
+                        a['dst_port'] = i[j][i[j].find(':') + 1:]
+                    elif j == 'size':
+                        a[j] = '{:.2f}'.format(i[j]/1024) + 'KB'
+                    else:
+                        b[j] = i[j]
                 back['data'].append(a)
     except Exception as e:
         back['status'] = cnts.database_error

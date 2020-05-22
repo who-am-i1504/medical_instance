@@ -9,6 +9,7 @@ from pydicom import dcmread
 import matplotlib
 matplotlib.use('pdf')
 import matplotlib.pyplot as plt
+from .state import dealIPPort
 
 
 session = DBSession()
@@ -76,8 +77,10 @@ def readDcm(filename):
     study = StudyInfo()
     series = SeriesInfo()
     image = ImageInfo()
-    patient.send_ip_port = '129.20.2.1:3306'
-    patient.receiver_ip_port = '192.2.3.1:3306'
+    src, sport, dst, dport = dealIPPort(os.path.basename(filename))
+    # os.path.get
+    patient.send_ip_port = src + ':' +str(sport)
+    patient.receiver_ip_port = dst + ':' + str(dport)
     patient.size = os.path.getsize(filename)
     for i in ds.dir("pat"):
         if i in map_patient.keys():
