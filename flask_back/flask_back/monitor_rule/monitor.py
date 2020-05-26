@@ -5,6 +5,8 @@ import flask_back.constant as cnts
 from flask_back.dao.sql import MonitorRule, MessageMain, AAssociateRQ, AAssociateAC, AAssociateRJ, AReleaseRQ, \
     AReleaseRP, ABort, PDataTF, ActiveResult, ActiveFindIp
 
+from .active_find import submitParams
+
 # from .company_ip import qcdata
 
 bp = Blueprint('monitor', __name__, url_prefix='/monitor')
@@ -1019,51 +1021,58 @@ def monitor_work():
 @bp.route('active_find', methods=['POST'])
 @jsonschema.validate('monitor', 'active_find')
 def active_find():
-    page_size = cnts.page_size
-    back = copy.deepcopy(cnts.back_message)
     json_data = request.get_json()
-
+    json_data['FuncType'] = 'masscan'
     addr = request.remote_addr
     path = request.path
     log.info(cnts.requestStart(addr, path, json_data))
     
-    try:
-        sql_size = 'select count(1) from `active_result` where (`src_ip` = "%s" and `src_port` = %d) or (`dst_ip` = "%s" and `dst_port` = %d);' % (json_data['ip'], json_data['port'], json_data['ip'], json_data['port'])
-        size = db.session.execute(sql_size).fetchall()
-        sql = 'select * from `active_result` where (`src_ip` = "%s" and `src_port` = %d) or (`dst_ip` = "%s" and `dst_port` = %d) limit %d,%d;' % (json_data['ip'], json_data['port'], json_data['ip'], json_data['port'], (json_data['page'] - 1)*page_size, page_size)
-        result = db.session.execute(sql).fetchall()
-        db.session.commit()
-        # print(size)
+    # try:
+    #     sql_size = 'select count(1) from `active_result` where (`src_ip` = "%s" and `src_port` = %d) or (`dst_ip` = "%s" and `dst_port` = %d);' % (json_data['ip'], json_data['port'], json_data['ip'], json_data['port'])
+    #     size = db.session.execute(sql_size).fetchall()
+    #     sql = 'select * from `active_result` where (`src_ip` = "%s" and `src_port` = %d) or (`dst_ip` = "%s" and `dst_port` = %d) limit %d,%d;' % (json_data['ip'], json_data['port'], json_data['ip'], json_data['port'], (json_data['page'] - 1)*page_size, page_size)
+    #     result = db.session.execute(sql).fetchall()
+    #     db.session.commit()
+    #     # print(size)
         
-        log.info(cnts.databaseSuccess(addr, path, '`monitor_result`'))
+    #     log.info(cnts.databaseSuccess(addr, path, '`monitor_result`'))
 
-        if size[0][0] == None:
-            back['size'] = 0
-        else:
-            back['size'] = int(size[0][0])
-        back['data'] = []
-        for i in result:
-            a = {}
-            a['id'] = i.id
-            a['src_ip'] = i.src_ip
-            a['src_port'] = i.src_port
-            a['dst_ip'] = i.dst_ip
-            a['dst_port'] = i.dst_port
-            a['time'] = i.time
-            back['data'].append(a)
-    except:
-        back['status'] = cnts.database_error
-        back['message'] = cnts.database_error_message
+    #     if size[0][0] == None:
+    #         back['size'] = 0
+    #     else:
+    #         back['size'] = int(size[0][0])
+    #     back['data'] = []
+    #     for i in result:
+    #         a = {}
+    #         a['id'] = i.id
+    #         a['src_ip'] = i.src_ip
+    #         a['src_port'] = i.src_port
+    #         a['dst_ip'] = i.dst_ip
+    #         a['dst_port'] = i.dst_port
+    #         a['time'] = i.time
+    #         back['data'].append(a)
+    # except:
+    #     back['status'] = cnts.database_error
+    #     back['message'] = cnts.database_error_message
 
-        log.error(cnts.errorLog(addr, path, 'database'))
+    #     log.error(cnts.errorLog(addr, path, 'database'))
 
-        return jsonify(back)
-    back['page'] = json_data['page']
+    #     return jsonify(back)
+    # back['page'] = json_data['page']
 
-    log.info(cnts.successLog(addr, path))
+    # log.info(cnts.successLog(addr, path))
     
-    return jsonify(back)
+    return jsonify(submitParams(json_data))
 
+@bp.route('active_find_detail', methods=['POST'])
+@jsonschema.validate('monitor', 'active_find')
+def active_find_detail():
+    json_data = request.get_json()
+    json_data['FuncType'] = 'nmap'
+    addr = request.remote_addr
+    path = request.path
+    log.info(cnts.requestStart(addr, path, json_data))
+    return jsonify(submitParams(json_data))
 
 @bp.errorhandler(ValidationError)
 def on_validation_error(e):
