@@ -62,7 +62,9 @@ class State:
                 self.getHeader()
             elif self.peek.getToken() == b'\x0d' or self.peek.getType() == TokenType['end']:
                 self.getRecord()
-            elif self.peek.getType() == TokenType['delitimter'] or self.peek.getType() == TokenType['string']:
+            elif self.peek.getType() == TokenType['delitimter'] \
+                or self.peek.getType() == TokenType['string'] \
+                or self.peek.getType() == TokenType['escape']:
                 self.getComponent()
                 pass
             elif self.peek.getType() == TokenType['word']:
@@ -133,7 +135,7 @@ class Lexer:
     def getToken(self):
         if self.state == 0:
             return self.get_alpha()
-        elif self.state == 1:
+        elif self.state == 1 or self.state == 2:
             return self.get_field()
 
     def get_alpha(self):
@@ -157,6 +159,9 @@ class Lexer:
     # 设置状态
     def set_state(self, state):
         self.state = state
+    
+    def get_state(self):
+        return self.state
 
     # 设置字段分隔符
     def set_field(self, separator):

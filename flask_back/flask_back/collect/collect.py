@@ -1,13 +1,15 @@
+import threading
+from .pcapParse.Control import MainCollect
 from flask import (request, jsonify, Blueprint)
+# import db, jsonschema, ValidationError, log, CollectResult
 from flask_back import db, jsonschema, ValidationError, log
 from flask_back.dao.sql import CollectResult
 import flask_back.constant as cnts
 import copy
 import datetime
-from .pcapParse.Control import CollectThread
 # from .company_ip import qcdata
 
-MainCollect = CollectThread()
+# MainCollect = CollectThread()
 
 bp = Blueprint('collect', __name__, url_prefix='/collect')
 
@@ -173,9 +175,10 @@ def getPosition():
     # back['data] = result.pop(0)
     back['data'] = {
         'ip': json_data['ip'],
-        'address': '山东省威海市',
-        'equipment': "404医院",
-        'institution':"HIT"
+        'country':'中国',
+        'prov':'山东省',
+        'city': '威海市',
+        'company':"xxx企业"
     }
     log.info(cnts.successLog(addr, path))
     return jsonify(back)
@@ -195,9 +198,10 @@ def getPositionByList():
     for i in json_data['ip_list']:
         back['data'].append({
             'ip': i,
-            'address': '山东省威海市',
-            'equipment': "404医院",
-            'institution':"HIT"
+            'country':'中国',
+            'prov':'山东省',
+            'city': '威海市',
+            'company':"xxx企业"
         })
     log.info(cnts.successLog(addr, path))
     return jsonify(back)

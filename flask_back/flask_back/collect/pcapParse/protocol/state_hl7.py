@@ -32,6 +32,23 @@ class LexerHL7(Lexer):
     def get_field(self):
         str_list = []
         if self.peek in self.separator:
+            if self.peek == self.separator[Escape]:
+                str_list.append(self.peek)
+                i = 0
+                while self.peek != self.separator[Escape]:
+                    str_list.append(self.peek)
+                    self.read_alpha()
+                    if i > 10:
+                        return Token(b''.join(str_list), TokenType['syntx'])
+                    i += 1
+                    pass
+                if self.peek == self.separator[Escape]:
+                    str_list.append(self.peek)
+                    self.read_alpha()
+                    if i <= 2:
+                        return Token(b''.join(str_list), TokenType['string'])
+                    return Token(b''.join(str_list), TokenType['escape'])
+                return Token(b''.join(str_list), TokenType['syntx'])
             str_list = self.peek
             self.read_alpha()
             return Token(str_list, TokenType['delitimter'])
@@ -42,14 +59,22 @@ class LexerHL7(Lexer):
             self.read_alpha()
             return Token(str_list, TokenType['end'])
         else:
-            while not (self.peek in self.separator) and self.peek[0] != 0:
-                if (self.peek[0] > 0 and self.peek[0] < 29) or (self.peek[0] > 30 and self.peek[0] < 32) or self.peek[0] >= 129:
-                    return Token(b''.join(str_list), TokenType['syntx'])
-                str_list.append(self.peek)
-                self.read_alpha()
-            if (len(str_list) == 0 and (self.peek[0] == 0 )):
-                return Token(self.peek, TokenType['string'])
-            return Token(b''.join(str_list), TokenType['string'])
+            if self.state == 1:
+                while not (self.peek in self.separator) and self.peek[0] != 0:
+                    if (self.peek[0] > 0 and self.peek[0] < 29) or (self.peek[0] > 30 and self.peek[0] < 32) or self.peek[0] >= 129:
+                        return Token(b''.join(str_list), TokenType['syntx'])
+                    str_list.append(self.peek)
+                    self.read_alpha()
+                if (len(str_list) == 0 and (self.peek[0] == 0 )):
+                    return Token(self.peek, TokenType['string'])
+                return Token(b''.join(str_list), TokenType['string'])
+            elif self.state == 2:
+                while not (self.peek in self.separator) and self.peek[0] != 0:
+                    str_list.append(self.peek)
+                    self.read_alpha()
+                if (len(str_list) == 0 and (self.peek[0] == 0 )):
+                    return Token(self.peek, TokenType['string'])
+                return Token(b''.join(str_list), TokenType['string'])
         pass
 
 class StateHL7(State):
@@ -118,6 +143,11 @@ class StateHL7(State):
                         self.result['main'].seqnumber = self.getField()
                         if self.result['main'].seqnumber == '':
                             self.result['main'].seqnumber = None
+                    elif self.field_num == 18:
+                        if self.getField() == 'ASCII' or self.getField() == '':
+                            self.lexer.set_state(1)
+                        else:
+                            self.lexer.set(2)
                     else:
                         self.seg_content.append(self.peek.getToken())
                         self.get_next()
@@ -130,7 +160,7 @@ class StateHL7(State):
                 self.seg_content.append(self.peek.getToken())
                 self.get_next()
             pass
-        else:
+        elif self.peek.getType() == TokenType['string']:
             if self.field_num == 1:
                 if self.peek.getToken() == b'DSC':
                     self.result['main'].dsc_status = True
@@ -148,6 +178,15 @@ class StateHL7(State):
                 self.segment.add_status = False
             self.seg_content.append(self.peek.getToken())
             self.get_next()
+        elif self.peek.getType() == TokenType['string']:
+            if self.lexer.get_state() == 1:
+                self.lexer.set_state(2)
+            elif self.lexer.get_state() == 2:
+                self.lexer.set_state(1)
+            self.seg_content.append(self.peek.getToken())
+            self.get_next()
+
+            pass
 
     def getRecord(self):
         if not self.segment is None:
@@ -272,5 +311,5 @@ def testServalFiles():
 
 if __name__ == '__main__':
     testTotalFile()
-    testPartFile()
-    testServalFiles()
+    # testPartFile()
+    # testServalFiles()

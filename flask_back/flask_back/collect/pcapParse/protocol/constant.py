@@ -29,5 +29,6 @@ TokenType = {
     'other': 4,
     'start': 5,
     'end' : 6,
-    'syntx': 7
+    'syntx': 7,
+    'escape':8,
 }

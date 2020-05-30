@@ -11,6 +11,7 @@ import io
 import os
 from . import dpktConstruct
 from . import dpktHttpConstruct
+from . import PduConstruct
 import logging
 LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
 DATE_FORMAT = "%m/%d/%Y %H:%M:%S %p"
@@ -116,7 +117,7 @@ class CollectThread:
         self.state= _NoRUN_
         self.Thread = threading.Thread(target=self._runSample)
         self.Thread.start()
-        logging.info('Main Thred Starting, And Watched Thread Starting.')
+        logging.info('Main Thred Starting, And Watched Thread Starting.  ' + threading.current_thread().getName())
 
     def _dealEnv(self):
         Env = Popen('env', universal_newlines=True, stdout=PIPE)
@@ -129,13 +130,13 @@ class CollectThread:
                 self.parent_env[x[0:x.find('=')]]=x[x.find('=') + 1:]
         self.parent_env['RTE_SDK'] = RTE_SDK
         self.parent_env['RTE_TARGET'] = RTE_TARGET
-        logging.info('The inital Env is ' + str(self.parent_env))
+        logging.info('The inital Env is ' + str(self.parent_env) + '  ' + threading.current_thread().getName())
 
     def put(self, item):
         if self.getState() == _Running_:
-            logging.info('add the collect task is Failed.')
+            logging.info('add the collect task is Failed.   ' + threading.current_thread().getName())
             return False
-        logging.info('add The Collect task is Success.')
+        logging.info('add The Collect task is Success.  ' + threading.current_thread().getName())
         self.queue.put(item)
         return True
 
@@ -143,7 +144,7 @@ class CollectThread:
         currentPath = tim.time()
         currentPath = str(int(currentPath))
         if not os.path.exists(os.path.join(capture_path, currentPath)):
-            logging.info('make a new diectory for pcap files.')
+            logging.info('make a new diectory for pcap files. ' + threading.current_thread().getName())
             os.mkdir(path=os.path.join(capture_path, currentPath))
         cmd = 'sudo '+ os.path.join(pdump_path, 'dpdk-pdump') + ' -- ' + ' --pdump '
         params = "'device_id="
@@ -178,7 +179,7 @@ class CollectThread:
                 params += os.path.join(capture_path, currentPath, 'ftp.pcap')
                 params += "'"
         cmd += params
-        logging.info('create script for collect task.')
+        logging.info('create script for collect task.   ' + threading.current_thread().getName())
         logging.info(cmd)
         return cmd, currentPath
     
@@ -219,9 +220,9 @@ class CollectThread:
                 if self.state == _NoRUN_:
                     # 没有正在运行的数据包捕获程序
                     if self.queue.empty() and len(self.ThreadPool) == 0:
-                        logging.info('no running collect task.')
+                        logging.info('no running collect task.   ' + threading.current_thread().getName())
                     else:
-                        logging.info('have a running collect task.')
+                        logging.info('have a running collect task.  ' + threading.current_thread().getName())
                         item = self.queue.get()
                         script, currentPath = self._startJob(item['protocol'], item['time'], item['path'])
                         item['currentPath'] = currentPath
@@ -248,7 +249,7 @@ class CollectThread:
                         if not code is None:
                             for j in i.communicate():
                                 logging.info(j)
-                            logging.info('Have a collect Task is run success,start State move to Finished.')
+                            logging.info('Have a collect Task is run success,start State move to Finished.   ' + threading.current_thread().getName())
                             self.ThreadPool.remove(i)
                             self.state = _Finished_
                             currentMessage = self.pcapPath.pop(0)
@@ -264,7 +265,7 @@ class CollectThread:
                                     if 'hl7' in filepath:
                                         threadOperator = threading.Thread(name='hl7-ReConstruct'+'-' + currentPath, target=dpktConstruct.construct, args=[currentPath, filepath, 'hl7'])
                                     elif 'dicom' in filepath:
-                                        continue
+                                        threadOperator = threading.Thread(name='dicom-ReConstruct' + '-' + currentPath, target=PduConstruct.construct, args=[currentPath, filepath, 'dicom'])
                                         pass
                                         # threadOperator = threading.Thread(name='dicom-ReConstruct'+'-' + currentPath,target=PduParse, args=[os.path.join(currentPath, filepath)])
                                     elif 'astm' in filepath:
@@ -277,7 +278,7 @@ class CollectThread:
                                         # continue
                                     self.pcapThreadPool.append(threadOperator)
                                     threadOperator.start()
-                                    logging.info(filepath + ' pcap file reconstruct thread is starting.')
+                                    logging.info(filepath + ' pcap file reconstruct thread is starting.  ' + threading.current_thread().getName())
                             self.queue.task_done()
                             if not currentMessage['id'] is None:
                                 # session.execute('update `collect_result` set `end_time`=%s, 
@@ -318,9 +319,9 @@ class CollectThread:
             tim.sleep(1)
         pass
 
-
-if __name__ == '__main__':
-    c = CollectThread()
-    while not c.put({'protocol':'DICOM', 'time':1, 'path':os.path.join(os.getcwd(), 'pcap')}):
-        continue
+MainCollect = CollectThread()
+# if __name__ == '__main__':
+#     c = CollectThread()
+#     while not c.put({'protocol':'DICOM', 'time':1, 'path':os.path.join(os.getcwd(), 'pcap')}):
+#         continue
     # print(os.path.isfile('/home/yjn/Code/medical_instance/test6.pcap'))
