@@ -154,7 +154,7 @@ class PDUStream:
             return False
         pdu = reader[6:]
         while len(pdu) < PDULength:
-            pdu = b''.join([pdu, l.pop(0)])
+            pdu = b''.join([pdu, self.dic[content].pop(0)])
         if len(pdu) > PDULength:
             self.dic[DCMTAG] = False
             self.dic[content] = []
@@ -194,7 +194,13 @@ class PDUStream:
         PDULength = byte2number(reader[2:6])
         pdv = b''.join([reader[6:]])
         while len(pdv) < PDULength:
-            pdv = b''.join([pdv, self.dic[content].pop(0)])
+            mid_data = self.dic[content].pop(0)
+            last_dis = PDULength - len(pdv)
+            if last_dis < len(mid_data):
+                pdv = b''.join([pdv, mid_data[0:last_dis]])
+                self.dic[content].insert(0, b''.join([mid_data[last_dis:]]))
+            else:
+                pdv = b''.join([pdv, mid_data])
         if len(pdv) > PDULength or PDULength < 20:
             self.dic[DCMTAG] = False
             self.dic[content] = []
@@ -239,12 +245,14 @@ class PDUStream:
                 self.FLength_02_00 += len(d)
                 self.result.append(d)
                 if pdv[5] == 2:
-                    o = self.target[self.dic[keyReverse]]
+                    o = None
+                    if self.dic[keyReverse] in self.target.keys():
+                        o = self.target[self.dic[keyReverse]]
                     self.setParams(o)
                     self.dic[Transfer] == END
                     self.writeFile()
         except Exception as e:
-            print(e)
+            # print(e)
             self.dic[DCMTAG] = False
             self.dic[content] = []
             return False
@@ -283,7 +291,7 @@ class PDUStream:
                 PDULength = byte2number(reader[2:6])
                 pdv = reader[6:]
                 while len(pdv) < PDULength:
-                    pdv = b''.join(pdv, l.pop(0))
+                    pdv = b''.join([pdv, self.dic[content].pop(0)])
                 return PDU567
             else:
                 return False     
@@ -381,8 +389,12 @@ class PDUStream:
 
     def setParams(self, o):
         # o.generate()
-        self.trans_02_10 = o.trans_02_10
-        self.imp_02_12 = o.imp_02_12
+        if o is None or (o.trans_02_10 is None and o.imp_02_12 is None):
+            self.trans_02_10 = b'1.2.840.10008.1.2.1'
+            self.imp_02_12 = b'1.2.276.0.7230010.3.0.3.5.4'
+        else:
+            self.trans_02_10 = o.trans_02_10
+            self.imp_02_12 = o.imp_02_12
 
     def insert(self, value):
         if len(value) > 0:
@@ -464,8 +476,8 @@ def construct(absPath, target, typer):
         pkt = pkt.data
         i += 1
         # print(i, pkt.sport, pkt.dport)
-        if i <= 81:
-            continue
+        # if i <= 81:
+        #     continue
         # 对pkt进行相应的处理
         # now = time.time()
         # if now - start >= TimeThreshold:
@@ -564,7 +576,8 @@ def construct(absPath, target, typer):
 
 # if __name__ == '__main__':
     # construct('E:\\29161\\Destop\\medical_instance\\pcap', 'test.pcap', 'http')
-    # construct('pcap', 'allDICOM.pcap', 'DICOM')
+    # construct('pcap', 'dicomData.pcap', 'DICOM')
+    # construct('pcap/1590832701', 'dicom.pcap', '../DICOM1')
     # construct('pcap/1589974224/', 'ftp.pcap', 'DICOM|ftp')
     # construct('E:\\29161\\Destop\\medical_instance\\pcap', 'http_download.pcap', 'http')
     # construct('E:\\29161\\Destop\\medical_instance\\pcap', 'http_download.pcap', 'http')

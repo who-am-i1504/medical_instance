@@ -56,15 +56,30 @@ map_type = {
 absPath = os.path.join(os.getcwd(),'upload')
 
 def writeImage(id, image):
-    # print(image.shape)
     path = str(id) + '.jpg'
-    plt.imshow(image)
-    plt.savefig(os.path.join(absPath, path))
-    # plt.show()
-    # scipy.misc.imsave(os.path.join(absPath, path), image)
+    if len(image.shape) > 3:
+        pic_num = image.shape[0]
+        height = int(pic_num ** 0.5)
+        width = int(pic_num / height)
+        if height * width < pic_num:
+            width += 1
+        f= plt.figure(figsize=(width*6.4, (4.8/6.4)*(width*6.4)),clear = True, dpi=300)
+        
+        plt.xticks([]),plt.yticks([])
+        for i in range(image.shape[0]):
+            f.add_subplot(width, height, i + 1)
+            plt.xticks([]), plt.yticks([])
+            plt.imshow(image[i], cmap = plt.cm.bone)
+        plt.subplots_adjust(wspace=0, hspace =0)
+        plt.savefig(os.path.join(absPath, path), bbox_inches='tight',dpi=300)
+    else:
+        f = plt.figure(clear = True)
+        plt.xticks([]),plt.yticks([])
+        plt.imshow(image, cmap=plt.cm.bone)
+        plt.savefig(os.path.join(absPath, path), bbox_inches='tight', dpi = 300)
     return path
 
-def readDcm(filename):
+def readDcm(filename, path):
     # Dcm 文件读取
     # ds = None
     # try:
