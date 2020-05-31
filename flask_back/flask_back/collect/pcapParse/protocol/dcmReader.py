@@ -11,9 +11,6 @@ matplotlib.use('pdf')
 import matplotlib.pyplot as plt
 from .state import dealIPPort
 
-
-session = DBSession()
-
 map_patient = {
     'PatientName':'patient_name',
     'PatientSex':'patient_sex',
@@ -79,10 +76,12 @@ def writeImage(id, image):
         plt.savefig(os.path.join(absPath, path), bbox_inches='tight', dpi = 300)
     return path
 
-def readDcm(filename, path):
+def readDcm(filename):
     # Dcm 文件读取
     # ds = None
     # try:
+    
+    session = DBSession()
     ds = pydicom.dcmread(filename)  # plan dataset
     # except InvalidDicomError:
         
