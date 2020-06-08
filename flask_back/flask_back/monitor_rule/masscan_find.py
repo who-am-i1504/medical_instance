@@ -26,7 +26,8 @@ def masscan_find(hosts, ports=ports_list,
     arguments='--max-rate ' + str(config['MaxLen']) + ' --excludefile ' 
     + os.path.join(os.getcwd(), config['ExcludeScanPath'])):
     scanner = None
-    ports = ports_list
+    if ports is None:
+        ports = ports_list
     try:
         scanner = PortScanner()
         if ports is None:
