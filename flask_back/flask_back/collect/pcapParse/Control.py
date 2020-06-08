@@ -220,7 +220,8 @@ class CollectThread:
                 if self.state == _NoRUN_:
                     # 没有正在运行的数据包捕获程序
                     if self.queue.empty() and len(self.ThreadPool) == 0:
-                        logging.info('no running collect task.   ' + threading.current_thread().getName())
+                        # logging.info('no running collect task.   ' + threading.current_thread().getName())
+                        pass
                     else:
                         logging.info('have a running collect task.  ' + threading.current_thread().getName())
                         item = self.queue.get()

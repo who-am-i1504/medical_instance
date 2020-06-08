@@ -102,7 +102,7 @@
                 "minimum":0
             }
         },
-        "required":["ip", "page"]
+        "required":["page"]
     },
     "dicom_result":{
         "type":"object",

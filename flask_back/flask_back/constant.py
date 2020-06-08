@@ -69,6 +69,20 @@ HL7Message = ['id', 'send_ip_port', 'receiver_ip_port', 'complete_status', 'seqn
 ASTMMain = ['id', 'delimiter', 'message_id', 'password', 'sender', 'sender_address',
     'type', 'sender_phone', 'sender_character', 'send_ip_port', 'receiver_ip_port', 
     'receiver', 'receiver_id', ]
+
+special_character = {
+    '\\r':'\r',
+    '\\n': '\n',
+    '\\b':'\b',
+    '\\a':'\a',
+    "\\'":"\'",
+    '\\"':'\"',
+    '\\\\':'\\',
+    '\\f':'\f',
+    '\\v':'\v',
+    '\\t':'\t'
+}
+
 # import os
 # import time
 # log_file_name = 'logger-' + time.strftime('%Y-%m-%d', time.localtime(time.time())) + '.log'

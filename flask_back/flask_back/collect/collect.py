@@ -46,8 +46,12 @@ def start():
 
         back['data'] = {}
         back['data']['id'] = collect.id
+        if collect.port is None:
+            back['data']['port'] = '默认'
+        else:
+            back['data']['port'] = collect.port
         back['data']['protocol'] = collect.protocol
-        back['data']['time'] = collect.time
+        back['data']['time'] = str(collect.time) + '分钟'
         back['data']['submit'] = collect.submit.strftime('%Y-%m-%d %H:%M:%S')
     except:
         
@@ -82,7 +86,7 @@ def getByPage():
 
         back['size'] = result.fetchall()[0][0]
         result = db.session.execute(
-            'select `id`, `protocol`, `port`, `time`, `submit` from `collect_result` limit %d,%d;' % ((json_data['page'] - 1)*page_size, page_size))
+            'select * from `collect_result` limit %d,%d;' % ((json_data['page'] - 1)*page_size, page_size))
         db.session.commit()
 
         log.info(cnts.databaseSuccess(addr, path, '`collect_result`'))
@@ -93,9 +97,25 @@ def getByPage():
             a = {}
             a['id'] = i.id
             a['protocol'] = i.protocol
-            a['port'] = i.port
-            a['time'] = i.time
+            # print(i)
+            if i.port is None:
+                a['port'] = '默认'
+            else:
+                a['port'] = i.port
+            a['time'] = str(i.time) + '分钟'
             a['submit'] = i.submit.strftime('%Y-%m-%d %H:%M:%S')
+            if i.start_time is None:
+                a['start_time'] = '任务执行失败！'
+            else:
+                a['start_time'] = i.start_time.strftime('%Y-%m-%d %H:%M:%S')
+            if i.end_time is None:
+                a['end_time'] = '未完'
+            else:
+                a['end_time'] = i.end_time.strftime('%Y-%m-%d %H:%M:%S')
+            if i.size is None:
+                a['size'] = "0MB"
+            else:
+                a['size'] = '%.2f'%(i.size / 1024 / 1024) + 'MB'
             back['data'].append(a)
         # print('here')
     except:
@@ -133,11 +153,14 @@ def getOne():
             a = {}
             a['id'] = i.id
             a['protocol'] = i.protocol
-            a['port'] = i.port
-            a['time'] = i.time
+            if i.port is None:
+                a['port'] = '默认'
+            else:
+                a['port'] = i.port
+            a['time'] = str(i.time) + '分钟'
             a['submit'] = i.submit.strftime('%Y-%m-%d %H:%M:%S')
             if i.start_time is None:
-                a['start_time'] = 'null'
+                a['start_time'] = '任务执行失败！'
             else:
                 a['start_time'] = i.start_time.strftime('%Y-%m-%d %H:%M:%S')
             if i.end_time is None:

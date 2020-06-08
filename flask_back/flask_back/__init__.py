@@ -26,7 +26,7 @@ handler = logging.FileHandler('current.log', encoding='UTF-8')
 handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(filename)s - %(funcName)s - %(lineno)s - %(message)s'))
 app.logger.addHandler(handler)
 log = app.logger
-from .rule import hl7_rule, dicom_rule, http_rule, astm_rule
+from .rule import hl7_rule, dicom_rule, astm_rule
 from .collect import collect
 from .monitor_rule import monitor
 from .picture import download
