@@ -579,6 +579,7 @@ pdump_rxtx(struct rte_mbuf *rxtx_bufs[], const uint16_t nb_in_deq, struct pdump_
 				}
 				if(p->dir & ENABLE_FTP)
 				{
+					//printf("Here \n");
 					if (ProcessAllFtp(ftp_root, rxtx_bufs[i]) > 0)
 					{
 						struct rte_mbuf *s;
@@ -601,7 +602,9 @@ pdump_rxtx(struct rte_mbuf *rxtx_bufs[], const uint16_t nb_in_deq, struct pdump_
 					else if (process_ftp(ftp_rule, ftp_size, rxtx_bufs[i]) > 0)
 					{
 						//printf("Here .\n");
-						AddInListFtp(ftp_root, rxtx_bufs[i]);
+						if (AddInListFtp(ftp_root, rxtx_bufs[i])==1)
+						//printf("success!\n");
+                                                    ;
 						continue;
 					}
 				}

@@ -252,11 +252,19 @@ int AddInListFtp(struct JudgeFirst * root, struct rte_mbuf * target)
 	memcpy(pasv2.character, "PORT", sizeof(char) * 4);
 	if (current_length > 59)
 	{
-		memcpy(ch_trans_int.p, p + 54,sizeof(char) * 4);
+                //printf("enter judge\n");
+                char* data = rte_pktmbuf_mtod(target, char *); 
+		memcpy(ch_trans_int.p, data + 54,sizeof(char) * 4);
 		if (pasv1.number == ch_trans_int.number)
+                {
+                     //printf("pasv\n");
 			return Ftp_227(root, target);
+                }
 		if (pasv2.number == ch_trans_int.number)
+                {
+                     //printf("port\n");
 			return Ftp_PORT(root, target);
+                }
 		
 		/*for(int i = 0; i < size; i++)
 		{
@@ -264,6 +272,7 @@ int AddInListFtp(struct JudgeFirst * root, struct rte_mbuf * target)
 				return 1;
 		}*/
 	}
+    return 0;
 	
 }
 
@@ -332,7 +341,7 @@ int ProcessAll(struct JudgeFirst *root, struct rte_mbuf *target)
 
 int ProcessAllFtp(struct JudgeFirst *root, struct rte_mbuf *target)
 {
-	struct JudgeFirst *q;
+    struct JudgeFirst *q;
     struct rte_mbuf * mbuf = target;
     int current_length;
     current_length = rte_pktmbuf_data_len(target);
@@ -343,7 +352,7 @@ int ProcessAllFtp(struct JudgeFirst *root, struct rte_mbuf *target)
     if (current_length < 40)
         return 0;
     uint16_t * flags = p + 46;
-	uint32_t * src_ip = p + 26;
+    uint32_t * src_ip = p + 26;
     uint32_t * dst_ip = p + 30;
     uint32_t * src_port = p + 34;
     uint32_t * dst_port = p + 36;

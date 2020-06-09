@@ -651,7 +651,7 @@ def getHL7Size(ip, port = None):
             FROM `message` as main\
             WHERE main.`send_ip_port` LIKE '{0}:%' or main.`receiver_ip_port` LIKE '{0}:%';".format(ip)
     else:
-        return "SELECT COUNT(1) as `sum_num`, SUM(main.size) as `sum_size`\
+        return "SELECT COUNT(1) as `sum_num`, SUM(main.`size`) as `sum_size`, MIN(main.`time`) as `start_time`, MAX(main.`time`) as `end_time`\
             FROM `message` as main\
             WHERE main.`send_ip_port` = '{0}:{1}' or main.`receiver_ip_port` = '{0}:{1}';".format(ip, port)
 
@@ -691,7 +691,7 @@ def getAstmSize(ip, port = None):
             FROM `astm_main` as main\
             WHERE main.`send_ip_port` LIKE '{0}:%' or main.`receiver_ip_port` LIKE '{0}:%';".format(ip)
     else:
-        return "SELECT COUNT(1) as `sum_num`, SUM(main.size) as `sum_size`\
+        return "SELECT COUNT(1) as `sum_num`, SUM(main.`size`) as `sum_size`, MIN(main.`time`) as `start_time`, MAX(main.`time`) as `end_time`\
             FROM `astm_main` as main\
             WHERE main.`send_ip_port` = '{0}:{1}' or main.`receiver_ip_port` = '{0}:{1}';".format(ip, port)
 
@@ -733,7 +733,7 @@ def getDICOMSize(ip, port = None):
             FROM `patient_info` as main\
             WHERE main.`send_ip_port` LIKE '{0}:%' or main.`receiver_ip_port` LIKE '{0}:%';".format(ip)
     else:
-        return "SELECT COUNT(1) as `sum_num`, SUM(main.size) as `sum_size`\
+        return "SELECT COUNT(1) as `sum_num`, SUM(main.`size`) as `sum_size`, MIN(main.`time`) as `start_time`, MAX(main.`time`) as `end_time`\
             FROM `astm_main` as main\
             WHERE main.`send_ip_port` = '{0}:{1}' or main.`receiver_ip_port` = '{0}:{1}';".format(ip, port)
 

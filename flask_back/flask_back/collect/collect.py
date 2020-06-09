@@ -201,7 +201,7 @@ def getPosition():
         'country':'中国',
         'prov':'山东省',
         'city': '威海市',
-        'company':"xxx企业"
+        'company':"哈尔滨工业大学"
     }
     log.info(cnts.successLog(addr, path))
     return jsonify(back)
@@ -224,7 +224,7 @@ def getPositionByList():
             'country':'中国',
             'prov':'山东省',
             'city': '威海市',
-            'company':"xxx企业"
+            'company':"哈尔滨工业大学"
         })
     log.info(cnts.successLog(addr, path))
     return jsonify(back)
