@@ -9,6 +9,7 @@
 *__pycache__/
 *.jpg
 *.log
+*.pcap
 /upload/
 
 /d2-admin-start-kit/.DS_Store
