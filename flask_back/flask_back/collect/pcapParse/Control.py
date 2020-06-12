@@ -13,6 +13,7 @@ from . import dpktConstruct
 from . import dpktHttpConstruct
 from . import PduConstruct
 import logging
+from . import syncPic
 LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
 DATE_FORMAT = "%m/%d/%Y %H:%M:%S %p"
 logging.basicConfig(filename='Control.log', level=logging.DEBUG, format=LOG_FORMAT,datefmt=DATE_FORMAT)
@@ -116,6 +117,7 @@ class CollectThread:
         self.queue = Queue(maxsize=threadnum)
         self.state= _NoRUN_
         self.Thread = threading.Thread(target=self._runSample)
+        self.Thread.setDaemon(True)
         self.Thread.start()
         logging.info('Main Thred Starting, And Watched Thread Starting.  ' + threading.current_thread().getName())
 
@@ -154,10 +156,18 @@ class CollectThread:
         if 'HL7' in protocol:
             params += 'hl7-dev='
             params += os.path.join(capture_path, currentPath, 'hl7.pcap')
-            params += "'"
+            params += ","
         if 'DICOM' in protocol:
             params += 'dicom-dev='
             params += os.path.join(capture_path, currentPath, 'dicom.pcap')
+            params += ','
+        if protocol == 'ASTM':
+            params += 'astm-dev='
+            params += os.path.join(capture_path, currentPath, 'astm.pcap')
+            params += ','
+        if 'http-dev' in params:
+            params += "'"
+        else:
             params += ','
             params += 'http-dev='
             params += os.path.join(capture_path, currentPath, 'http.pcap')
@@ -165,19 +175,6 @@ class CollectThread:
             params += 'ftp-dev='
             params += os.path.join(capture_path, currentPath, 'ftp.pcap')
             params += "'"
-        if protocol == 'ASTM':
-            params += 'astm-dev='
-            params += os.path.join(capture_path, currentPath, 'astm.pcap')
-            if 'http-dev' in params:
-                params += "'"
-            else:
-                params += ','
-                params += 'http-dev='
-                params += os.path.join(capture_path, currentPath, 'http.pcap')
-                params += ','
-                params += 'ftp-dev='
-                params += os.path.join(capture_path, currentPath, 'ftp.pcap')
-                params += "'"
         cmd += params
         logging.info('create script for collect task.   ' + threading.current_thread().getName())
         logging.info(cmd)
