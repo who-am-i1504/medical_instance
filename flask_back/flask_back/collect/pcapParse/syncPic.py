@@ -38,13 +38,15 @@ class SyncPicHadoop:
     def _syc_file(self):
         while True:
             fs = pyhdfs.HdfsClient(hosts=self.hadoop + ':' + str(self.port),user_name=self.username)
-            if fs is not None:
-                if fs.exists(self.hadoop_path):
-                    for i in os.listdir(self.pic_path):
-                        if fs.exists(os.path.join(self.hadoop_path, i)):
-                            continue
-                        else:
-                            fs.copy_from_local(os.path.join(self.pic_path, i), os.path.join(self.hadoop_path, i))
+            if fs is None:
+                break
+            if not fs.exists(self.hadoop_path):
+                break
+            for i in os.listdir(self.pic_path):
+                if fs.exists(os.path.join(self.hadoop_path, i)):
+                    continue
+                else:
+                    fs.copy_from_local(os.path.join(self.pic_path, i), os.path.join(self.hadoop_path, i))
             time.sleep(3600)
             # dirs = fs.exists(os.jo)
             # print(dirs)
