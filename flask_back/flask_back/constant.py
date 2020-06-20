@@ -80,7 +80,8 @@ special_character = {
     '\\\\':'\\',
     '\\f':'\f',
     '\\v':'\v',
-    '\\t':'\t'
+    '\\t':'\t',
+    '\\x1c':'\x1c'
 }
 
 # import os
