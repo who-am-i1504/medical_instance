@@ -53,7 +53,10 @@ def monitor_hl7_page():
                     elif key == 'size':
                         a[key] = '{:.2f}'.format(i[key]/1024) + 'KB'
                     else:
-                        a[key] = i[key]
+                        if i[key] is None or i[key] == '':
+                            a[key] = '无'
+                        else:
+                            a[key] = i[key]
                     # a[key] = i[key]
                 back['data'].append(a)
     except Exception as e:
@@ -107,7 +110,10 @@ def monitor_hl7_id():
                 elif j == 'size':
                     back['data'][j] = '{:.2f}'.format(data[j]/1024) + 'KB'
                 else:
-                    back['data'][j] = data[j]
+                    if data[j] is None or data[j] == '':
+                        back['data'][j] = '无'
+                    else:
+                        back['data'][j] = data[j]
                 # back['data'][j] = data[j]
     except:
         back['message'] = cnts.database_error_message
@@ -166,7 +172,10 @@ def monitor_astm_page():
                     elif key == 'size':
                         a[key] = '{:.2f}'.format(i[key]/1024) + 'KB'
                     else:
-                        a[key] = i[key]
+                        if i[key] is None or i[key] == '':
+                            a[key] = '无'
+                        else:
+                            a[key] = i[key]
                     # a[key] = i[key]
                 back['data'].append(a)
     except:
@@ -220,7 +229,10 @@ def monitor_astm_id():
                 elif j == 'size':
                     back['data'][j] = '{:.2f}'.format(data[j]/1024) + 'KB'
                 else:
-                    back['data'][j] = data[j]
+                    if data[j] is None or data[j] == '':
+                        back['data'][j] = '无'
+                    else:
+                        back['data'][j] = data[j]
                 # back['data'][j] = data[j]
     except:
         back['message'] = cnts.database_error_message
@@ -305,17 +317,29 @@ def monitor_dicom_page():
                 elif i == 'size':
                     a[i] = '{:.2f}'.format(p[i]/1024) + 'KB'
                 else:
-                    a[i] = p[i]
+                    if p[i] is None or p[i] == '':
+                        a[i] = '无'
+                    else:
+                        a[i] = p[i]
                 # a[i] = p[i]
             if len(series) > index:
                 for i in series[index].keys():
-                    a[i] = series[index][i]
+                    if series[index][i] is None or series[index][i] == '':
+                        a[i] = '无'
+                    else:
+                        a[i] = series[index][i]
             if len(study) > index:
                 for i in study[index].keys():
-                    a[i] = study[index][i]
+                    if study[index][i] is None or study[index][i] == '':
+                        a[i] = '无'
+                    else:
+                        a[i] = study[index][i]
             if len(image) > index:
                 for i in image[index].keys():
-                    a[i] = image[index][i]
+                    if image[index][i] is None or image[index][i] == '':
+                        a[i] = '无'
+                    else:
+                        a[i] = image[index][i]
             back['data'].append(a)
             # for i in 
     except:
@@ -396,16 +420,28 @@ def monitor_dicom_id():
                 elif i == 'size':
                     back['data'][i] = '{:.2f}'.format(p[i]/1024) + 'KB'
                 else:
-                    back['data'][i] = p[i]
+                    if p[i] is None or p[i] == '':
+                        back['data'][i] = '无'
+                    else:
+                        back['data'][i] = p[i]
             if len(series) > 0:
                 for i in series[index].keys():
-                    back['data'][i] = series[index][i]
+                    if series[index][i] is None or series[index][i] == '':
+                        back['data'][i] = '无'
+                    else:
+                        back['data'][i] = series[index][i]
             if len(study) > 0:
                 for i in study[index].keys():
-                    back['data'][i] = study[index][i]
+                    if study[index][i] is None or study[index][i] == '':
+                        back['data'][i] = '无'
+                    else:
+                        back['data'][i] = study[index][i]
             if len(image) > 0:
                 for i in image[index].keys():
-                    back['data'][i] = image[index][i]
+                    if image[index][i] is None or image[index][i] == '':
+                        back['data'][i] = '无'
+                    else:
+                        back['data'][i] = image[index][i]
     except:
         back['message'] = cnts.database_error_message
         back['status'] = cnts.database_error
@@ -1009,46 +1045,46 @@ def monitor_dicom_ip():
 
     return jsonify(back)
 
-@bp.route('/work', methods=['POST'])
-@jsonschema.validate('monitor', 'result_get')
-def monitor_work():
-    back = copy.deepcopy(cnts.back_message)
-    json_data = request.get_json()
+# @bp.route('/work', methods=['POST'])
+# @jsonschema.validate('monitor', 'result_get')
+# def monitor_work():
+#     back = copy.deepcopy(cnts.back_message)
+#     json_data = request.get_json()
 
-    addr = request.remote_addr
-    path = request.path
-    log.info(cnts.requestStart(addr, path, json_data))
+#     addr = request.remote_addr
+#     path = request.path
+#     log.info(cnts.requestStart(addr, path, json_data))
 
-    try:
-        # sql = 'select * from `monitor_result` where %s'%(json_data['ip'])
-        # db.session.execute(sql)
-        # db.session.commit()
+#     try:
+#         # sql = 'select * from `monitor_result` where %s'%(json_data['ip'])
+#         # db.session.execute(sql)
+#         # db.session.commit()
         
-        log.info(cnts.databaseSuccess(addr, path, '`monitor_result`'))
+#         log.info(cnts.databaseSuccess(addr, path, '`monitor_result`'))
 
-        back['data'] = []
-        example = {
-            'id': 12,
-            'src_ip': json_data['ip'],
-            'dst_ip': json_data['ip'],
-            'src_port': 8080,
-            'dst_port': 8081,
-            'start_time': datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-            'content': 'MSH|^~\&||MINDRAY_D-SERIES^00A037009A0053DE^EUI-64||||20190929092150000||ORU^R01^ORU_R01|374|P|2.6|||AL|NE||UNICODE UTF-8|||IHE_PCD_001^IHE PCD^1.3.6.1.4.1.19376.1.6.1.1.1^ISOPID|||^^^Hospital^PI||^^^^^^LPV1||I',
-            'size':'100KB'
-        }
-        back['data'].append(example)
-    except:
-        back['status'] = cnts.database_error
-        back['message'] = cnts.database_error_message
+#         back['data'] = []
+#         example = {
+#             'id': 12,
+#             'src_ip': json_data['ip'],
+#             'dst_ip': json_data['ip'],
+#             'src_port': 8080,
+#             'dst_port': 8081,
+#             'start_time': datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+#             'content': 'MSH|^~\&||MINDRAY_D-SERIES^00A037009A0053DE^EUI-64||||20190929092150000||ORU^R01^ORU_R01|374|P|2.6|||AL|NE||UNICODE UTF-8|||IHE_PCD_001^IHE PCD^1.3.6.1.4.1.19376.1.6.1.1.1^ISOPID|||^^^Hospital^PI||^^^^^^LPV1||I',
+#             'size':'100KB'
+#         }
+#         back['data'].append(example)
+#     except:
+#         back['status'] = cnts.database_error
+#         back['message'] = cnts.database_error_message
         
-        log.error(cnts.errorLog(addr, path, 'database'))
+#         log.error(cnts.errorLog(addr, path, 'database'))
 
-        return jsonify(back)
+#         return jsonify(back)
     
-    log.info(cnts.successLog(addr, path))
+#     log.info(cnts.successLog(addr, path))
 
-    return back
+#     return back
 
 
 
