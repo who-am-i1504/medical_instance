@@ -253,7 +253,7 @@ int AddInListFtp(struct JudgeFirst * root, struct rte_mbuf * target)
 	if (current_length > 59)
 	{
                 //printf("enter judge\n");
-                char* data = rte_pktmbuf_mtod(target, char *); 
+        char* data = rte_pktmbuf_mtod(target, char *); 
 		memcpy(ch_trans_int.p, data + 54,sizeof(char) * 4);
 		if (pasv1.number == ch_trans_int.number)
                 {

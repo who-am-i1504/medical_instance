@@ -511,7 +511,7 @@ def construct(absPath, target, typer):
             if pkt.data[0:2] == PDU6Tag or pkt.data[0:2] == PDU4Tag:
                 if value.judge():
                     value.generate()
-            if (pkt.flags & 5) > 0:
+            if (pkt.flags & 1) > 0 or (pkt.flags & 20) == 20:
                 # 清除键值
                 value.FinDeal()
                 # if not dic.pop(key1, None) is None:
