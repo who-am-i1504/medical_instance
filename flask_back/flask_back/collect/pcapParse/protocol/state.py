@@ -105,7 +105,7 @@ def dealIPPort(path):
     dst = dst_port[0]
     dport = dst_port[1]
     if '.' in dport:
-        dport = dport[dport.index('.'):]
+        dport = dport[:dport.index('.')]
     return src, sport, dst, dport
 
 
