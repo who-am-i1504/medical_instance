@@ -552,6 +552,7 @@ pdump_rxtx(struct rte_mbuf *rxtx_bufs[], const uint16_t nb_in_deq, struct pdump_
 							s = s -> next;
 						}
 						clone_size_http ++;
+                        rte_pktmbuf_free(rxtx_bufs[i]);
 						continue;
 					}
 					else if (process_http(http_rule, http_size, rxtx_bufs[i]) > 0)
@@ -574,6 +575,7 @@ pdump_rxtx(struct rte_mbuf *rxtx_bufs[], const uint16_t nb_in_deq, struct pdump_
 							}
 							clone_size_http ++;
 						}
+                        rte_pktmbuf_free(rxtx_bufs[i]);
 						continue;
 					}
 				}
@@ -597,6 +599,7 @@ pdump_rxtx(struct rte_mbuf *rxtx_bufs[], const uint16_t nb_in_deq, struct pdump_
 							s = s -> next;
 						}
 						clone_size_ftp ++;
+                        rte_pktmbuf_free(rxtx_bufs[i]);
 						continue;
 					}
 					else if (process_ftp(ftp_rule, ftp_size, rxtx_bufs[i]) > 0)
@@ -605,6 +608,7 @@ pdump_rxtx(struct rte_mbuf *rxtx_bufs[], const uint16_t nb_in_deq, struct pdump_
 						if (AddInListFtp(ftp_root, rxtx_bufs[i])==1)
 						//printf("success!\n");
                                                     ;
+                        rte_pktmbuf_free(rxtx_bufs[i]);
 						continue;
 					}
 				}
@@ -627,6 +631,7 @@ pdump_rxtx(struct rte_mbuf *rxtx_bufs[], const uint16_t nb_in_deq, struct pdump_
 							s = s -> next;
 						}
 						clone_size_hl7 ++;
+                        rte_pktmbuf_free(rxtx_bufs[i]);
 						continue;
 		            }
                 }
@@ -649,6 +654,7 @@ pdump_rxtx(struct rte_mbuf *rxtx_bufs[], const uint16_t nb_in_deq, struct pdump_
 							s = s -> next;
 						}
 						clone_size_astm ++;
+                        rte_pktmbuf_free(rxtx_bufs[i]);
 						continue;
 					}
                 }
@@ -671,6 +677,7 @@ pdump_rxtx(struct rte_mbuf *rxtx_bufs[], const uint16_t nb_in_deq, struct pdump_
 							s = s -> next;
 						}
 						clone_size_dicom ++;
+                        rte_pktmbuf_free(rxtx_bufs[i]);
 						continue;
 					}
                 }
@@ -696,7 +703,7 @@ pdump_rxtx(struct rte_mbuf *rxtx_bufs[], const uint16_t nb_in_deq, struct pdump_
 							}
 							clone_size_hl7 ++;
 						}
-						
+                        rte_pktmbuf_free(rxtx_bufs[i]);
 						continue;
 					}
 				}
@@ -722,6 +729,7 @@ pdump_rxtx(struct rte_mbuf *rxtx_bufs[], const uint16_t nb_in_deq, struct pdump_
 							}
 							clone_size_astm ++;
 						}
+                        rte_pktmbuf_free(rxtx_bufs[i]);
 						continue;
 						
 					}
@@ -752,6 +760,7 @@ pdump_rxtx(struct rte_mbuf *rxtx_bufs[], const uint16_t nb_in_deq, struct pdump_
 							}
 							clone_size_dicom ++;
 						}
+                        rte_pktmbuf_free(rxtx_bufs[i]);
 						continue;
 					}
 				}
