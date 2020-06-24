@@ -44,15 +44,26 @@ class SyncPicHadoop:
                 if not fs.exists(self.hadoop_path):
                     break
                 for i in os.listdir(self.pic_path):
-                    if fs.exists(os.path.join(self.hadoop_path, i)):
-                        continue
-                    else:
-                        fs.copy_from_local(os.path.join(self.pic_path, i), os.path.join(self.hadoop_path, i))
+                    self._sySubPath(os.path.join(self.pic_path, i), fs)
                 time.sleep(3600)
                 # dirs = fs.exists(os.jo)
                 # print(dirs)
             except:
                 break
+
+    def _sySubPath(self, path, fs):
+            if not os.path.exists(path):
+                return
+            if not os.path.isdir(path):
+                if fs.exists(os.path.join(self.hadoop_path, path)):
+                    return
+                else:
+                    fs.copy_from_local(os.path.join(self.pic_path, path), os.path.join(self.hadoop_path, path))
+            else:
+                if fs.exists(os.path.join(self.hadoop_path, path)):
+                    fs.mkdirs(os.path.join(self.hadoop_path, path))
+                for i in os.listdir(path):
+                    self._sySubPath(os.path.join(path, i), fs) 
 SyncPicHadoop()
 # if __name__ == '__main__':
 #     sync_hadoop()
