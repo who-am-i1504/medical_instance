@@ -531,107 +531,30 @@ pdump_rxtx(struct rte_mbuf *rxtx_bufs[], const uint16_t nb_in_deq, struct pdump_
 			}
             if (p->port == 0 || p->port == src_port.port || p->port == dst_port.port)
             {
-				if ((p->dir & ENABLE_HTTP) && ProcessAll(http_root, rxtx_bufs[i]) > 0)
-				{
-					//printf(" Here \n");
-					struct rte_mbuf *s;
-					struct rte_mbuf *last;
-					s = rxtx_bufs[i];
-					bufs_http[clone_size_http] = rte_pktmbuf_clone(s, clone_pool);
-					last = bufs_http[clone_size_http];
-					s = s -> next;
-					while(s != NULL)
-					{
-						// printf("Here \n");
-						s = rte_pktmbuf_clone(s, clone_pool);
-						last -> next = s;
-						last = s;
-						s = s -> next;
-					}
-					clone_size_http ++;
-					continue;
-				}
-                if ((p->dir & ENABLE_FTP) && ProcessAllFtp(ftp_root, rxtx_bufs[i]) > 0)
-				{
-					struct rte_mbuf *s;
-					struct rte_mbuf *last;
-					s = rxtx_bufs[i];
-					bufs_ftp[clone_size_ftp] = rte_pktmbuf_clone(s, clone_pool);
-					last = bufs_ftp[clone_size_ftp];
-					s = s -> next;
-					while(s != NULL)
-					{
-						//printf("Here \n");
-						s = rte_pktmbuf_clone(s, clone_pool);
-						last -> next = s;
-						last = s;
-						s = s -> next;
-					}
-					clone_size_ftp ++;
-					continue;
-				}
-                if ((p->dir & ENABLE_HL7) && ProcessAll(hl7_root, rxtx_bufs[i]) > 0)
-				{
-					struct rte_mbuf *s;
-					struct rte_mbuf *last;
-					s = rxtx_bufs[i];
-					bufs_hl7[clone_size_hl7] = rte_pktmbuf_clone(s, clone_pool);
-					last = bufs_hl7[clone_size_hl7];
-					s = s -> next;
-					while(s != NULL)
-					{
-							// printf("Here \n");
-						s = rte_pktmbuf_clone(s, clone_pool);
-						last -> next = s;
-						last = s;
-						s = s -> next;
-					}
-					clone_size_hl7 ++;
-					continue;
-				} 
-                if ((p->dir & ENABLE_ASTM) && ProcessAll(astm_root, rxtx_bufs[i]) > 0)
-				{
-					struct rte_mbuf *s;
-					struct rte_mbuf *last;
-					s = rxtx_bufs[i];
-					bufs_astm[clone_size_astm] = rte_pktmbuf_clone(s, clone_pool);
-					last = bufs_astm[clone_size_astm];
-					s = s -> next;
-					while(s != NULL)
-					{
-						// printf("Here \n");
-						s = rte_pktmbuf_clone(s, clone_pool);
-						last -> next = s;
-						last = s;
-						s = s -> next;
-					}
-					clone_size_astm ++;
-					continue;
-				}
-                if ((p->dir & ENABLE_DICOM) && ProcessAll(dicom_root, rxtx_bufs[i]) > 0)
-				{
-					struct rte_mbuf *s;
-					struct rte_mbuf *last;
-					s = rxtx_bufs[i];
-					bufs_dicom[clone_size_dicom] = rte_pktmbuf_clone(s, clone_pool);
-					last = bufs_dicom[clone_size_dicom];
-					s = s -> next;
-					while(s != NULL)
-					{
-						// printf("Here \n");
-						s = rte_pktmbuf_clone(s, clone_pool);
-						last -> next = s;
-						last = s;
-						s = s -> next;
-					}
-					clone_size_dicom ++;
-					continue;
-				}
 				if(p->dir & ENABLE_HTTP)
 				{
 					// printf("%d\t%d\n", rte_pktmbuf_pkt_len(rxtx_bufs[i]),rte_pktmbuf_data_len(rxtx_bufs[i]));
-					
-					if (process_http(http_rule, http_size, rxtx_bufs[i]) > 0)
+					if (ProcessAll(http_root, rxtx_bufs[i]) > 0)
+					{
+						//printf(" Here \n");
+						struct rte_mbuf *s;
+						struct rte_mbuf *last;
+						s = rxtx_bufs[i];
+						bufs_http[clone_size_http] = rte_pktmbuf_clone(s, clone_pool);
+						last = bufs_http[clone_size_http];
+						s = s -> next;
+						while(s != NULL)
+						{
+							// printf("Here \n");
+							s = rte_pktmbuf_clone(s, clone_pool);
+							last -> next = s;
+							last = s;
+							s = s -> next;
+						}
+						clone_size_http ++;
+						continue;
+					}
+					else if (process_http(http_rule, http_size, rxtx_bufs[i]) > 0)
 					{
 						if (AddInList(http_root, rxtx_bufs[i]) > 0)
 						{
@@ -657,7 +580,26 @@ pdump_rxtx(struct rte_mbuf *rxtx_bufs[], const uint16_t nb_in_deq, struct pdump_
 				if(p->dir & ENABLE_FTP)
 				{
 					//printf("Here \n");
-					if (process_ftp(ftp_rule, ftp_size, rxtx_bufs[i]) > 0)
+					if (ProcessAllFtp(ftp_root, rxtx_bufs[i]) > 0)
+					{
+						struct rte_mbuf *s;
+						struct rte_mbuf *last;
+						s = rxtx_bufs[i];
+						bufs_ftp[clone_size_ftp] = rte_pktmbuf_clone(s, clone_pool);
+						last = bufs_ftp[clone_size_ftp];
+						s = s -> next;
+						while(s != NULL)
+						{
+							//printf("Here \n");
+							s = rte_pktmbuf_clone(s, clone_pool);
+							last -> next = s;
+							last = s;
+							s = s -> next;
+						}
+						clone_size_ftp ++;
+						continue;
+					}
+					else if (process_ftp(ftp_rule, ftp_size, rxtx_bufs[i]) > 0)
 					{
 						//printf("Here .\n");
 						if (AddInListFtp(ftp_root, rxtx_bufs[i])==1)
@@ -666,6 +608,72 @@ pdump_rxtx(struct rte_mbuf *rxtx_bufs[], const uint16_t nb_in_deq, struct pdump_
 						continue;
 					}
 				}
+                if (p->dir & ENABLE_HL7)
+                {
+                    if (ProcessAll(hl7_root, rxtx_bufs[i]) > 0)
+					{
+						struct rte_mbuf *s;
+						struct rte_mbuf *last;
+						s = rxtx_bufs[i];
+						bufs_hl7[clone_size_hl7] = rte_pktmbuf_clone(s, clone_pool);
+						last = bufs_hl7[clone_size_hl7];
+						s = s -> next;
+						while(s != NULL)
+						{
+							// printf("Here \n");
+							s = rte_pktmbuf_clone(s, clone_pool);
+							last -> next = s;
+							last = s;
+							s = s -> next;
+						}
+						clone_size_hl7 ++;
+						continue;
+		            }
+                }
+                if (p->dir & ENABLE_ASTM)
+                {
+                    if (ProcessAll(astm_root, rxtx_bufs[i]) > 0)
+					{
+						struct rte_mbuf *s;
+						struct rte_mbuf *last;
+						s = rxtx_bufs[i];
+						bufs_astm[clone_size_astm] = rte_pktmbuf_clone(s, clone_pool);
+						last = bufs_astm[clone_size_astm];
+						s = s -> next;
+						while(s != NULL)
+						{
+							// printf("Here \n");
+							s = rte_pktmbuf_clone(s, clone_pool);
+							last -> next = s;
+							last = s;
+							s = s -> next;
+						}
+						clone_size_astm ++;
+						continue;
+					}
+                }
+                if(p->dir & ENABLE_DICOM)
+                {
+                    if (ProcessAll(dicom_root, rxtx_bufs[i]) > 0)
+					{
+						struct rte_mbuf *s;
+						struct rte_mbuf *last;
+						s = rxtx_bufs[i];
+						bufs_dicom[clone_size_dicom] = rte_pktmbuf_clone(s, clone_pool);
+						last = bufs_dicom[clone_size_dicom];
+						s = s -> next;
+						while(s != NULL)
+						{
+							// printf("Here \n");
+							s = rte_pktmbuf_clone(s, clone_pool);
+							last -> next = s;
+							last = s;
+							s = s -> next;
+						}
+						clone_size_dicom ++;
+						continue;
+					}
+                }
                 if (p->dir & ENABLE_HL7)
 				{
 					if (process(root, rxtx_bufs[i]) > 0)
