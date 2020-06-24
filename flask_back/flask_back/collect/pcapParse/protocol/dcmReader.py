@@ -10,6 +10,19 @@ import matplotlib
 matplotlib.use('pdf')
 import matplotlib.pyplot as plt
 from .state import dealIPPort
+import ast
+
+
+
+config = None
+if config is None:
+    with open('config/config.cfg', 'r') as f:
+        data = f.read().replace('\n', '')
+        config = ast.literal_eval(data)
+absPath = config['PicturePath']
+
+if config['PicturePath'][0] != '/':
+    absPath = os.path.join(os.getcwd(), config['PicturePath'])
 
 map_patient = {
     'PatientName':'patient_name',
@@ -50,7 +63,6 @@ map_type = {
     'HighBit':int
 }
 
-absPath = os.path.join(os.getcwd(),'upload')
 
 def writeImage(id, image):
     path = str(id) + '.jpg'
