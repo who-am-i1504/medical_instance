@@ -180,7 +180,7 @@ int Ftp_PORT(struct JudgeFirst * root, struct rte_mbuf * target)
 	uint8_t status = 0;
 	if (i == current_length)
 		return 0;
-	for (int j = i; ((*(q + j) <= '9' && *(q + j) >= '0') || *(q + j) == ',') && j < current_length; j++)
+	for (int j = i + 1; ((*(q + j) <= '9' && *(q + j) >= '0') || *(q + j) == ',') && j < current_length; j++)
 	{
 		if (status >= 6)
 			return 0;
