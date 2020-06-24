@@ -46,17 +46,19 @@ def parse_body(f, headers):
             except IndexError:
                 raise dpkt.UnpackError('missing chunk size')
             n = int(sz, 16)
+            l.append(sz)
+            la.append(b'\r\n')
             if n == 0:
                 found_end = True
             buf = f.read(n)
             if f.readline().strip():
                 break
-            if n and len(buf) == n:
+            if n and len(buf) <= n:
                 l.append(buf)
             else:
                 break
-        if not found_end:
-            raise dpkt.NeedData('premature end of chunked body')
+        # if not found_end:
+        #     raise dpkt.NeedData('premature end of chunked body')
         body = b''.join(l)
     elif 'content-length' in headers:
         # n = int(headers['content-length'])

@@ -74,6 +74,7 @@ def writeImage(id, image):
         plt.xticks([]),plt.yticks([])
         plt.imshow(image, cmap=plt.cm.bone)
         plt.savefig(os.path.join(absPath, path), bbox_inches='tight', dpi = 300)
+    plt.close()
     return path
 
 def readDcm(filename):

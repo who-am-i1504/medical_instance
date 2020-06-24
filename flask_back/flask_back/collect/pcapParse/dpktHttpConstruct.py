@@ -41,7 +41,8 @@ timeTag = 4
 # 文件名称，用于数据量过大时追加文件
 fileTag = 5
 # 内容开始位置
-content = 6
+chunked = 6
+content = 7
 
 # 用于超时的时间限制
 # 即每隔多长时间检查一次字典中的无效数据
@@ -180,10 +181,14 @@ def construct(absPath, target, typer, filter = False):
                 dic.pop(key, None)
                 WriteFile(dic, value, pkt, key1, key2, writer, absPath, typer, src, dst)
                 value = value[0:content]
+                chunked_tag = False
+                if http.headers.get('transfer-encoding', '').lower() == 'chunked':
+                    chunked_tag = True
                 if judgeDcm(http.body):# DICM文件判断逻辑
                     # dcm文件存储
                     value[fileTag] = str(time.time()) + '_' + src + '-' + str(pkt.sport) +'_'+ dst + '-' + str(pkt.dport) + '.dcm'
                     value[timeTag] = time.time()
+                    value[chunked] = chunked_tag
                     value.append(http.body)
                     dic[key] = value
                     dic[key1] = value
@@ -193,6 +198,7 @@ def construct(absPath, target, typer, filter = False):
                     # astm 文件存储
                     value[fileTag] = str(time.time()) + '_' + src + '-' + str(pkt.sport) +'_'+ dst + '-' + str(pkt.dport) + '.astm'
                     value[timeTag] = time.time()
+                    value[chunked] = chunked_tag
                     value.append(http.body)
                     dic[key] = value
                     dic[key1] = value
@@ -200,6 +206,7 @@ def construct(absPath, target, typer, filter = False):
                 elif filter:
                     value[fileTag] = str(time.time()) + '_' + src + '-' + str(pkt.sport) +'_'+ dst + '-' + str(pkt.dport) + '.unknow'
                     value[timeTag] = time.time()
+                    value[chunked] = chunked_tag
                     value.append(http.body)
                     dic[key] = value
                     dic[key1] = value
@@ -276,10 +283,14 @@ def construct(absPath, target, typer, filter = False):
                     try:
                         # 初始化加入报文
                         http = Response(pkt.data)
+                        chunked_tag = False
+                        if http.headers.get('transfer-encoding', '').lower() == 'chunked':
+                            chunked_tag = True
                         if judgeDcm(http.body):
                             value = [key1, key2, src + '-' + str(pkt.sport), dst + '-' + str(pkt.dport), time.time()]
                             fileName = str(time.time()) + '_' + value[srcPort] + '_' + value[dstPort] + '.dcm'
                             value.append(fileName)
+                            value.append(chunked_tag)
                             value.append(http.body)
                             dic[key] = value
                             dic[key1] = value
@@ -289,6 +300,7 @@ def construct(absPath, target, typer, filter = False):
                             value = [key1, key2, src + '-' + str(pkt.sport), dst + '-' + str(pkt.dport), time.time()]
                             fileName = str(time.time()) + '_' + value[srcPort] + '_' + value[dstPort] + '.astm'
                             value.append(fileName)
+                            value.append(chunked_tag)
                             value.append(http.body)
                             dic[key] = value
                             dic[key1] = value
@@ -297,6 +309,7 @@ def construct(absPath, target, typer, filter = False):
                             value = [key1, key2, src + '-' + str(pkt.sport), dst + '-' + str(pkt.dport), time.time()]
                             fileName = str(time.time()) + '_' + value[srcPort] + '_' + value[dstPort] + '.unknow'
                             value.append(fileName)
+                            value.append(chunked_tag)
                             value.append(http.body)
                             dic[key] = value
                             dic[key1] = value
@@ -310,8 +323,9 @@ def construct(absPath, target, typer, filter = False):
                     continue
                 # 对于乱序数据包的处理
                 fileName = value[fileTag]
+                chunked_tag = value[chunked]
                 dic[key] = value
-                value = [key1, key2, src + '-' + str(pkt.sport), dst + '-' + str(pkt.dport), time.time(), fileName, pkt.data]
+                value = [key1, key2, src + '-' + str(pkt.sport), dst + '-' + str(pkt.dport), time.time(), fileName, chunked_tag, pkt.data]
                 dic[key1] = value
                 dic[key2] = value
                 continue
