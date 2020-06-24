@@ -24,6 +24,29 @@ absPath = config['PicturePath']
 if config['PicturePath'][0] != '/':
     absPath = os.path.join(os.getcwd(), config['PicturePath'])
 
+subPath = 1
+limit = 100000
+if not os.path.exists('config/.picture.cfg'):
+    with open('config/.picture.cfg', 'wb') as f:
+        f.write(b"{'currentPath':1,'limit': 100000}")
+        f.close()
+else:
+    with open('config/.picture.cfg', 'r') as f:
+        data = f.read().replace('\n', '')
+        subConf = ast.literal_eval(data)
+        subPath = subConf['currentPath']
+        limit = subConf['limit']
+
+
+def generateSubPath(subPath):
+    if not os.path.exists(os.path.join(absPath, str(subPath))):
+        os.mkdir(path=os.path.join(absPath, str(subPath)))
+    while len(os.listdir(os.path.join(absPath, str(subPath)))) >= limit:
+        subPath += 1
+        if not os.path.exists(os.path.join(absPath, str(subPath))):
+            os.mkdir(path=os.path.join(absPath, str(subPath)))
+    return str(subPath)
+
 map_patient = {
     'PatientName':'patient_name',
     'PatientSex':'patient_sex',
@@ -65,7 +88,7 @@ map_type = {
 
 
 def writeImage(id, image):
-    path = str(id) + '.jpg'
+    path = os.path.join(generateSubPath(subPath), str(id) + '.jpg')
     if len(image.shape) > 3:
         pic_num = image.shape[0]
         height = int(pic_num ** 0.5)
