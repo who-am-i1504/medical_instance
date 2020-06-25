@@ -58,7 +58,7 @@ class SyncPicHadoop:
                 if fs.exists(os.path.join(self.hadoop_path, path)):
                     return
                 else:
-                    fs.copy_from_local(os.path.join(self.pic_path, path), os.path.join(self.hadoop_path, path))
+                    fs.copy_from_local(os.path.join(path), os.path.join(self.hadoop_path, path))
             else:
                 if fs.exists(os.path.join(self.hadoop_path, path)):
                     fs.mkdirs(os.path.join(self.hadoop_path, path))
