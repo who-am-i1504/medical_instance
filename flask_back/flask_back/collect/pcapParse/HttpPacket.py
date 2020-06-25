@@ -47,7 +47,7 @@ def parse_body(f, headers):
                 raise dpkt.UnpackError('missing chunk size')
             n = int(sz, 16)
             l.append(sz)
-            la.append(b'\r\n')
+            l.append(b'\r\n')
             if n == 0:
                 found_end = True
             buf = f.read(n)
