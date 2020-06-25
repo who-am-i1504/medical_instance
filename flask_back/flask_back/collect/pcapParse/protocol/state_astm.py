@@ -86,7 +86,7 @@ class StateAstm(State):
                 self.lexer.set_separator()
                 return
             if self.lexer.separator[AstmDelimiterOrder[i]] != self.peek.getToken():
-                self.deli_function(self.peek.getToken())
+                self.deli_functions[i](self.peek.getToken())
             delimiter.append(self.peek.getToken())
             pass
         self.lexer.set_state(1)
@@ -217,6 +217,10 @@ class StateAstm(State):
                 self.record.append(self.peek.getToken())
 
     def getRecord(self):
+        if self.cRecord is None:
+            self.initData()
+            self.get_next()
+            return
         self.result['records'].append(self.cRecord)
         self.cRecord.content = b''.join(self.record)
         if self.cRecordHeader == b'L':
