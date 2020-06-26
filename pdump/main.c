@@ -26,8 +26,8 @@
 #include <rte_pdump.h>
 #include "rule.h"
 
-#define SRC_PORT 24
-#define DST_PORT 26
+#define SRC_PORT 34
+#define DST_PORT 36
 
 #define CMD_LINE_OPT_PDUMP "pdump"
 #define PDUMP_PORT_ARG "port"
@@ -521,6 +521,11 @@ pdump_rxtx(struct rte_mbuf *rxtx_bufs[], const uint16_t nb_in_deq, struct pdump_
         //printf(" %d\n", nb_in_deq);
         for(int i = 0; i < nb_in_deq; i ++)
         {
+			if (rte_pktmbuf_data_len(rxtx_bufs[i])<DST_PORT + 1)
+			{
+                rte_pktmbuf_free(rxtx_bufs[i]);
+				continue;
+			}
 			if (p->port != 0)
             {
 				current_data = rte_pktmbuf_mtod(rxtx_bufs[i], char *);
