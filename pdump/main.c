@@ -521,7 +521,7 @@ pdump_rxtx(struct rte_mbuf *rxtx_bufs[], const uint16_t nb_in_deq, struct pdump_
         //printf(" %d\n", nb_in_deq);
         for(int i = 0; i < nb_in_deq; i ++)
         {
-			if (rte_pktmbuf_data_len(rxtx_bufs[i])<DST_PORT + 1)
+			if (rte_pktmbuf_data_len(rxtx_bufs[i])<=DST_PORT + 1)
 			{
                 rte_pktmbuf_free(rxtx_bufs[i]);
 				continue;
