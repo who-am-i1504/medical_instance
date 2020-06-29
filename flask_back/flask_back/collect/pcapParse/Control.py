@@ -14,6 +14,7 @@ from . import dpktHttpConstruct
 from . import PduConstruct
 import logging
 from . import syncPic
+from shutil import rmtree
 LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
 DATE_FORMAT = "%m/%d/%Y %H:%M:%S %p"
 logging.basicConfig(filename='Control.log', level=logging.DEBUG, format=LOG_FORMAT,datefmt=DATE_FORMAT)
@@ -219,7 +220,7 @@ class CollectThread:
                     if self.queue.empty() and len(self.ThreadPool) == 0:
                         for p in os.listdir(os.path.join(capture_path)):
                             if os.path.isdir(os.path.join(capture_path, p)):
-                                os.rmdir(os.path.join(capture_path, p))
+                                rmtree(os.path.join(capture_path, p), ignore_errors=False, onerror=None)
                         # logging.info('no running collect task.   ' + threading.current_thread().getName())
                         pass
                     else:
