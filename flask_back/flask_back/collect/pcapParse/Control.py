@@ -1,4 +1,4 @@
-from .constant import RTE_SDK, RTE_TARGET, capture_path, pdump_path
+from .constant import RTE_SDK, RTE_TARGET, capture_path, pdump_path, DeletePcap
 from subprocess import Popen, PIPE
 from .protocol.parse import parse as PduParse
 from .protocol.database.tables import DBSession
@@ -218,9 +218,10 @@ class CollectThread:
                 if self.state == _NoRUN_:
                     # 没有正在运行的数据包捕获程序
                     if self.queue.empty() and len(self.ThreadPool) == 0:
-                        for p in os.listdir(os.path.join(capture_path)):
-                            if os.path.isdir(os.path.join(capture_path, p)):
-                                rmtree(os.path.join(capture_path, p), ignore_errors=False, onerror=None)
+                        if DeletePcap:
+                            for p in os.listdir(os.path.join(capture_path)):
+                                if os.path.isdir(os.path.join(capture_path, p)):
+                                    rmtree(os.path.join(capture_path, p), ignore_errors=False, onerror=None)
                         # logging.info('no running collect task.   ' + threading.current_thread().getName())
                         pass
                     else:
