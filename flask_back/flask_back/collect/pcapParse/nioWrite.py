@@ -111,8 +111,8 @@ class NIOWriter:
                         if len(self.dic) == 0:
                             # print(len(self.dic))
                             self.loop.stop()
-                            if not self.executor is None:
-                                self.executor.shutdown()
+                            # if not self.executor is None:
+                            #     self.executor.shutdown()
                             break
                     finally:
                         self._lock_for_dic.release()
