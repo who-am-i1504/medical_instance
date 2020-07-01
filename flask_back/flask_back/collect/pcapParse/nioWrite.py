@@ -6,16 +6,14 @@ from concurrent.futures import ThreadPoolExecutor
 import threading
 
 threshold = 5
+threadPool = ThreadPoolExecutor(max_workers=20)
 class NIOWriter:
 
-    def __init__(self, queSize=10000, semaNumber=threshold, maxThreadNum = threshold, executor=threshold-1):
+    def __init__(self, queSize=10000, semaNumber=threshold, maxThreadNum = threshold):
         self.queue = queue.Queue(maxsize=queSize)
         self.threadNum = 0
         self.maxThreadNum = maxThreadNum
-        if executor is None:
-            self.executor = None
-        else:
-            self.executor = ThreadPoolExecutor(max_workers=executor)
+        self.executor = threadPool
         self.loop = asyncio.new_event_loop()
         self.sema = asyncio.Semaphore(semaNumber,loop=self.loop)
         # self.loop.set_default_executor(self.executor)
