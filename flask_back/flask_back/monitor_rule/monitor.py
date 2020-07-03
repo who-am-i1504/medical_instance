@@ -668,6 +668,47 @@ def monitor_delete():
 
     return jsonify(back)
 
+
+@bp.route('/rule/get_by_ip', methods=['POST'])
+@jsonschema.validate('monitor', 'get_by_ip')
+def monitor_get_ip():
+    back = copy.deepcopy(cnts.back_message)
+    json_data = request.get_json()
+    addr = request.remote_addr
+    path = request.path
+    page_size = cnts.page_size
+    log.info(cnts.requestStart(addr, path, json_data))
+
+    if 'pageSize' in json_data.keys():
+        page_size = json_data['pageSize']
+    try:
+        result = db.session.execute('select count(1) from `monitor_rule` where `ip` = \'%s\';' % (json_data['ip']))
+        db.session.commit()
+        log.info(cnts.databaseSuccess(addr, path, '`monitor_result`'))
+        back['size'] = result.fetchall()[0][0]
+        # current = MonitorRule.query.filter(MonitorRule.id == json_data['id']).first()
+        current = db.session.execute(
+            'select * from `monitor_rule` where `ip` = \'%s\' limit %d,%d;' % (json_data['ip'], (json_data['page'] - 1) * page_size, page_size))
+        db.session.commit()
+        data = current.fetchall()
+        log.info(cnts.databaseSuccess(addr, path, '`monitor_result`'))
+        back['data'] = []
+        if not data == None:
+            for i in data:
+                a = {}
+                for j in i.keys():
+                    a[j] = i[j]
+                back['data'].append(a)
+    except:
+        back['status'] = cnts.database_error
+        back['message'] = cnts.database_error_message
+        log.error(cnts.errorLog(addr, path, 'database'))
+        return jsonify(back)
+        
+    log.info(cnts.successLog(addr, path))
+    return jsonify(back)
+
+
 def getHL7DefaultSize():
     return "SELECT COUNT(1) as `sum_num`, SUM(main.`size`) as `sum_size`, MIN(main.`time`) as `start_time`, MAX(main.`time`) as `end_time`\
         FROM `message` as main\
