@@ -16,7 +16,10 @@ def astm_rule_add():
     addr = request.remote_addr
     path = request.path
     log.info(cnts.requestStart(addr, path, json_data))
-    json_data['value'] = json_data['value'].replace('\\r', '\r')
+    for character in cnts.special_character.keys():
+        if character in json_data['value']:
+            json_data['value'] = json_data['value'].replace(character, cnts.special_character[character])
+    # json_data['value'] = json_data['value'].replace('\\r', '\r')
     inSql = RuleAstm()
     # inSql.id = 10
     inSql.value = json_data['value']
@@ -47,7 +50,10 @@ def astm_rule_add():
 def astm_rule_update():
     back = copy.deepcopy(cnts.back_message)
     json_data = request.get_json()
-    json_data['value'] = json_data['value'].replace('\\r', '\r')
+    for character in cnts.special_character.keys():
+        if character in json_data['value']:
+            json_data['value'] = json_data['value'].replace(character, cnts.special_character[character])
+    # json_data['value'] = json_data['value'].replace('\\r', '\r')
 
     addr = request.remote_addr
     path = request.path
@@ -89,7 +95,8 @@ def astm_rule_get():
     addr = request.remote_addr
     path = request.path
     log.info(cnts.requestStart(addr, path, json_data))
-
+    if 'pageSize' in json_data.keys():
+        page_size = json_data['pageSize']
     try:
         result = db.session.execute('select count(1) from `rule_astm`;')
         db.session.commit()

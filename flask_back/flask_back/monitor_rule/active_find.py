@@ -13,6 +13,7 @@ if config is None:
 if config is None or 'ThresHoldMasscanOrNmap' not in config.keys():
     config={'ThresHoldMasscanOrNmap':31}
 
+
 def submitParams(item):
     back = copy.deepcopy(cnts.back_message)
     hosts = item['hosts']

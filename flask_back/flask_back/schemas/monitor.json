@@ -34,6 +34,22 @@
             }
         }
     },
+    "get_by_ip":{
+        "type":"object",
+        "properties":{
+            "ip":{
+                "type":"string",
+                "pattern": "((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})(\\.((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})){3}"
+            },
+            "page": {
+                "type": "integer"
+            },
+            "pageSize":{
+                "type":"integer"
+            }
+        },
+        "required":["ip", "page"]
+    },
     "update":{
         "type":"object",
         "properties":{
@@ -102,7 +118,7 @@
                 "minimum":0
             }
         },
-        "required":["ip", "page"]
+        "required":["page"]
     },
     "dicom_result":{
         "type":"object",

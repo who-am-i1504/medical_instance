@@ -10,10 +10,24 @@ if config is None:
 if config is None or 'MaxLen' not in config.keys():
     config={'MaxLen':1000000}
 
-def masscan_find(hosts, ports=None, 
+ports_list = None
+ports_dic = None
+if 'portList' in config.keys():
+    ports_list = ''
+    ports_dic = config['portList']
+    for port in config['portList'].keys():
+        if len(ports_list)  == 0:
+            ports_list = ports_list + port
+        else:
+            ports_list = ports_list + ','  + port
+
+
+def masscan_find(hosts, ports=ports_list, 
     arguments='--max-rate ' + str(config['MaxLen']) + ' --excludefile ' 
     + os.path.join(os.getcwd(), config['ExcludeScanPath'])):
     scanner = None
+    if ports is None:
+        ports = ports_list
     try:
         scanner = PortScanner()
         if ports is None:
@@ -27,7 +41,15 @@ def masscan_find(hosts, ports=None,
         return {
             'scan':[]
         }
-    return scanner.scan_result
+    result = scanner.scan_result
+    
+    if ports_dic is not None:
+        for ip in result['scan'].keys():
+            for key in result['scan'][ip].keys():
+                for port in result['scan'][ip][key].keys():
+                    result['scan'][ip][key][port]['services'] = ports_dic.get(str(port), result['scan'][ip][key][port]['services'])
+        pass
+    return result
 
 
 if __name__ == '__main__':

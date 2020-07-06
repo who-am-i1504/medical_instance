@@ -114,6 +114,7 @@ def construct(absPath, target, typer):
     # fpcap = open(os.path.join(absPath, target), 'rb')
     writer = NIOWriter()
     t = Thread(target=writer.start_loop)
+    time.sleep(1)
     t.start()
     dic = defaultdict(None)
     i = 0
@@ -228,23 +229,25 @@ def construct(absPath, target, typer):
         time.sleep(1)
     
     # if 'ftp' in typer:
-    for path in os.listdir(os.path.join(absPath, typer)):
-        readByProtocol(os.path.join(absPath, typer, path), typer)
+    if os.path.exists(os.path.join(absPath, typer)) and len(os.listdir(os.path.join(absPath, typer))) > 0:
+        for path in os.listdir(os.path.join(absPath, typer)):
+            readByProtocol(os.path.join(absPath, typer, path), typer)
+
     # elif typer == 'hl7':
     #     for path in os.listdir(os.path.join(absPath, typer)):
     #         s = StateHL7(os.path.join(absPath, typer, path))
     #         s.state()
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
     # construct('E:\\29161\\Destop\\medical_instance\\pcap', 'test.pcap', 'http')
     # construct('pcap', 'ftp_download.pcap', 'ftp')
     # construct('pcap/1589974224/', 'ftp.pcap', 'DICOM|ftp')
     # construct('E:\\29161\\Destop\\medical_instance\\pcap', 'http_download.pcap', 'http')
     # construct('E:\\29161\\Destop\\medical_instance\\pcap', 'http_download.pcap', 'http')
-    import threading
-    import dpktHttpConstruct
-    t1 = threading.Thread(target=dpktHttpConstruct.construct, args=['pcap/1589985453/', 'http.pcap', 'DICOM|http', True])
-    import dpktConstruct
-    t2 = threading.Thread(target=construct, args=['pcap/1589985453/', 'ftp.pcap', 'DICOM|ftp'])
-    t1.start()
-    t2.start()
+    # import threading
+    # import dpktHttpConstruct
+    # t1 = threading.Thread(target=dpktHttpConstruct.construct, args=['pcap/1589985453/', 'http.pcap', 'DICOM|http', True])
+    # import dpktConstruct
+    # t2 = threading.Thread(target=construct, args=['pcap/1589985453/', 'ftp.pcap', 'DICOM|ftp'])
+    # t1.start()
+    # t2.start()

@@ -29,6 +29,8 @@ class AstmMain(Base):
     version = Column(String)
     message_time = Column(DateTime)
     size = Column(BIGINT)
+    sender_tag = Column(Boolean)
+    receiver_tag = Column(Boolean)
     
     def __getitem__(self, item):
         return self.__dict__[item]
@@ -91,6 +93,8 @@ class MessageMain(Base):
     time = Column(DateTime, default=datetime.datetime.now)
     version = Column(String)
     dsc_status = Column(Boolean)
+    sender_tag = Column(Boolean)
+    receiver_tag = Column(Boolean)
     
     def __getitem__(self, item):
         return self.__dict__[item]
@@ -136,6 +140,8 @@ class PatientInfo(Base):
     # patient_address = Column(String)
     patient_pregnancy_status = Column(INT) #怀孕状态
     size = Column(BIGINT)
+    sender_tag = Column(Boolean)
+    receiver_tag = Column(Boolean)
 
     def __getitem__(self, item):
         return self.__dict__[item]

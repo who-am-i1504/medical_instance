@@ -1,4 +1,4 @@
-from .constant import TokenType 
+from .constant import TokenType, Repeat, Component, Escape, Field, Subcomponent
 import os
 import asyncio
 
@@ -51,7 +51,6 @@ class State:
     def state(self):
 
         self.get_next()
-
         while isinstance(self.peek, Token) and self.peek.getToken() != b'\x00':
             # self.peek = self.lexer.get_alpha()
             if self.peek.getType() == TokenType['syntx']:
@@ -105,7 +104,7 @@ def dealIPPort(path):
     dst = dst_port[0]
     dport = dst_port[1]
     if '.' in dport:
-        dport = dport[dport.index('.'):]
+        dport = dport[:dport.index('.')]
     return src, sport, dst, dport
 
 

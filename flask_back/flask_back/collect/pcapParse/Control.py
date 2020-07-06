@@ -1,4 +1,4 @@
-from .constant import RTE_SDK, RTE_TARGET, capture_path, pdump_path
+from .constant import RTE_SDK, RTE_TARGET, capture_path, pdump_path, DeletePcap
 from subprocess import Popen, PIPE
 from .protocol.parse import parse as PduParse
 from .protocol.database.tables import DBSession
@@ -13,6 +13,8 @@ from . import dpktConstruct
 from . import dpktHttpConstruct
 from . import PduConstruct
 import logging
+from . import syncPic
+from shutil import rmtree
 LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
 DATE_FORMAT = "%m/%d/%Y %H:%M:%S %p"
 logging.basicConfig(filename='Control.log', level=logging.DEBUG, format=LOG_FORMAT,datefmt=DATE_FORMAT)
@@ -103,7 +105,7 @@ _Finished_ = 3
 device_id = 0
 
 CollectResource = threading.Lock()
-
+# stdout = open('.out', 'a')
 class CollectThread:
 
     def __init__(self, threadnum = 1):
@@ -116,6 +118,7 @@ class CollectThread:
         self.queue = Queue(maxsize=threadnum)
         self.state= _NoRUN_
         self.Thread = threading.Thread(target=self._runSample)
+        # self.Thread.setDaemon(True)
         self.Thread.start()
         logging.info('Main Thred Starting, And Watched Thread Starting.  ' + threading.current_thread().getName())
 
@@ -143,7 +146,7 @@ class CollectThread:
     def _startJob(self, protocol, time, path):
         currentPath = tim.time()
         currentPath = str(int(currentPath))
-        if not os.path.exists(os.path.join(capture_path, currentPath)):
+        while not os.path.exists(os.path.join(capture_path, currentPath)):
             logging.info('make a new diectory for pcap files. ' + threading.current_thread().getName())
             os.mkdir(path=os.path.join(capture_path, currentPath))
         cmd = 'sudo '+ os.path.join(pdump_path, 'dpdk-pdump') + ' -- ' + ' --pdump '
@@ -154,10 +157,18 @@ class CollectThread:
         if 'HL7' in protocol:
             params += 'hl7-dev='
             params += os.path.join(capture_path, currentPath, 'hl7.pcap')
-            params += "'"
+            params += ","
         if 'DICOM' in protocol:
             params += 'dicom-dev='
             params += os.path.join(capture_path, currentPath, 'dicom.pcap')
+            params += ','
+        if protocol == 'ASTM':
+            params += 'astm-dev='
+            params += os.path.join(capture_path, currentPath, 'astm.pcap')
+            params += ','
+        if 'http-dev' in params:
+            params += "'"
+        else:
             params += ','
             params += 'http-dev='
             params += os.path.join(capture_path, currentPath, 'http.pcap')
@@ -165,19 +176,6 @@ class CollectThread:
             params += 'ftp-dev='
             params += os.path.join(capture_path, currentPath, 'ftp.pcap')
             params += "'"
-        if protocol == 'ASTM':
-            params += 'astm-dev='
-            params += os.path.join(capture_path, currentPath, 'astm.pcap')
-            if 'http-dev' in params:
-                params += "'"
-            else:
-                params += ','
-                params += 'http-dev='
-                params += os.path.join(capture_path, currentPath, 'http.pcap')
-                params += ','
-                params += 'ftp-dev='
-                params += os.path.join(capture_path, currentPath, 'ftp.pcap')
-                params += "'"
         cmd += params
         logging.info('create script for collect task.   ' + threading.current_thread().getName())
         logging.info(cmd)
@@ -220,7 +218,12 @@ class CollectThread:
                 if self.state == _NoRUN_:
                     # 没有正在运行的数据包捕获程序
                     if self.queue.empty() and len(self.ThreadPool) == 0:
-                        logging.info('no running collect task.   ' + threading.current_thread().getName())
+                        if DeletePcap:
+                            for p in os.listdir(os.path.join(capture_path)):
+                                if os.path.isdir(os.path.join(capture_path, p)):
+                                    rmtree(os.path.join(capture_path, p), ignore_errors=False, onerror=None)
+                        # logging.info('no running collect task.   ' + threading.current_thread().getName())
+                        pass
                     else:
                         logging.info('have a running collect task.  ' + threading.current_thread().getName())
                         item = self.queue.get()
@@ -234,6 +237,7 @@ class CollectThread:
                             # print(a.start_time)
                             session.commit()
                         except:
+                            # print("回滚")
                             session.rollback()
                         finally:
                             session.close()
@@ -265,15 +269,19 @@ class CollectThread:
                                     if 'hl7' in filepath:
                                         threadOperator = threading.Thread(name='hl7-ReConstruct'+'-' + currentPath, target=dpktConstruct.construct, args=[currentPath, filepath, 'hl7'])
                                     elif 'dicom' in filepath:
+                                        # continue
                                         threadOperator = threading.Thread(name='dicom-ReConstruct' + '-' + currentPath, target=PduConstruct.construct, args=[currentPath, filepath, 'dicom'])
                                         pass
                                         # threadOperator = threading.Thread(name='dicom-ReConstruct'+'-' + currentPath,target=PduParse, args=[os.path.join(currentPath, filepath)])
                                     elif 'astm' in filepath:
+                                        # continue
                                         threadOperator = threading.Thread(name='astm-ReConstruct'+'-' + currentPath,target=dpktConstruct.construct, args=[currentPath, filepath, 'astm'])
                                     elif 'http' in filepath:
+                                        # continue
                                         threadOperator = threading.Thread(name='http-ReConstruct'+'-' + currentPath,target=dpktHttpConstruct.construct, args=[currentPath, filepath, currentMessage['protocol'] + '|http', True])
                                         # continue
                                     elif 'ftp' in filepath:
+                                        # continue
                                         threadOperator = threading.Thread(name='ftp-ReConstruct'+'-' + currentPath,target=dpktConstruct.construct, args=[currentPath, filepath, currentMessage['protocol'] + '|ftp'])
                                         # continue
                                     self.pcapThreadPool.append(threadOperator)
@@ -281,10 +289,6 @@ class CollectThread:
                                     logging.info(filepath + ' pcap file reconstruct thread is starting.  ' + threading.current_thread().getName())
                             self.queue.task_done()
                             if not currentMessage['id'] is None:
-                                # session.execute('update `collect_result` set `end_time`=%s, 
-                                # `size`=%d where `id` = %d;'%(datetime.datetime.now()
-                                # .strftime("%Y-%m-%d %H:%M:%S"), size, currentMessage['id'])).fetchall()
-                                # session.commit()
                                 session = DBSession()
                                 try:
                                     a = session.query(CollectResult).filter(CollectResult.id == currentMessage['id']).one()

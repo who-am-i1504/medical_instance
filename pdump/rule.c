@@ -332,7 +332,7 @@ int ProcessAll(struct JudgeFirst *root, struct rte_mbuf *target)
 
 int ProcessAllFtp(struct JudgeFirst *root, struct rte_mbuf *target)
 {
-	struct JudgeFirst *q;
+    struct JudgeFirst *q;
     struct rte_mbuf * mbuf = target;
     int current_length;
     current_length = rte_pktmbuf_data_len(target);
@@ -343,7 +343,7 @@ int ProcessAllFtp(struct JudgeFirst *root, struct rte_mbuf *target)
     if (current_length < 40)
         return 0;
     uint16_t * flags = p + 46;
-	uint32_t * src_ip = p + 26;
+    uint32_t * src_ip = p + 26;
     uint32_t * dst_ip = p + 30;
     uint32_t * src_port = p + 34;
     uint32_t * dst_port = p + 36;

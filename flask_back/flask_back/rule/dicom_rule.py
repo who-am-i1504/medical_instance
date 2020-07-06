@@ -48,7 +48,10 @@ def rule_add_string():
     data = None
     back = copy.deepcopy(cnts.back_message)
     json_data = request.get_json()
-    json_data['value'] = json_data['value'].replace('\\r', '\r')
+    for character in cnts.special_character.keys():
+        if character in json_data['value']:
+            json_data['value'] = json_data['value'].replace(character, cnts.special_character[character])
+    # json_data['value'] = json_data['value'].replace('\\r', '\r')
 
     addr = request.remote_addr
     path = request.path
@@ -128,7 +131,8 @@ def dicom_rule_get():
     addr = request.remote_addr
     path = request.path
     log.info(cnts.requestStart(addr, path, json_data))
-
+    if 'pageSize' in json_data.keys():
+        page_size = json_data['pageSize']
     try:
         result = db.session.execute('select count(1) from `rule_dicom`;')
         db.session.commit()

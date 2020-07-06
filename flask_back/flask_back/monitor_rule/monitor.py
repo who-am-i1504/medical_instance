@@ -2,8 +2,7 @@ import copy, datetime
 from flask import (request, jsonify, Blueprint)
 from flask_back import db, jsonschema, ValidationError, log
 import flask_back.constant as cnts
-from flask_back.dao.sql import MonitorRule, MessageMain, AAssociateRQ, AAssociateAC, AAssociateRJ, AReleaseRQ, \
-    AReleaseRP, ABort, PDataTF, ActiveResult, ActiveFindIp
+from flask_back.dao.sql import MonitorRule
 
 from .active_find import submitParams
 
@@ -21,7 +20,8 @@ def monitor_hl7_page():
     addr = request.remote_addr
     path = request.path
     log.info(cnts.requestStart(addr, path, json_data))
-
+    if 'pageSize' in json_data.keys():
+        page_size = json_data['pageSize']
     try:
         result = db.session.execute('select count(1) from `message`;')
         db.session.commit()
@@ -45,7 +45,22 @@ def monitor_hl7_page():
             for i in data:
                 a = {}
                 for key in i.keys():
-                    a[key] = i[key]
+                    if 'time' in key and i[key] is not None:
+                        a[key] = i[key].strftime('%Y-%m-%d %H:%M:%S')
+                    elif 'sender_tag' == key or 'receiver_tag' == key:
+                        if i[key] > 0:
+                            a[key] = True
+                        else:
+                            a[key] = False
+                    elif key == 'size':
+                        a[key] = '{:.2f}'.format(i[key]/1024) + 'KB'
+                    else:
+                        if i[key] is None or i[key] == '':
+                            a[key] = '无'
+                        else:
+                            a[key] = i[key]
+                        # a[key] = i[key]
+                    # a[key] = i[key]
                 back['data'].append(a)
     except Exception as e:
         back['message'] = cnts.database_error_message
@@ -88,7 +103,22 @@ def monitor_hl7_id():
             data = data[0]
             # for i in data:
             for j in data.keys():
-                back['data'][j] = data[j]
+                if 'time' in j and data[j] is not None:
+                    back['data'][j] = data[j].strftime('%Y-%m-%d %H:%M:%S')
+                elif 'sender_tag' == j or 'receiver_tag' == j:
+                    if data[j] > 0:
+                        back['data'][j] = True
+                    else:
+                        back['data'][j] = False
+                elif j == 'size':
+                    back['data'][j] = '{:.2f}'.format(data[j]/1024) + 'KB'
+                else:
+                    if data[j] is None or data[j] == '':
+                        back['data'][j] = '无'
+                    else:
+                        back['data'][j] = data[j]
+                    # back['data'][j] = data[j]
+                # back['data'][j] = data[j]
     except:
         back['message'] = cnts.database_error_message
         back['status'] = cnts.database_error
@@ -113,7 +143,8 @@ def monitor_astm_page():
     addr = request.remote_addr
     path = request.path
     log.info(cnts.requestStart(addr, path, json_data))
-
+    if 'pageSize' in json_data.keys():
+        page_size = json_data['pageSize']
     try:
         result = db.session.execute('select count(1) from `astm_main`;')
         db.session.commit()
@@ -136,7 +167,22 @@ def monitor_astm_page():
             for i in data:
                 a = {}
                 for key in i.keys():
-                    a[key] = i[key]
+                    if 'time' in key and i[key] is not None:
+                        a[key] = i[key].strftime('%Y-%m-%d %H:%M:%S')
+                    elif 'sender_tag' == key or 'receiver_tag' == key:
+                        if i[key] > 0:
+                            a[key] = True
+                        else:
+                            a[key] = False
+                    elif key == 'size':
+                        a[key] = '{:.2f}'.format(i[key]/1024) + 'KB'
+                    else:
+                        if i[key] is None or i[key] == '':
+                            a[key] = '无'
+                        else:
+                            a[key] = i[key]
+                        # a[key] = i[key]
+                    # a[key] = i[key]
                 back['data'].append(a)
     except:
         back['message'] = cnts.database_error_message
@@ -162,7 +208,7 @@ def monitor_astm_id():
     addr = request.remote_addr
     path = request.path
     log.info(cnts.requestStart(addr, path, json_data))
-
+    
     try:
         result = db.session.execute(
             "SELECT main.*, GROUP_CONCAT(DISTINCT seg.`content` ORDER BY seg.`id` SEPARATOR '\\n') as `content`\
@@ -179,7 +225,22 @@ def monitor_astm_id():
             data = data[0]
             # for i in data:
             for j in data.keys():
-                back['data'][j] = data[j]
+                if 'time' in j and data[j] is not None:
+                    back['data'][j] = data[j].strftime('%Y-%m-%d %H:%M:%S')
+                elif 'sender_tag' == j or 'receiver_tag' == j:
+                    if data[j] > 0:
+                        back['data'][j] = True
+                    else:
+                        back['data'][j] = False
+                elif j == 'size':
+                    back['data'][j] = '{:.2f}'.format(data[j]/1024) + 'KB'
+                else:
+                    if data[j] is None or data[j] == '':
+                        back['data'][j] = '无'
+                    else:
+                        back['data'][j] = data[j]
+                    # back['data'][j] = data[j]
+                # back['data'][j] = data[j]
     except:
         back['message'] = cnts.database_error_message
         back['status'] = cnts.database_error
@@ -204,7 +265,8 @@ def monitor_dicom_page():
     addr = request.remote_addr
     path = request.path
     log.info(cnts.requestStart(addr, path, json_data))
-
+    if 'pageSize' in json_data.keys():
+        page_size = json_data['pageSize']
     try:
         result = db.session.execute('select count(1) from `patient_info`;')
         db.session.commit()
@@ -253,7 +315,18 @@ def monitor_dicom_page():
         for index, p in enumerate(patient):
             a = {}
             for i in p.keys():
-                a[i] = p[i]
+                if 'time' in i and p[i] is not None:
+                    a[i] = p[i].strftime('%Y-%m-%d %H:%M:%S')
+                elif 'sender_tag' == i or 'receiver_tag' == i:
+                    if p[i] > 0:
+                        a[i] = True
+                    else:
+                        a[i] = False
+                elif i == 'size':
+                    a[i] = '{:.2f}'.format(p[i]/1024) + 'KB'
+                else:
+                    a[i] = p[i]
+                # a[i] = p[i]
             if len(series) > index:
                 for i in series[index].keys():
                     a[i] = series[index][i]
@@ -289,7 +362,7 @@ def monitor_dicom_id():
     addr = request.remote_addr
     path = request.path
     log.info(cnts.requestStart(addr, path, json_data))
-
+    
     try:
         patient = db.session.execute(
             "SELECT *\
@@ -333,7 +406,17 @@ def monitor_dicom_id():
             p = patient[0]
             back['data'] = {}
             for i in p.keys():
-                back['data'][i] = p[i]
+                if 'time' in i and p[i] is not None:
+                    back['data'][i] = p[i].strftime('%Y-%m-%d %H:%M:%S')
+                elif 'sender_tag' == i or 'receiver_tag' == i:
+                    if p[i] > 0:
+                        back['data'][i] = True
+                    else:
+                        back['data'][i] = False
+                elif i == 'size':
+                    back['data'][i] = '{:.2f}'.format(p[i]/1024) + 'KB'
+                else:
+                    back['data'][i] = p[i]
             if len(series) > 0:
                 for i in series[index].keys():
                     back['data'][i] = series[index][i]
@@ -367,6 +450,9 @@ def monitor_get():
     addr = request.remote_addr
     path = request.path
     log.info(cnts.requestStart(addr, path, json_data))
+
+    if 'pageSize' in json_data.keys():
+        page_size = json_data['pageSize']
 
     try:
         result = db.session.execute('select count(1) from `monitor_rule`;')
@@ -568,29 +654,99 @@ def monitor_delete():
 
     return jsonify(back)
 
+@bp.route('/rule/get_by_ip', methods=['POST'])
+@jsonschema.validate('monitor', 'get_by_ip')
+def monitor_get_ip():
+    back = copy.deepcopy(cnts.back_message)
+    json_data = request.get_json()
+    addr = request.remote_addr
+    path = request.path
+    page_size = cnts.page_size
+    log.info(cnts.requestStart(addr, path, json_data))
+
+    if 'pageSize' in json_data.keys():
+        page_size = json_data['pageSize']
+    try:
+        result = db.session.execute('select count(1) from `monitor_rule` where `ip` = \'%s\';' % (json_data['ip']))
+        db.session.commit()
+        log.info(cnts.databaseSuccess(addr, path, '`monitor_result`'))
+        back['size'] = result.fetchall()[0][0]
+        # current = MonitorRule.query.filter(MonitorRule.id == json_data['id']).first()
+        current = db.session.execute(
+            'select * from `monitor_rule` where `ip` = \'%s\' limit %d,%d;' % (json_data['ip'], (json_data['page'] - 1) * page_size, page_size))
+        db.session.commit()
+        data = current.fetchall()
+        log.info(cnts.databaseSuccess(addr, path, '`monitor_result`'))
+        back['data'] = []
+        if not data == None:
+            for i in data:
+                a = {}
+                for j in i.keys():
+                    a[j] = i[j]
+                back['data'].append(a)
+    except:
+        back['status'] = cnts.database_error
+        back['message'] = cnts.database_error_message
+        log.error(cnts.errorLog(addr, path, 'database'))
+        return jsonify(back)
+        
+    log.info(cnts.successLog(addr, path))
+    return jsonify(back)
+
+
+def getHL7DefaultSize():
+    return "SELECT COUNT(1) as `sum_num`, SUM(main.`size`) as `sum_size`, MIN(main.`time`) as `start_time`, MAX(main.`time`) as `end_time`\
+        FROM `message` as main\
+        WHERE main.`sender_tag` > 0 or main.`receiver_tag` > 0;"
+
+def dealHL7DefaultScript(page, page_size):
+    
+    return "SELECT main.*, GROUP_CONCAT(DISTINCT seg.`content` ORDER BY seg.`seq` SEPARATOR '\\n') as `content`\
+        FROM `message` as main LEFT JOIN `segment` as seg ON main.`id` = seg.`id`\
+        WHERE main.`sender_tag` > 0 or main.`receiver_tag` > 0\
+        GROUP BY main.`id`\
+        LIMIT {0},{1};".format((page - 1) * page_size, page_size)
+    
+
 def getHL7Size(ip, port = None):
     if port is None:
         return "SELECT COUNT(1) as `sum_num`, SUM(main.`size`) as `sum_size`, MIN(main.`time`) as `start_time`, MAX(main.`time`) as `end_time`\
             FROM `message` as main\
             WHERE main.`send_ip_port` LIKE '{0}:%' or main.`receiver_ip_port` LIKE '{0}:%';".format(ip)
     else:
-        return "SELECT COUNT(1) as `sum_num`, SUM(main.size) as `sum_size`\
+        return "SELECT COUNT(1) as `sum_num`, SUM(main.`size`) as `sum_size`, MIN(main.`time`) as `start_time`, MAX(main.`time`) as `end_time`\
             FROM `message` as main\
-            WHERE main.`send_ip_port` LIKE '{0}:{1}' or main.`receiver_ip_port` LIKE '{0}:{1}';".format(ip, port)
+            WHERE main.`send_ip_port` = '{0}:{1}' or main.`receiver_ip_port` = '{0}:{1}';".format(ip, port)
 
 def dealHL7Script(ip, page, page_size, port=None):
     if port is None:
-        return "SELECT main.`id`, main.`size`, main.`send_ip_port`, main.`receiver_ip_port`, GROUP_CONCAT(DISTINCT seg.`content` ORDER BY seg.`seq` SEPARATOR '\\n') as `content`\
+        return "SELECT main.*, GROUP_CONCAT(DISTINCT seg.`content` ORDER BY seg.`seq` SEPARATOR '\\n') as `content`\
             FROM `message` as main LEFT JOIN `segment` as seg ON main.`id` = seg.`id`\
             WHERE main.`send_ip_port` LIKE '{0}:%' or main.`receiver_ip_port` LIKE '{0}:%'\
             GROUP BY main.`id`\
             LIMIT {1},{2};".format(ip, (page - 1) * page_size, page_size)
     else:
-        return "SELECT main.`id`, main.`size`, main.`send_ip_port`, main.`receiver_ip_port`, GROUP_CONCAT(DISTINCT seg.`content` ORDER BY seg.`seq` SEPARATOR '\\n') as `content`\
+        return "SELECT main.*, GROUP_CONCAT(DISTINCT seg.`content` ORDER BY seg.`seq` SEPARATOR '\\n') as `content`\
             FROM `message` as main LEFT JOIN `segment` as seg ON main.`id` = seg.`id`\
-            WHERE main.`send_ip_port` LIKE '{0}:{1}' or main.`receiver_ip_port` LIKE '{0}:{1}'\
+            WHERE main.`send_ip_port` = '{0}:{1}' or main.`receiver_ip_port` = '{0}:{1}'\
             GROUP BY main.`id`\
             LIMIT {2},{3};".format(ip, port, (page - 1) * page_size, page_size)
+
+def getAstmDefaultSize():
+    
+    return "SELECT COUNT(1) as `sum_num`, SUM(main.`size`) as `sum_size`, MIN(main.`time`) as `start_time`, MAX(main.`time`) as `end_time`\
+        FROM `astm_main` as main\
+        WHERE main.`sender_tag` > 0 or main.`receiver_tag` > 0;"
+   
+
+def dealAstmDefalultScript(page, page_size):
+    
+    return "SELECT main.*, GROUP_CONCAT(DISTINCT seg.`content` ORDER BY seg.`id` SEPARATOR '\\n') as `content`\
+        FROM `astm_main` as main LEFT JOIN `astm_record` as seg ON main.`id` = seg.`main_id`\
+        WHERE main.`sender_tag` > 0 or main.`receiver_tag` > 0\
+        GROUP BY main.`id`\
+        LIMIT {0},{1};".format((page - 1) * page_size, page_size)
+    
 
 def getAstmSize(ip, port = None):
     if port is None:
@@ -598,23 +754,41 @@ def getAstmSize(ip, port = None):
             FROM `astm_main` as main\
             WHERE main.`send_ip_port` LIKE '{0}:%' or main.`receiver_ip_port` LIKE '{0}:%';".format(ip)
     else:
-        return "SELECT COUNT(1) as `sum_num`, SUM(main.size) as `sum_size`\
+        return "SELECT COUNT(1) as `sum_num`, SUM(main.`size`) as `sum_size`, MIN(main.`time`) as `start_time`, MAX(main.`time`) as `end_time`\
             FROM `astm_main` as main\
-            WHERE main.`send_ip_port` LIKE '{0}:{1}' or main.`receiver_ip_port` LIKE '{0}:{1}';".format(ip, port)
+            WHERE main.`send_ip_port` = '{0}:{1}' or main.`receiver_ip_port` = '{0}:{1}';".format(ip, port)
 
 def dealAstmScript(ip, page, page_size, port=None):
     if port is None:
-        return "SELECT main.`id`, main.`size`, main.`send_ip_port`, main.`receiver_ip_port`, GROUP_CONCAT(DISTINCT seg.`content` ORDER BY seg.`id` SEPARATOR '\\n') as `content`\
+        return "SELECT main.*, GROUP_CONCAT(DISTINCT seg.`content` ORDER BY seg.`id` SEPARATOR '\\n') as `content`\
             FROM `astm_main` as main LEFT JOIN `astm_record` as seg ON main.`id` = seg.`main_id`\
             WHERE main.`send_ip_port` LIKE '{0}:%' or main.`receiver_ip_port` LIKE '{0}:%'\
             GROUP BY main.`id`\
             LIMIT {1},{2};".format(ip, (page - 1) * page_size, page_size)
     else:
-        return "SELECT main.`id`, main.`size`, main.`send_ip_port`, main.`receiver_ip_port`, GROUP_CONCAT(DISTINCT seg.`content` ORDER BY seg.`id` SEPARATOR '\\n') as `content`\
+        return "SELECT main.*, GROUP_CONCAT(DISTINCT seg.`content` ORDER BY seg.`id` SEPARATOR '\\n') as `content`\
             FROM `astm_main` as main LEFT JOIN `astm_record` as seg ON main.`id` = seg.`main_id`\
-            WHERE main.`send_ip_port` LIKE '{0}:{1}' or main.`receiver_ip_port` LIKE '{0}:{1}'\
+            WHERE main.`send_ip_port` = '{0}:{1}' or main.`receiver_ip_port` = '{0}:{1}'\
             GROUP BY main.`id`\
             LIMIT {2},{3};".format(ip, port, (page - 1) * page_size, page_size)
+
+
+def getDICOMDefaultSize():
+    
+    return "SELECT COUNT(1) as `sum_num`, SUM(main.`size`) as `sum_size`, MIN(main.`time`) as `start_time`, MAX(main.`time`) as `end_time`\
+        FROM `patient_info` as main\
+        WHERE main.`sender_tag` > 0 or main.`receiver_tag` > 0;"
+    
+
+def dealDICOMDefaultScript(page, page_size):
+    
+    return "SELECT *\
+        FROM `patient_info` as main LEFT JOIN `series_info` as series ON main.`id` = series.`id` LEFT JOIN `study_info` as study ON main.`id` = study.`id` LEFT JOIN `image_info` as image ON main.`id` = image.`id`\
+        WHERE main.`sender_tag` > 0 or main.`receiver_tag` > 0\
+        GROUP BY main.`id`\
+        LIMIT {0},{1};".format((page - 1) * page_size, page_size)
+
+
 
 def getDICOMSize(ip, port = None):
     if port is None:
@@ -622,9 +796,9 @@ def getDICOMSize(ip, port = None):
             FROM `patient_info` as main\
             WHERE main.`send_ip_port` LIKE '{0}:%' or main.`receiver_ip_port` LIKE '{0}:%';".format(ip)
     else:
-        return "SELECT COUNT(1) as `sum_num`, SUM(main.size) as `sum_size`\
+        return "SELECT COUNT(1) as `sum_num`, SUM(main.`size`) as `sum_size`, MIN(main.`time`) as `start_time`, MAX(main.`time`) as `end_time`\
             FROM `astm_main` as main\
-            WHERE main.`send_ip_port` LIKE '{0}:{1}' or main.`receiver_ip_port` LIKE '{0}:{1}';".format(ip, port)
+            WHERE main.`send_ip_port` = '{0}:{1}' or main.`receiver_ip_port` = '{0}:{1}';".format(ip, port)
 
 def dealDICOMScript(ip, page, page_size, port=None):
     if port is None:
@@ -636,9 +810,10 @@ def dealDICOMScript(ip, page, page_size, port=None):
     else:
         return "SELECT *\
             FROM `patient_info` as main LEFT JOIN `series_info` as series ON main.`id` = series.`id` LEFT JOIN `study_info` as study ON main.`id` = study.`id` LEFT JOIN `image_info` as image ON main.`id` = image.`id`\
-            WHERE main.`send_ip_port` LIKE '{0}:{1}' or main.`receiver_ip_port` LIKE '{0}:{1}'\
+            WHERE main.`send_ip_port` = '{0}:{1}' or main.`receiver_ip_port` = '{0}:{1}'\
             GROUP BY main.`id`\
             LIMIT {2},{3};".format(ip, port, (page - 1) * page_size, page_size)
+
 
 
 @bp.route('/result/hl7', methods=['POST'])
@@ -651,10 +826,17 @@ def monitor_hl7_ip():
     path = request.path
     log.info(cnts.requestStart(addr, path, json_data))
     page_size = cnts.page_size
+
+    if 'pageSize' in json_data.keys():
+        page_size = json_data['pageSize']
     try:
         size = None
         result = None
-        if 'port' in json_data.keys():
+        if 'ip' not in json_data.keys():
+            size = db.session.execute(getHL7DefaultSize())
+            log.info(cnts.databaseSuccess(addr, path, '`message`'))
+            result = db.session.execute(dealHL7DefaultScript(json_data['page'], page_size))
+        elif 'port' in json_data.keys():
             size = db.session.execute(getHL7Size(json_data['ip'], port=json_data['port']))
             log.info(cnts.databaseSuccess(addr, path, '`message`'))
             result = db.session.execute(dealHL7Script(json_data['ip'], json_data['page'], page_size, port=json_data['port']))
@@ -666,37 +848,53 @@ def monitor_hl7_ip():
         db.session.commit()
 
         log.info(cnts.databaseSuccess(addr, path, '`message`'))
-        
+
         if size is None or result is None:
             back['data'] = []
             back['size'] = 0 
-            back['hl7_ize'] = '0MB'
+            back['hl7_size'] = '0MB'
             log.info(cnts.successLog(addr, path))
             return jsonify(back)
         size = size.fetchall()
         result = result.fetchall()
+        
         if len(size) > 0:
             back['size'] = size[0].sum_num
             if size[0]['sum_size'] is None:
-                back['hl7_ize'] = '0MB'
+                back['hl7_size'] = '0MB'
             else:
                 back['hl7_size'] = '%.2f'%(size[0]['sum_size']/1024/1024) + 'MB'
-            back['start_time'] = size[0]['start_time']
-            back['end_time'] = size[0]['end_time']
+            if size[0]['start_time'] is not None:
+                back['start_time'] = size[0]['start_time'].strftime('%Y-%m-%d %H:%M:%S')
+            else:
+                back['start_time'] = size[0]['start_time']
+            if size[0]['end_time'] is not None:
+                back['end_time'] = size[0]['end_time'].strftime('%Y-%m-%d %H:%M:%S')
+            else:
+                back['end_time'] = size[0]['end_time']
             back['data'] = []
             for i in result:
                 a = {}
                 for j in i.keys():
                     if j == 'send_ip_port':
-                        a['src_ip'] = i[j][0:i[j].find(':')]
-                        a['src_port'] = i[j][i[j].find(':') + 1:]
+                        a['send_ip_port'] = i[j]
                     elif j == 'receiver_ip_port':
-                        a['dst_ip'] = i[j][0:i[j].find(':')]
-                        a['dst_port'] = i[j][i[j].find(':') + 1:]
+                        a['receiver_ip_port'] = i[j]
                     elif j == 'size':
                         a[j] = '{:.2f}'.format(i[j]/1024) + 'KB'
+                    elif j == 'sender_tag' or j == 'receiver_tag':
+                        if i[j] > 0:
+                            a[j] = True
+                        else:
+                            a[j] = False
                     else:
-                        a[j] = i[j]
+                        if 'time' in j and i[j] is not None:
+                            a[j] = i[j].strftime('%Y-%m-%d %H:%M:%S')
+                        else:
+                            if i[j] is None or i[j] == '' or i[j] == ' ':
+                                a[j] = '无'
+                            else:
+                                a[j] = i[j]
                 back['data'].append(a)
     except:
         back['status'] = cnts.database_error
@@ -720,10 +918,16 @@ def monitor_astm_ip():
     path = request.path
     log.info(cnts.requestStart(addr, path, json_data))
     page_size = cnts.page_size
+    if 'pageSize' in json_data.keys():
+        page_size = json_data['pageSize']
     try:
         size = None
         result = None
-        if 'port' in json_data.keys():
+        if 'ip' not in json_data.keys():
+            size = db.session.execute(getAstmDefaultSize())
+            log.info(cnts.databaseSuccess(addr, path, '`astm_main`'))
+            result = db.session.execute(dealAstmDefalultScript(json_data['page'], page_size))
+        elif 'port' in json_data.keys():
             size = db.session.execute(getAstmSize(json_data['ip'], port=json_data['port']))
             log.info(cnts.databaseSuccess(addr, path, '`astm_main`'))
             result = db.session.execute(dealAstmScript(json_data['ip'], json_data['page'], page_size, port=json_data['port']))
@@ -748,22 +952,37 @@ def monitor_astm_ip():
                 back['astm_size'] = '0MB'
             else:
                 back['astm_size'] = '%.2f'%(size[0]['sum_size']/1024/1024) + 'MB'
-            back['start_time'] = size[0]['start_time']
-            back['end_time'] = size[0]['end_time']
+            if size[0]['start_time'] is not None:
+                back['start_time'] = size[0]['start_time'].strftime('%Y-%m-%d %H:%M:%S')
+            else:
+                back['start_time'] = size[0]['start_time']
+            if size[0]['end_time'] is not None:
+                back['end_time'] = size[0]['end_time'].strftime('%Y-%m-%d %H:%M:%S')
+            else:
+                back['end_time'] = size[0]['end_time']
             back['data'] = []
             for i in result:
                 a = {}
                 for j in i.keys():
                     if j == 'send_ip_port':
-                        a['src_ip'] = i[j][0:i[j].find(':')]
-                        a['src_port'] = i[j][i[j].find(':') + 1:]
+                        a['send_ip_port'] = i[j]
                     elif j == 'receiver_ip_port':
-                        a['dst_ip'] = i[j][0:i[j].find(':')]
-                        a['dst_port'] = i[j][i[j].find(':') + 1:]
+                        a['receiver_ip_port'] = i[j]
                     elif j == 'size':
                         a[j] = '{:.2f}'.format(i[j]/1024) + 'KB'
+                    elif j == 'sender_tag' or j == 'receiver_tag':
+                        if i[j] > 0:
+                            a[j] = True
+                        else:
+                            a[j] = False
                     else:
-                        a[j] = i[j]
+                        if 'time' in j and i[j] is not None:
+                            a[j] = i[j].strftime('%Y-%m-%d %H:%M:%S')
+                        else:
+                            if i[j] is None or i[j] == '':
+                                a[j] = '无'
+                            else:
+                                a[j] = i[j]
                 back['data'].append(a)
     except Exception as e:
         back['status'] = cnts.database_error
@@ -787,10 +1006,17 @@ def monitor_dicom_ip():
     path = request.path
     log.info(cnts.requestStart(addr, path, json_data))
     page_size = cnts.page_size
+
+    if 'pageSize' in json_data.keys():
+        page_size = json_data['pageSize']
     try:
         size = None
         result = None
-        if 'port' in json_data.keys():
+        if 'ip' not in json_data.keys():
+            size = db.session.execute(getDICOMDefaultSize())
+            log.info(cnts.databaseSuccess(addr, path, '`message`'))
+            result = db.session.execute(dealDICOMDefaultScript(json_data['page'], page_size))
+        elif 'port' in json_data.keys():
             size = db.session.execute(getDICOMSize(json_data['ip'], port=json_data['port']))
             log.info(cnts.databaseSuccess(addr, path, '`patient_info`'))
             result = db.session.execute(dealDICOmScript(json_data['ip'], json_data['page'], page_size, port=json_data['port']))
@@ -815,8 +1041,14 @@ def monitor_dicom_ip():
                 back['dicom_size'] = '0MB'
             else:
                 back['dicom_size'] = '%.2f'%(size[0]['sum_size']/1024/1024) + 'MB'
-            back['start_time'] = size[0]['start_time']
-            back['end_time'] = size[0]['end_time']
+            if size[0]['start_time'] is not None:
+                back['start_time'] = size[0]['start_time'].strftime('%Y-%m-%d %H:%M:%S')
+            else:
+                back['start_time'] = size[0]['start_time']
+            if size[0]['end_time'] is not None:
+                back['end_time'] = size[0]['end_time'].strftime('%Y-%m-%d %H:%M:%S')
+            else:
+                back['end_time'] = size[0]['end_time']
             back['data'] = []
             for i in result:
                 a = {}
@@ -824,15 +1056,23 @@ def monitor_dicom_ip():
                 a['content'] = b
                 for j in i.keys():
                     if j == 'send_ip_port':
-                        a['src_ip'] = i[j][0:i[j].find(':')]
-                        a['src_port'] = i[j][i[j].find(':') + 1:]
+                        a['send_ip_port'] = i[j]
                     elif j == 'receiver_ip_port':
-                        a['dst_ip'] = i[j][0:i[j].find(':')]
-                        a['dst_port'] = i[j][i[j].find(':') + 1:]
+                        a['receiver_ip_port'] = i[j]
                     elif j == 'size':
                         a[j] = '{:.2f}'.format(i[j]/1024) + 'KB'
+                    elif j == 'sender_tag' or j == 'receiver_tag':
+                        if i[j] > 0:
+                            a[j] = True
+                        else:
+                            a[j] = False
+                    elif j == 'id':
+                        a[j] = i[j]
                     else:
-                        b[j] = i[j]
+                        if 'time' == j and i[j] is not None:
+                            b[j] = i[j].strftime('%Y-%m-%d %H:%M:%S')
+                        else:
+                            b[j] = i[j]
                 back['data'].append(a)
     except Exception as e:
         back['status'] = cnts.database_error
@@ -886,6 +1126,9 @@ def monitor_work():
     log.info(cnts.successLog(addr, path))
 
     return back
+
+
+
 
 
 # @bp.route('/result/get', methods=['POST'])
@@ -1083,58 +1326,58 @@ def on_validation_error(e):
     return jsonify(cnts.params_exception)
 
 
-@bp.route('/result', methods=['POST'])
-def monitor_result():
-    status = cnts.status
-    message = cnts.message
-    json_data = request.get_json()
-    back_data = {}
-    if 'ip' not in json_data.keys():
-        back_data['status'] = cnts.params_error
-        back_data['status'] = cnts.params_error_message
-        return jsonify(back_data)
-    if isinstance(json_data['ip'], str):
-        try:
-            current = MonitorRule.query.filter(MonitorRule.ip == json_data['ip']).first()
-            if current is None or 'id' not in current.keys() or current['id'] is None or current['id'] <= 0:
-                back_data['status'] = cnts.ip_not_found
-                back_data['message'] = cnts.ip_not_found_message
-                return jsonify(back_data)
-        except:
-            status = cnts.database_error
-            message = cnts.database_error_message
-        try:
-            hl7_result = db.session.execute('select COUNT(1), SUM(size) from `message` '
-                                            'where %s = `send_ip_port` or %s = `receive_ip_port`' % (
-                                                json_data['ip'] + ':%', json_data['ip'] + ':%')).first()
-            dicom1_result = db.session.execute('select COUNT(1), SUM(pdu_length) from `a_associate_rq` '
-                                               'where %s = `send_ip_port` or %s = `receive_ip_port`'
-                                               % (json_data['ip'] + ':%', json_data['ip'] + ':%')).first()
-            dicom2_result = db.session.execute('select COUNT(1), SUM(pdu_length) from `a_associate_ac` '
-                                               'where %s = `send_ip_port` or %s = `receive_ip_port`' % (
-                                                   json_data['ip'] + ':%', json_data['ip'] + ':%')).first()
-            dicom3_result = db.session.execute('select COUNT(1), SUM(pdu_length) from `a_associate_rj` '
-                                               'where %s = `send_ip_port` or %s = `receive_ip_port`' % (
-                                                   json_data['ip'] + ':%', json_data['ip'] + ':%')).first()
-            dicom4_result = db.session.execute('select COUNT(1), SUM(pdu_length) from `a_release_rq` '
-                                               'where %s = `send_ip_port` or %s = `receive_ip_port`' % (
-                                                   json_data['ip'] + ':%', json_data['ip'] + ':%')).first()
-            dicom5_result = db.session.execute('select COUNT(1), SUM(pdu_length) from `a_release_rp` '
-                                               'where %s = `send_ip_port` or %s = `receive_ip_port`' % (
-                                                   json_data['ip'] + ':%', json_data['ip'] + ':%')).first()
-            dicom6_result = db.session.execute('select COUNT(1), SUM(pdu_length) from `a_bort` '
-                                               'where %s = `send_ip_port` or %s = `receive_ip_port`' % (
-                                                   json_data['ip'] + ':%', json_data['ip'] + ':%')).first()
-            dicom7_result = db.session.execute('select COUNT(1), SUM(pdu_length) from `p_data_tf` '
-                                               'where %s = `send_ip_port` or %s = `receive_ip_port`' % (
-                                                   json_data['ip'] + ':%', json_data['ip'] + ':%')).first()
-            db.session.commit()
-        except:
-            status = cnts.database_error
-            message = cnts.database_error_message
-    else:
-        status = cnts.type_error
-        message = cnts.type_error_message
-    back_data['status'] = status
-    back_data['message'] = message
-    return jsonify(back_data)
+# @bp.route('/result', methods=['POST'])
+# def monitor_result():
+#     status = cnts.status
+#     message = cnts.message
+#     json_data = request.get_json()
+#     back_data = {}
+#     if 'ip' not in json_data.keys():
+#         back_data['status'] = cnts.params_error
+#         back_data['status'] = cnts.params_error_message
+#         return jsonify(back_data)
+#     if isinstance(json_data['ip'], str):
+#         try:
+#             current = MonitorRule.query.filter(MonitorRule.ip == json_data['ip']).first()
+#             if current is None or 'id' not in current.keys() or current['id'] is None or current['id'] <= 0:
+#                 back_data['status'] = cnts.ip_not_found
+#                 back_data['message'] = cnts.ip_not_found_message
+#                 return jsonify(back_data)
+#         except:
+#             status = cnts.database_error
+#             message = cnts.database_error_message
+#         try:
+#             hl7_result = db.session.execute('select COUNT(1), SUM(size) from `message` '
+#                                             'where %s = `send_ip_port` or %s = `receive_ip_port`' % (
+#                                                 json_data['ip'] + ':%', json_data['ip'] + ':%')).first()
+#             dicom1_result = db.session.execute('select COUNT(1), SUM(pdu_length) from `a_associate_rq` '
+#                                                'where %s = `send_ip_port` or %s = `receive_ip_port`'
+#                                                % (json_data['ip'] + ':%', json_data['ip'] + ':%')).first()
+#             dicom2_result = db.session.execute('select COUNT(1), SUM(pdu_length) from `a_associate_ac` '
+#                                                'where %s = `send_ip_port` or %s = `receive_ip_port`' % (
+#                                                    json_data['ip'] + ':%', json_data['ip'] + ':%')).first()
+#             dicom3_result = db.session.execute('select COUNT(1), SUM(pdu_length) from `a_associate_rj` '
+#                                                'where %s = `send_ip_port` or %s = `receive_ip_port`' % (
+#                                                    json_data['ip'] + ':%', json_data['ip'] + ':%')).first()
+#             dicom4_result = db.session.execute('select COUNT(1), SUM(pdu_length) from `a_release_rq` '
+#                                                'where %s = `send_ip_port` or %s = `receive_ip_port`' % (
+#                                                    json_data['ip'] + ':%', json_data['ip'] + ':%')).first()
+#             dicom5_result = db.session.execute('select COUNT(1), SUM(pdu_length) from `a_release_rp` '
+#                                                'where %s = `send_ip_port` or %s = `receive_ip_port`' % (
+#                                                    json_data['ip'] + ':%', json_data['ip'] + ':%')).first()
+#             dicom6_result = db.session.execute('select COUNT(1), SUM(pdu_length) from `a_bort` '
+#                                                'where %s = `send_ip_port` or %s = `receive_ip_port`' % (
+#                                                    json_data['ip'] + ':%', json_data['ip'] + ':%')).first()
+#             dicom7_result = db.session.execute('select COUNT(1), SUM(pdu_length) from `p_data_tf` '
+#                                                'where %s = `send_ip_port` or %s = `receive_ip_port`' % (
+#                                                    json_data['ip'] + ':%', json_data['ip'] + ':%')).first()
+#             db.session.commit()
+#         except:
+#             status = cnts.database_error
+#             message = cnts.database_error_message
+#     else:
+#         status = cnts.type_error
+#         message = cnts.type_error_message
+#     back_data['status'] = status
+#     back_data['message'] = message
+#     return jsonify(back_data)

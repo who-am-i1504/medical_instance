@@ -13,6 +13,50 @@ import datetime
 
 bp = Blueprint('collect', __name__, url_prefix='/collect')
 
+@bp.route('/get', methods=['POST'])
+def getSize():
+    back = copy.deepcopy(cnts.back_message)
+
+    addr = request.remote_addr
+    path = request.path
+    log.info(cnts.requestStart(addr, path, ' '))
+
+    try:
+
+        result = db.session.execute(
+            'SELECT date(`submit`) as `date`, SUM(`size`) as `size`\
+            FROM `collect_result`\
+            GROUP BY `date`;')
+        db.session.commit()
+
+        log.info(cnts.databaseSuccess(addr, path, '`collect_result`'))
+
+        data = result.fetchall()
+        back['data'] = []
+        for i in data:
+            a = {}
+            a['date'] = i['date'].strftime('%Y-%m-%d')
+            a['数据量'] = i['size']
+            back['data'].append(a)
+        # print('here')
+    except:
+        back['message'] = cnts.database_error_message
+        back['status'] = cnts.database_error
+
+        log.error(cnts.errorLog(addr, path, 'database'))
+
+        return jsonify(back)
+
+    log.info(cnts.successLog(addr, path))
+
+    return jsonify(back)
+
+@bp.route('/state', methods=['GET'])
+def state():
+    back = copy.deepcopy(cnts.back_message)
+    back['data'] = MainCollect.getState() - 1
+    return jsonify(back)
+
 @bp.route('/start', methods=['POST'])
 @jsonschema.validate('collect', 'start')
 def start():
@@ -46,8 +90,12 @@ def start():
 
         back['data'] = {}
         back['data']['id'] = collect.id
+        if collect.port is None:
+            back['data']['port'] = '默认'
+        else:
+            back['data']['port'] = collect.port
         back['data']['protocol'] = collect.protocol
-        back['data']['time'] = collect.time
+        back['data']['time'] = str(collect.time) + '分钟'
         back['data']['submit'] = collect.submit.strftime('%Y-%m-%d %H:%M:%S')
     except:
         
@@ -72,8 +120,8 @@ def getByPage():
     path = request.path
     log.info(cnts.requestStart(addr, path, json_data))
 
-    if 'size' in json_data.keys():
-        page_size = json_data['size']
+    if 'pageSize' in json_data.keys():
+        page_size = json_data['pageSize']
     try:
         result = db.session.execute('select count(1) from `collect_result`;')
         db.session.commit()
@@ -82,7 +130,7 @@ def getByPage():
 
         back['size'] = result.fetchall()[0][0]
         result = db.session.execute(
-            'select `id`, `protocol`, `port`, `time`, `submit` from `collect_result` limit %d,%d;' % ((json_data['page'] - 1)*page_size, page_size))
+            'select * from `collect_result` limit %d,%d;' % ((json_data['page'] - 1)*page_size, page_size))
         db.session.commit()
 
         log.info(cnts.databaseSuccess(addr, path, '`collect_result`'))
@@ -93,9 +141,25 @@ def getByPage():
             a = {}
             a['id'] = i.id
             a['protocol'] = i.protocol
-            a['port'] = i.port
-            a['time'] = i.time
+            # print(i)
+            if i.port is None:
+                a['port'] = '默认'
+            else:
+                a['port'] = i.port
+            a['time'] = str(i.time) + '分钟'
             a['submit'] = i.submit.strftime('%Y-%m-%d %H:%M:%S')
+            if i.start_time is None:
+                a['start_time'] = '任务执行失败！'
+            else:
+                a['start_time'] = i.start_time.strftime('%Y-%m-%d %H:%M:%S')
+            if i.end_time is None:
+                a['end_time'] = '未完'
+            else:
+                a['end_time'] = i.end_time.strftime('%Y-%m-%d %H:%M:%S')
+            if i.size is None:
+                a['size'] = "0MB"
+            else:
+                a['size'] = '%.2f'%(i.size / 1024 / 1024) + 'MB'
             back['data'].append(a)
         # print('here')
     except:
@@ -133,11 +197,14 @@ def getOne():
             a = {}
             a['id'] = i.id
             a['protocol'] = i.protocol
-            a['port'] = i.port
-            a['time'] = i.time
+            if i.port is None:
+                a['port'] = '默认'
+            else:
+                a['port'] = i.port
+            a['time'] = str(i.time) + '分钟'
             a['submit'] = i.submit.strftime('%Y-%m-%d %H:%M:%S')
             if i.start_time is None:
-                a['start_time'] = 'null'
+                a['start_time'] = '任务执行失败！'
             else:
                 a['start_time'] = i.start_time.strftime('%Y-%m-%d %H:%M:%S')
             if i.end_time is None:
@@ -178,7 +245,7 @@ def getPosition():
         'country':'中国',
         'prov':'山东省',
         'city': '威海市',
-        'company':"xxx企业"
+        'company':"哈尔滨工业大学"
     }
     log.info(cnts.successLog(addr, path))
     return jsonify(back)
@@ -201,7 +268,7 @@ def getPositionByList():
             'country':'中国',
             'prov':'山东省',
             'city': '威海市',
-            'company':"xxx企业"
+            'company':"哈尔滨工业大学"
         })
     log.info(cnts.successLog(addr, path))
     return jsonify(back)

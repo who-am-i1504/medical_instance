@@ -5,17 +5,20 @@ import queue
 from concurrent.futures import ThreadPoolExecutor
 import threading
 
-threshold = 5
+threshold = 2
+threadPool = ThreadPoolExecutor(max_workers=20)
 class NIOWriter:
 
     def __init__(self, queSize=10000, semaNumber=threshold, maxThreadNum = threshold, executor=threshold-1):
         self.queue = queue.Queue(maxsize=queSize)
         self.threadNum = 0
         self.maxThreadNum = maxThreadNum
-        if executor is None:
-            self.executor = None
-        else:
-            self.executor = ThreadPoolExecutor(max_workers=executor)
+        # if executor is None:
+        #     self.executor = None
+        # else:
+        #     self.executor = ThreadPoolExecutor(max_workers=executor)
+        # self.executor.submit(calcute)
+        self.executor = threadPool
         self.loop = asyncio.new_event_loop()
         self.sema = asyncio.Semaphore(semaNumber,loop=self.loop)
         # self.loop.set_default_executor(self.executor)
@@ -113,8 +116,8 @@ class NIOWriter:
                         if len(self.dic) == 0:
                             # print(len(self.dic))
                             self.loop.stop()
-                            if not self.executor is None:
-                                self.executor.shutdown()
+                            # if not self.executor is None:
+                            #     self.executor.shutdown()
                             break
                     finally:
                         self._lock_for_dic.release()

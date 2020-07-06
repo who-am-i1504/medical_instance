@@ -10,6 +10,41 @@ import matplotlib
 matplotlib.use('pdf')
 import matplotlib.pyplot as plt
 from .state import dealIPPort
+import ast
+
+config = None
+if config is None:
+    with open('config/config.cfg', 'r') as f:
+        data = f.read().replace('\n', '')
+        config = ast.literal_eval(data)
+absPath = config['PicturePath']
+
+if config['PicturePath'][0] != '/':
+    absPath = os.path.join(os.getcwd(), config['PicturePath'])
+
+subPath = 1
+limit = 100000
+if not os.path.exists('config/.picture.cfg'):
+    with open('config/.picture.cfg', 'wb') as f:
+        f.write(b"{'currentPath':1,'limit': 100000}")
+        f.close()
+else:
+    with open('config/.picture.cfg', 'r') as f:
+        data = f.read().replace('\n', '')
+        subConf = ast.literal_eval(data)
+        subPath = subConf['currentPath']
+        limit = subConf['limit']
+
+
+def generateSubPath(subPath):
+    if not os.path.exists(os.path.join(absPath, str(subPath))):
+        os.mkdir(path=os.path.join(absPath, str(subPath)))
+    while len(os.listdir(os.path.join(absPath, str(subPath)))) >= limit:
+        subPath += 1
+        if not os.path.exists(os.path.join(absPath, str(subPath))):
+            os.mkdir(path=os.path.join(absPath, str(subPath)))
+    return str(subPath)
+    
 
 map_patient = {
     'PatientName':'patient_name',
@@ -50,10 +85,10 @@ map_type = {
     'HighBit':int
 }
 
-absPath = os.path.join(os.getcwd(),'upload')
+
 
 def writeImage(id, image):
-    path = str(id) + '.jpg'
+    path = os.path.join(generateSubPath(subPath), str(id) + '.jpg')
     if len(image.shape) > 3:
         pic_num = image.shape[0]
         height = int(pic_num ** 0.5)
@@ -74,6 +109,7 @@ def writeImage(id, image):
         plt.xticks([]),plt.yticks([])
         plt.imshow(image, cmap=plt.cm.bone)
         plt.savefig(os.path.join(absPath, path), bbox_inches='tight', dpi = 300)
+    plt.close()
     return path
 
 def readDcm(filename):
@@ -165,10 +201,16 @@ from pydicom.data import get_testdata_files
 
 def prase(path):
     if os.path.isdir(path):
+        i = 1
         for p in os.listdir(path):
+            print(i)
             prase(os.path.join(path, p))
+            i += 1
     else:
-        readDcm(path)
+        try:
+            readDcm(path)
+        except Exception as e:
+            print(e)
         # print(path)
 
 # if __name__ == "__main__":

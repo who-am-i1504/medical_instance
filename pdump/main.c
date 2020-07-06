@@ -600,7 +600,7 @@ pdump_rxtx(struct rte_mbuf *rxtx_bufs[], const uint16_t nb_in_deq, struct pdump_
 					}
 					else if (process_ftp(ftp_rule, ftp_size, rxtx_bufs[i]) > 0)
 					{
-						//printf("Here .\n");
+						printf("Here .\n");
 						AddInListFtp(ftp_root, rxtx_bufs[i]);
 						continue;
 					}
