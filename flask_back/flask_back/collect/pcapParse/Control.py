@@ -237,7 +237,7 @@ class CollectThread:
                             # print(a.start_time)
                             session.commit()
                         except:
-                            # print("回滚")
+                            print("回滚")
                             session.rollback()
                         finally:
                             session.close()
@@ -245,6 +245,7 @@ class CollectThread:
                         # process.returncode=0
                         self.ThreadPool.append(process)
                         self.state = _Running_
+                        self.queue.task_done()
                 elif self.state == _Running_:
                     # 若有正在运行的程序
                     for i in self.ThreadPool:
@@ -287,7 +288,7 @@ class CollectThread:
                                     self.pcapThreadPool.append(threadOperator)
                                     threadOperator.start()
                                     logging.info(filepath + ' pcap file reconstruct thread is starting.  ' + threading.current_thread().getName())
-                            self.queue.task_done()
+                            # print(currentMessage)
                             if not currentMessage['id'] is None:
                                 session = DBSession()
                                 try:
@@ -304,20 +305,40 @@ class CollectThread:
                 elif self.state == _Finished_:
                     # 若正在处理的程序已经完成，然后处理pcap文件
                     # 本状态可以进入运行状态
-                    for t in self.pcapThreadPool:
-                        if t.isAlive():
-                            continue
-                        self.pcapThreadPool.remove(t)
+                    while len(self.pcapThreadPool) > 0:
+                        if self.pcapThreadPool[0].isAlive():
+                            break
+                        else:
+                            self.pcapThreadPool.pop(0)
+                    # for t in self.pcapThreadPool:
+                    #     if t.isAlive():
+                    #         continue
+                    #     self.pcapThreadPool.remove(t)
                     if len(self.pcapThreadPool) == 0:
                         self.state = _NoRUN_
                         continue
                     if not self.queue.empty():
                         item = self.queue.get()
                         script, currentPath = self._startJob(item['protocol'], item['time'], item['path'])
-                        self.pcapPath.append(currentPath)
+                        item['currentPath'] = currentPath
+                        self.pcapPath.append(item)
                         process = self._runPopen(script)
+                        try:
+                            print(item['id'])
+                            a = session.query(CollectResult).filter(CollectResult.id == item['id']).one()
+                            a.start_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                            # print(a.start_time)
+                            session.commit()
+                        except:
+                            print("回滚")
+                            session.rollback()
+                        finally:
+                            session.close()
+                        # self.pcapPath.append(currentPath)
+                        # process.returncode=0
                         self.ThreadPool.append(process)
                         self.state = _Running_
+                        self.queue.task_done()
             finally:
                 CollectResource.release()
             tim.sleep(1)
