@@ -67,7 +67,7 @@
 #define HTTP_STR "http"
 #define FTP_STR "ftp"
 
-#define TX_STREAM_SIZE 64
+#define TX_STREAM_SIZE 128
 #define BURST_SIZE 32
 
 
@@ -636,59 +636,9 @@ pdump_rxtx(struct rte_mbuf *rxtx_bufs[], const uint16_t nb_in_deq, struct pdump_
 							s = s -> next;
 						}
 						clone_size_hl7 ++;
-                        rte_pktmbuf_free(rxtx_bufs[i]);
-						continue;
-		            }
-                }
-                if (p->dir & ENABLE_ASTM)
-                {
-                    if (ProcessAll(astm_root, rxtx_bufs[i]) > 0)
-					{
-						struct rte_mbuf *s;
-						struct rte_mbuf *last;
-						s = rxtx_bufs[i];
-						bufs_astm[clone_size_astm] = rte_pktmbuf_clone(s, clone_pool);
-						last = bufs_astm[clone_size_astm];
-						s = s -> next;
-						while(s != NULL)
-						{
-							// printf("Here \n");
-							s = rte_pktmbuf_clone(s, clone_pool);
-							last -> next = s;
-							last = s;
-							s = s -> next;
-						}
-						clone_size_astm ++;
-                        rte_pktmbuf_free(rxtx_bufs[i]);
-						continue;
-					}
-                }
-                if(p->dir & ENABLE_DICOM)
-                {
-                    if (ProcessAll(dicom_root, rxtx_bufs[i]) > 0)
-					{
-						struct rte_mbuf *s;
-						struct rte_mbuf *last;
-						s = rxtx_bufs[i];
-						bufs_dicom[clone_size_dicom] = rte_pktmbuf_clone(s, clone_pool);
-						last = bufs_dicom[clone_size_dicom];
-						s = s -> next;
-						while(s != NULL)
-						{
-							// printf("Here \n");
-							s = rte_pktmbuf_clone(s, clone_pool);
-							last -> next = s;
-							last = s;
-							s = s -> next;
-						}
-						clone_size_dicom ++;
-                        rte_pktmbuf_free(rxtx_bufs[i]);
-						continue;
-					}
-                }
-                if (p->dir & ENABLE_HL7)
-				{
-					if (process(root, rxtx_bufs[i]) > 0)
+                        // rte_pktmbuf_free(rxtx_bufs[i]);
+						//continue;
+		            }else if (process(root, rxtx_bufs[i]) > 0)
 					{
 						if (AddInList(hl7_root, rxtx_bufs[i]) > 0)
 						{
@@ -708,41 +658,33 @@ pdump_rxtx(struct rte_mbuf *rxtx_bufs[], const uint16_t nb_in_deq, struct pdump_
 							}
 							clone_size_hl7 ++;
 						}
-                        rte_pktmbuf_free(rxtx_bufs[i]);
-						continue;
+                        // rte_pktmbuf_free(rxtx_bufs[i]);
+						//continue;
 					}
-				}
-				if (p->dir & ENABLE_ASTM)
-				{
-					if (process(root_astm, rxtx_bufs[i]) > 0)
-					{
-						if (AddInList(astm_root, rxtx_bufs[i]) > 0)
-						{
-							struct rte_mbuf *s;
-							struct rte_mbuf *last;
-							s = rxtx_bufs[i];
-							bufs_astm[clone_size_astm] = rte_pktmbuf_clone(s, clone_pool);
-							last = bufs_astm[clone_size_astm];
-							s = s -> next;
-							while(s != NULL)
-							{
-								// printf("Here \n");
-								s = rte_pktmbuf_clone(s, clone_pool);
-								last -> next = s;
-								last = s;
-								s = s -> next;
-							}
-							clone_size_astm ++;
-						}
-                        rte_pktmbuf_free(rxtx_bufs[i]);
-						continue;
-						
-					}
-				}
+                }
 				
 				if(p->dir & ENABLE_DICOM)
-				{
-					if (process_dicom(root_dicom, dicom_rule, dicom_size, rxtx_bufs[i]) > 0)
+                {
+                    if (ProcessAll(dicom_root, rxtx_bufs[i]) > 0)
+					{
+						struct rte_mbuf *s;
+						struct rte_mbuf *last;
+						s = rxtx_bufs[i];
+						bufs_dicom[clone_size_dicom] = rte_pktmbuf_clone(s, clone_pool);
+						last = bufs_dicom[clone_size_dicom];
+						s = s -> next;
+						while(s != NULL)
+						{
+							// printf("Here \n");
+							s = rte_pktmbuf_clone(s, clone_pool);
+							last -> next = s;
+							last = s;
+							s = s -> next;
+						}
+						clone_size_dicom ++;
+                        // rte_pktmbuf_free(rxtx_bufs[i]);
+						// continue;
+					}else if (process_dicom(root_dicom, dicom_rule, dicom_size, rxtx_bufs[i]) > 0)
 					{
 						// printf("start.\n");
 						if (AddInList(dicom_root, rxtx_bufs[i]) > 0)
@@ -765,10 +707,57 @@ pdump_rxtx(struct rte_mbuf *rxtx_bufs[], const uint16_t nb_in_deq, struct pdump_
 							}
 							clone_size_dicom ++;
 						}
-                        rte_pktmbuf_free(rxtx_bufs[i]);
-						continue;
+                        // rte_pktmbuf_free(rxtx_bufs[i]);
+						// continue;
 					}
-				}
+                }
+
+                if (p->dir & ENABLE_ASTM)
+                {
+                    if (ProcessAll(astm_root, rxtx_bufs[i]) > 0)
+					{
+						struct rte_mbuf *s;
+						struct rte_mbuf *last;
+						s = rxtx_bufs[i];
+						bufs_astm[clone_size_astm] = rte_pktmbuf_clone(s, clone_pool);
+						last = bufs_astm[clone_size_astm];
+						s = s -> next;
+						while(s != NULL)
+						{
+							// printf("Here \n");
+							s = rte_pktmbuf_clone(s, clone_pool);
+							last -> next = s;
+							last = s;
+							s = s -> next;
+						}
+						clone_size_astm ++;
+                        // rte_pktmbuf_free(rxtx_bufs[i]);
+						// continue;
+					}else if (process(root_astm, rxtx_bufs[i]) > 0)
+					{
+						if (AddInList(astm_root, rxtx_bufs[i]) > 0)
+						{
+							struct rte_mbuf *s;
+							struct rte_mbuf *last;
+							s = rxtx_bufs[i];
+							bufs_astm[clone_size_astm] = rte_pktmbuf_clone(s, clone_pool);
+							last = bufs_astm[clone_size_astm];
+							s = s -> next;
+							while(s != NULL)
+							{
+								// printf("Here \n");
+								s = rte_pktmbuf_clone(s, clone_pool);
+								last -> next = s;
+								last = s;
+								s = s -> next;
+							}
+							clone_size_astm ++;
+						}
+                        // rte_pktmbuf_free(rxtx_bufs[i]);
+						// continue;
+						
+					}
+                }
 			}
             rte_pktmbuf_free(rxtx_bufs[i]);
 		}
