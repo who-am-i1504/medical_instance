@@ -133,6 +133,14 @@ class PDUStream:
             self.dic[content] = []
             return False
         pdu = reader[6:]
+        juLeng = len(pdu)
+        for i in self.dic[content]:
+            if juLeng >= PDULength:
+                break
+            juLeng += len(i)
+        if juLeng < PDULength:
+            self.dic[content].insert(0, reader)
+            return False
         while len(pdu) < PDULength:
             pdu = b''.join([pdu, self.dic[content].pop(0)])
         if len(pdu) > PDULength:
@@ -153,6 +161,14 @@ class PDUStream:
             self.dic[content] = []
             return False
         pdu = reader[6:]
+        juLeng = len(pdu)
+        for i in self.dic[content]:
+            if juLeng >= PDULength:
+                break
+            juLeng += len(i)
+        if juLeng < PDULength:
+            self.dic[content].insert(0, reader)
+            return False
         while len(pdu) < PDULength:
             pdu = b''.join([pdu, self.dic[content].pop(0)])
         if len(pdu) > PDULength:
@@ -193,6 +209,14 @@ class PDUStream:
     def pdu4Deal(self, reader):
         PDULength = byte2number(reader[2:6])
         pdv = b''.join([reader[6:]])
+        juLeng = len(pdv)
+        for i in self.dic[content]:
+            if juLeng >= PDULength:
+                break
+            juLeng += len(i)
+        if juLeng < PDULength:
+            self.dic[content].insert(0, reader)
+            return False
         while len(pdv) < PDULength:
             mid_data = self.dic[content].pop(0)
             last_dis = PDULength - len(pdv)
@@ -290,6 +314,14 @@ class PDUStream:
             elif reader[0:2] == b'\x05\x00' or reader[0:2] == b'\x06\x00' or reader[0:2] == b'\x07\x00':
                 PDULength = byte2number(reader[2:6])
                 pdv = reader[6:]
+                juLeng = len(pdv)
+                for i in self.dic[content]:
+                    if juLeng >= PDULength:
+                        break
+                    juLeng += len(i)
+                if juLeng < PDULength:
+                    self.dic[content].insert(0, reader)
+                    return False
                 while len(pdv) < PDULength:
                     pdv = b''.join([pdv, self.dic[content].pop(0)])
                 return PDU567
