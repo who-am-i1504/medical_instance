@@ -133,7 +133,19 @@ class PDUStream:
             self.dic[content] = []
             return False
         pdu = reader[6:]
+        juLeng = len(pdu)
+        for i in self.dic[content]:
+            if juLeng >= PDULength:
+                break
+            juLeng += len(i)
+        if juLeng < PDULength:
+            self.dic[content].insert(0, reader)
+            return False
         while len(pdu) < PDULength:
+            # if len(self.dic[content]) == 0:
+            #     self.dic[DCMTAG] = False
+            #     self.dic[content] = []
+            #     return False
             pdu = b''.join([pdu, self.dic[content].pop(0)])
         if len(pdu) > PDULength:
             self.dic[DCMTAG] = False
@@ -153,7 +165,19 @@ class PDUStream:
             self.dic[content] = []
             return False
         pdu = reader[6:]
+        juLeng = len(pdu)
+        for i in self.dic[content]:
+            if juLeng >= PDULength:
+                break
+            juLeng += len(i)
+        if juLeng < PDULength:
+            self.dic[content].insert(0, reader)
+            return False
         while len(pdu) < PDULength:
+            # if len(self.dic[content]) == 0:
+            #     self.dic[DCMTAG] = False
+            #     self.dic[content] = []
+            #     return False
             pdu = b''.join([pdu, self.dic[content].pop(0)])
         if len(pdu) > PDULength:
             self.dic[DCMTAG] = False
@@ -193,7 +217,19 @@ class PDUStream:
     def pdu4Deal(self, reader):
         PDULength = byte2number(reader[2:6])
         pdv = b''.join([reader[6:]])
+        juLeng = len(pdv)
+        for i in self.dic[content]:
+            if juLeng >= PDULength:
+                break
+            juLeng += len(i)
+        if juLeng < PDULength:
+            self.dic[content].insert(0, reader)
+            return False
         while len(pdv) < PDULength:
+            # if len(self.dic[content]) == 0:
+            #     self.dic[DCMTAG] = False
+            #     self.dic[content] = []
+            #     return False
             mid_data = self.dic[content].pop(0)
             last_dis = PDULength - len(pdv)
             if last_dis < len(mid_data):
@@ -290,7 +326,19 @@ class PDUStream:
             elif reader[0:2] == b'\x05\x00' or reader[0:2] == b'\x06\x00' or reader[0:2] == b'\x07\x00':
                 PDULength = byte2number(reader[2:6])
                 pdv = reader[6:]
+                juLeng = len(pdv)
+                for i in self.dic[content]:
+                    if juLeng >= PDULength:
+                        break
+                    juLeng += len(i)
+                if juLeng < PDULength:
+                    self.dic[content].insert(0, reader)
+                    return False
                 while len(pdv) < PDULength:
+                    # if len(self.dic[content]) == 0:
+                    #     self.dic[DCMTAG] = False
+                    #     self.dic[content] = []
+                    #     return False
                     pdv = b''.join([pdv, self.dic[content].pop(0)])
                 return PDU567
             else:
@@ -301,7 +349,7 @@ class PDUStream:
             return 
         if len(value) > 0:
             self.dic[content].append(value)
-        if len(self.dic[content]) > 1000:
+        if len(self.dic[content]) >= 1000:
             self.generate()
     
     def writeFile(self):

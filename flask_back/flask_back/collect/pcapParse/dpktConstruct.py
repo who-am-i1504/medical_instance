@@ -227,11 +227,12 @@ def construct(absPath, target, typer):
     while t.isAlive():
         writer.quit()
         time.sleep(1)
-    
+    # print('hl7 start')
     # if 'ftp' in typer:
     if os.path.exists(os.path.join(absPath, typer)) and len(os.listdir(os.path.join(absPath, typer))) > 0:
         for path in os.listdir(os.path.join(absPath, typer)):
             readByProtocol(os.path.join(absPath, typer, path), typer)
+    # print('end hl7')
 
     # elif typer == 'hl7':
     #     for path in os.listdir(os.path.join(absPath, typer)):

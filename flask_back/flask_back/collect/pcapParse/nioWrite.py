@@ -5,7 +5,7 @@ import queue
 from concurrent.futures import ThreadPoolExecutor
 import threading
 
-threshold = 2
+threshold = 20
 threadPool = ThreadPoolExecutor(max_workers=20)
 class NIOWriter:
 
