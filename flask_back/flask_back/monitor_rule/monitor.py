@@ -10,6 +10,211 @@ from .active_find import submitParams
 
 bp = Blueprint('monitor', __name__, url_prefix='/monitor')
 
+def geneHL7Rule(hl7_type = None, seqnumber = None, version=None):
+    rule = None
+    if hl7_type is not None:
+        if rule is None:
+            rule = " FIND_IN_SET('%s',main.`type`) " % (hl7_type)
+        else:
+            rule += " AND FIND_IN_SET('%s',main.`type`) " % (hl7_type)
+    if seqnumber is not None:
+        if rule is None:
+            rule = " '%s'=main.`seqnumber` " % (seqnumber)
+        else:
+            rule += " AND '%s'=main.`seqnumber` " % (seqnumber)
+    
+    if version is not None:
+        if rule is None:
+            rule = " '%s'=main.`version` " %(version)
+        else:
+            rule += " AND '%s'=main.`version` " % (version)
+    if rule is None:
+        rule = ' 1 ';    
+    return rule
+
+
+def getHL7SearSize(hl7_type = None, seqnumber = None, version=None):
+    return "SELECT COUNT(1) as `sum_num`, SUM(main.`size`) as `sum_size`, MIN(main.`time`) as `start_time`, MAX(main.`time`) as `end_time`\
+        FROM `message` as main\
+        WHERE " + geneHL7Rule(hl7_type=hl7_type, seqnumber=seqnumber, version=version) + ";"
+
+def getHL7Result(page,pageSize,hl7_type=None, seqnumber=None, version=None):
+
+    return "SELECT main.*, GROUP_CONCAT(DISTINCT seg.`content` ORDER BY seg.`seq` SEPARATOR '\\n') as `content`\
+        FROM `message` as main LEFT JOIN `segment` as seg ON main.`id` = seg.`id`\
+        WHERE " + geneHL7Rule(hl7_type=hl7_type, seqnumber=seqnumber, version=version) + " \
+        GROUP BY main.`id`\
+        LIMIT {0},{1};".format((page - 1) * pageSize, pageSize)
+
+def geneAstmRule(astm_type=None, version=None):
+    rule = None
+    if astm_type is not None:
+        if rule is None:
+            rule = " FIND_IN_SET('%s',main.`type`) " %(astm_type)
+        else:
+            rule += " AND FIND_IN_SET('%s',main.`type`) " % (astm_type)
+    
+    if version is not None:
+        if rule is None:
+            rule = " '%s'=main.`version` " %(version)
+        else:
+            rule += " AND '%s'=main.`version` " % (version)
+    
+    if rule is None:
+        rule = " 1 "
+    return rule
+
+def geneAstmSearSize(astm_type=None, version=None):
+    return "SELECT COUNT(1) as `sum_num`, SUM(main.`size`) as `sum_size`, MIN(main.`time`) as `start_time`, MAX(main.`time`) as `end_time`\
+        FROM `astm_main` as main\
+        WHERE " + geneAstmRule(astm_type=astm_type, version=version) + ";"
+
+def geneAstmResult(page, pageSize, astm_type=None, version=None):
+    return "SELECT main.*, GROUP_CONCAT(DISTINCT seg.`content` ORDER BY seg.`id` SEPARATOR '\\n') as `content`\
+        FROM `astm_main` as main LEFT JOIN `astm_record` as seg ON main.`id` = seg.`main_id`\
+        WHERE " + geneAstmRule(astm_type, version) +" \
+        GROUP BY main.`id`\
+        LIMIT {0},{1};".format((page - 1) * pageSize, pageSize)
+
+@bp.route('/hl7_search', methods=['POST'])
+@jsonschema.validate('monitor', 'searchHL7')
+def monitor_hl7_search():
+    back = copy.deepcopy(cnts.back_message)
+    page_size = cnts.page_size
+    json_data = request.get_json()
+
+    addr = request.remote_addr
+    path = request.path
+    hl7_type = None
+    seqnumber = None
+    version = None
+    log.info(cnts.requestStart(addr, path, json_data))
+    if 'pageSize' in json_data.keys():
+        page_size = json_data['pageSize']
+    if 'type' in json_data.keys():
+        hl7_type = json_data['type']
+    if 'seqnumber' in json_data.keys():
+        seqnumber = json_data['seqnumber']
+    if 'version' in json_data.keys():
+        version = json_data['version']
+    try:
+        result = db.session.execute(getHL7SearSize(hl7_type=hl7_type,seqnumber=seqnumber,version=version))
+        db.session.commit()
+
+        log.info(cnts.databaseSuccess(addr, path, '`message`'))
+
+        back['size'] = result.fetchall()[0]['sum_num']
+       
+        result = db.session.execute(getHL7Result(page=json_data['page'],pageSize=page_size,hl7_type=hl7_type,seqnumber=seqnumber,version=version))
+        log.info(cnts.databaseSuccess(addr, path, '`message`'))
+        db.session.commit()
+
+
+        data = result.fetchall()
+        back['data'] = []
+        if not data is None:
+            for i in data:
+                a = {}
+                for key in i.keys():
+                    if 'time' in key and i[key] is not None:
+                        a[key] = i[key].strftime('%Y-%m-%d %H:%M:%S')
+                    elif 'sender_tag' == key or 'receiver_tag' == key:
+                        if i[key] > 0:
+                            a[key] = True
+                        else:
+                            a[key] = False
+                    elif key == 'size':
+                        a[key] = '{:.2f}'.format(i[key]/1024) + 'KB'
+                    else:
+                        if i[key] is None or i[key] == '':
+                            a[key] = '无'
+                        else:
+                            a[key] = i[key]
+                        # a[key] = i[key]
+                    # a[key] = i[key]
+                back['data'].append(a)
+    except Exception as e:
+        back['message'] = cnts.database_error_message
+        back['status'] = cnts.database_error
+
+        log.error(cnts.errorLog(addr, path, 'database'))
+
+        return jsonify(back)
+
+    back['page'] = json_data['page']
+
+    log.info(cnts.successLog(addr, path))
+
+    return jsonify(back)
+
+@bp.route('/astm_search', methods=['POST'])
+@jsonschema.validate('monitor', 'searchHL7')
+def monitor_astm_search():
+    back = copy.deepcopy(cnts.back_message)
+    page_size = cnts.page_size
+    json_data = request.get_json()
+
+    addr = request.remote_addr
+    path = request.path
+    astm_type = None
+    version = None
+    log.info(cnts.requestStart(addr, path, json_data))
+    if 'pageSize' in json_data.keys():
+        page_size = json_data['pageSize']
+    if 'type' in json_data.keys():
+        astm_type = json_data['type']
+    if 'version' in json_data.keys():
+        version = json_data['version']
+    try:
+        result = db.session.execute(geneAstmSearSize(astm_type=astm_type,version=version))
+        db.session.commit()
+
+        log.info(cnts.databaseSuccess(addr, path, '`astm_main`'))
+
+        back['size'] = result.fetchall()[0]['sum_num']
+       
+        result = db.session.execute(geneAstmResult(page=json_data['page'],pageSize=page_size,astm_type=astm_type,version=version))
+        log.info(cnts.databaseSuccess(addr, path, '`astm_main`'))
+        db.session.commit()
+
+        data = result.fetchall()
+        back['data'] = []
+        if not data is None:
+            for i in data:
+                a = {}
+                for key in i.keys():
+                    if 'time' in key and i[key] is not None:
+                        a[key] = i[key].strftime('%Y-%m-%d %H:%M:%S')
+                    elif 'sender_tag' == key or 'receiver_tag' == key:
+                        if i[key] > 0:
+                            a[key] = True
+                        else:
+                            a[key] = False
+                    elif key == 'size':
+                        a[key] = '{:.2f}'.format(i[key]/1024) + 'KB'
+                    else:
+                        if i[key] is None or i[key] == '':
+                            a[key] = '无'
+                        else:
+                            a[key] = i[key]
+                        # a[key] = i[key]
+                    # a[key] = i[key]
+                back['data'].append(a)
+    except Exception as e:
+        back['message'] = cnts.database_error_message
+        back['status'] = cnts.database_error
+
+        log.error(cnts.errorLog(addr, path, 'database'))
+
+        return jsonify(back)
+
+    back['page'] = json_data['page']
+
+    log.info(cnts.successLog(addr, path))
+
+    return jsonify(back)
+
+
 @bp.route('/hl7_by_page', methods=['POST'])
 @jsonschema.validate('monitor', 'get')
 def monitor_hl7_page():
@@ -41,7 +246,7 @@ def monitor_hl7_page():
 
         data = result.fetchall()
         back['data'] = []
-        if not data == None:
+        if not data is None:
             for i in data:
                 a = {}
                 for key in i.keys():
