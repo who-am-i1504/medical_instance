@@ -4,6 +4,7 @@ from pydicom.errors import InvalidDicomError
 from .database.tables import PatientInfo, StudyInfo, SeriesInfo, ImageInfo, DBSession
 # import gdcm
 import numpy
+import threading
 import time
 from pydicom import dcmread
 import matplotlib
@@ -85,32 +86,36 @@ map_type = {
     'HighBit':int
 }
 
-
+PLOTLOCK = threading.Lock()
 
 def writeImage(id, image):
-    path = os.path.join(generateSubPath(subPath), str(id) + '.jpg')
-    if len(image.shape) > 3:
-        pic_num = image.shape[0]
-        height = int(pic_num ** 0.5)
-        width = int(pic_num / height)
-        if height * width < pic_num:
-            width += 1
-        f= plt.figure(figsize=(width*6.4, (4.8/6.4)*(width*6.4)),clear = True, dpi=300)
-        
-        plt.xticks([]),plt.yticks([])
-        for i in range(image.shape[0]):
-            f.add_subplot(width, height, i + 1)
-            plt.xticks([]), plt.yticks([])
-            plt.imshow(image[i], cmap = plt.cm.bone)
-        plt.subplots_adjust(wspace=0, hspace =0)
-        plt.savefig(os.path.join(absPath, path), bbox_inches='tight',dpi=300)
-    else:
-        f = plt.figure(clear = True)
-        plt.xticks([]),plt.yticks([])
-        plt.imshow(image, cmap=plt.cm.bone)
-        plt.savefig(os.path.join(absPath, path), bbox_inches='tight', dpi = 300)
-    plt.close()
-    return path
+    PLOTLOCK.acquire()
+    try:
+        path = os.path.join(generateSubPath(subPath), str(id) + '.jpg')
+        if len(image.shape) > 3:
+            pic_num = image.shape[0]
+            height = int(pic_num ** 0.5)
+            width = int(pic_num / height)
+            if height * width < pic_num:
+                width += 1
+            f = plt.figure(figsize=(width*6.4, (4.8/6.4)*(width*6.4)),clear = True, dpi=300)
+
+            plt.xticks([]),plt.yticks([])
+            for i in range(image.shape[0]):
+                f.add_subplot(width, height, i + 1)
+                plt.xticks([]), plt.yticks([])
+                plt.imshow(image[i], cmap = plt.cm.bone)
+            plt.subplots_adjust(wspace=0, hspace =0)
+            plt.savefig(os.path.join(absPath, path), bbox_inches='tight',dpi=300)
+        else:
+            f = plt.figure(clear = True)
+            plt.xticks([]),plt.yticks([])
+            plt.imshow(image, cmap=plt.cm.bone)
+            plt.savefig(os.path.join(absPath, path), bbox_inches='tight', dpi = 300)
+        plt.close()
+        return path
+    finally:
+        PLOTLOCK.release()
 
 def readDcm(filename):
     # Dcm 文件读取
