@@ -105,7 +105,7 @@ _Finished_ = 3
 device_id = 0
 
 CollectResource = threading.Lock()
-# stdout = open('.out', 'a')
+stdout = open('.out', 'a')
 class CollectThread:
 
     def __init__(self, threadnum = 1):
@@ -118,7 +118,7 @@ class CollectThread:
         self.queue = Queue(maxsize=threadnum)
         self.state= _NoRUN_
         self.Thread = threading.Thread(target=self._runSample)
-        # self.Thread.setDaemon(True)
+        self.Thread.setDaemon(True)
         self.Thread.start()
         logging.info('Main Thred Starting, And Watched Thread Starting.  ' + threading.current_thread().getName())
 
@@ -162,7 +162,7 @@ class CollectThread:
             params += 'dicom-dev='
             params += os.path.join(capture_path, currentPath, 'dicom.pcap')
             params += ','
-        if protocol == 'ASTM':
+        if  'ASTM' in protocol:
             params += 'astm-dev='
             params += os.path.join(capture_path, currentPath, 'astm.pcap')
             params += ','
@@ -204,8 +204,8 @@ class CollectThread:
             shell=True, 
             env=self.parent_env, 
             # stdin=PIPE, 
-            stdout=PIPE, 
-            stderr=PIPE, 
+            stdout=stdout, 
+            stderr=stdout, 
             universal_newlines=True)
         # for i in process.communicate():
         #     logging.info(i)
@@ -305,15 +305,15 @@ class CollectThread:
                 elif self.state == _Finished_:
                     # 若正在处理的程序已经完成，然后处理pcap文件
                     # 本状态可以进入运行状态
-                    while len(self.pcapThreadPool) > 0:
-                        if self.pcapThreadPool[0].isAlive():
-                            break
-                        else:
-                            self.pcapThreadPool.pop(0)
-                    # for t in self.pcapThreadPool:
-                    #     if t.isAlive():
-                    #         continue
-                    #     self.pcapThreadPool.remove(t)
+                    # while len(self.pcapThreadPool) > 0:
+                    #     if self.pcapThreadPool[0].isAlive():
+                    #         break
+                    #     else:
+                    #         self.pcapThreadPool.pop(0)
+                    for t in self.pcapThreadPool:
+                        if t.isAlive():
+                            continue
+                        self.pcapThreadPool.remove(t)
                     if len(self.pcapThreadPool) == 0:
                         self.state = _NoRUN_
                         continue
