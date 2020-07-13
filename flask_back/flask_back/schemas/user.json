@@ -7,9 +7,21 @@
             },
             "password":{
                 "type":"string"
+            },
+            "salt":{
+                "type":"string"
             }
         },
-        "required":["username", "password"]
+        "required":["username", "password", "salt"]
+    },
+    "logout":{
+        "type":"object",
+        "properties":{
+            "token":{
+                "type":"string"
+            }
+        },
+        "required":["token"]
     },
     "list":{
         "type":"object",
@@ -19,14 +31,71 @@
             },
             "page":{
                 "type":"integer"
-            },
-            "uuid":{
+            }
+        },
+        "required":["page"]
+    },
+    "changePwd":{
+        "type":"object",
+        "properties":{
+            "oldPsd":{
                 "type":"string"
             },
-            "token":{
+            "newPsd":{
                 "type":"string"
             }
         },
-        "required":["page", "uuid", "token"]
+        "required":["oldPsd", "newPsd"]
+    },
+    "userAdd":{
+        "type":"object",
+        "properties":{
+            "username":{
+                "type":"string"
+            },
+            "psd":{
+                "type":"string"
+            },
+            "authority":{
+                "type":"integer"
+            }
+        },
+        "required":["username", "psd"]
+    },
+    "updateUsername":{
+        "type":"object",
+        "properties":{
+            "username":{
+                "type":"string"
+            },
+            "uuid":{
+                "type":"string"
+            }
+        },
+        "required":["username", "uuid"]
+    },
+    "updatePassword":{
+        "type":"object",
+        "properties":{
+            "psd":{
+                "type":"string"
+            },
+            "uuid":{
+                "type":"string"
+            }
+        },
+        "required":["username", "uuid"]
+    },
+    "updateAuthority":{
+        "type":"object",
+        "properties":{
+            "authority":{
+                "type":"integer"
+            },
+            "uuid":{
+                "type":"string"
+            }
+        },
+        "required":["authority", "uuid"]
     }
 }

@@ -3,10 +3,46 @@ from flask_back import db, jsonschema, ValidationError, log
 import os
 import flask_back.constant as cnts
 from flask_back.constant import PicturePath
+import redis
+from flask_back.user.user import reids_pool
 
 # ALLOWED_EXTENSIONS=set(['png', 'jpg', 'JPG', 'PNG','gif', 'GIF'])
 
 bp = Blueprint('picture_download', __name__, url_prefix='/picture')
+
+@bp.before_request
+def validSession():
+    back = {
+        "status":205,
+        "message":"您的登录已过期或者您的账号已退出，请先登录。",
+        "data":{}
+    }
+    if request.path == '/login' or request.path == '/salt':
+        return None
+    session=redis.Redis(connection_pool=reids_pool)
+    if 'X-Token' in request.headers.keys():
+        sessionid = request.headers['X-Token']
+        if session.exists(sessionid):
+            if 'update' in request.path or 'add' in request.path or 'delete' in request.path:
+                if cnts.validEditor(session.hget(sessionid, 'authority')):
+                    return None
+                else:
+                    back['message'] = '您的权限不足'
+                    return jsonify(back)
+            elif 'start' in request.path:
+                if cnts.validCollect(session.hget(sessionid, 'authority')):
+                    return None
+                else:
+                    back['message'] = '您的权限不足'
+                    return jsonify(back)
+            elif 'download' in request.path:
+                if cnts.validDownload(session.hget(sessionid, 'authority')):
+                    return None
+                else:
+                    back['message'] = '您的权限不足'
+                    return jsonify(back)
+            return None
+    return jsonify(back)
 
 @bp.route('/download/<string:pic_name>', methods=['GET'])
 def download_one(pic_name):

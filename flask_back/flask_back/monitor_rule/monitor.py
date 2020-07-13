@@ -5,10 +5,69 @@ import flask_back.constant as cnts
 from flask_back.dao.sql import MonitorRule
 
 from .active_find import submitParams
+import redis
+from flask_back.user.user import reids_pool
 
 # from .company_ip import qcdata
 
 bp = Blueprint('monitor', __name__, url_prefix='/monitor')
+
+
+@bp.before_request
+def validSession():
+    back = {
+        "status":205,
+        "message":"您的登录已过期或者您的账号已退出，请先登录。",
+        "data":{}
+    }
+    if request.path == '/login' or request.path == '/salt':
+        return None
+    session=redis.Redis(connection_pool=reids_pool)
+    if 'X-Token' in request.headers.keys():
+        sessionid = request.headers['X-Token']
+        if session.exists(sessionid):
+            if 'update' in request.path or 'add' in request.path or 'delete' in request.path:
+                if cnts.validEditor(session.hget(sessionid, 'authority')):
+                    return None
+                else:
+                    back['message'] = '您的权限不足'
+                    return jsonify(back)
+            elif 'start' in request.path:
+                if cnts.validCollect(session.hget(sessionid, 'authority')):
+                    return None
+                else:
+                    back['message'] = '您的权限不足'
+                    return jsonify(back)
+            return None
+    return jsonify(back)
+
+@bp.route('/count', methods=['GET'])
+def get_count():
+    back = copy.deepcopy(cnts.back_message)
+    try:
+        hl7_count = db.session.execute('SELECT COUNT(1) FROM `message` WHERE `sender_tag` OR `receiver_tag`;')
+        dicom_count = db.session.execute('SELECT COUNT(1) FROM `patient_info` WHERE `sender_tag` OR `receiver_tag`;')
+        astm_count = db.session.execute('SELECT COUNT(1) FROM `astm_main` WHERE `sender_tag` OR `receiver_tag`;')
+        db.session.commit()
+        back['data'] = []
+        back['data'].append({
+            '协议类型':"HL7",
+            "数量":hl7_count.fetchall()[0][0]
+        })
+        back['data'].append({
+            '协议类型':"DICOM",
+            "数量":dicom_count.fetchall()[0][0]
+        })
+        back['data'].append({
+            '协议类型':"ASTM",
+            "数量":astm_count.fetchall()[0][0]
+        })
+    except Exception as e:
+        back['message'] = str(e)
+        back['status'] = 406
+    
+    return jsonify(back)
+
 
 def geneHL7Rule(hl7_type = None, seqnumber = None, version=None):
     rule = None

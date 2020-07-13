@@ -7,11 +7,42 @@ from flask_back.dao.sql import CollectResult
 import flask_back.constant as cnts
 import copy
 import datetime
+import redis
+from flask_back.user.user import reids_pool
 # from .company_ip import qcdata
 
 # MainCollect = CollectThread()
 
 bp = Blueprint('collect', __name__, url_prefix='/collect')
+
+
+@bp.before_request
+def validSession():
+    back = {
+        "status":205,
+        "message":"您的登录已过期或者您的账号已退出，请先登录。",
+        "data":{}
+    }
+    if request.path == '/login' or request.path == '/salt':
+        return None
+    session=redis.Redis(connection_pool=reids_pool)
+    if 'X-Token' in request.headers.keys():
+        sessionid = request.headers['X-Token']
+        if session.exists(sessionid):
+            if 'update' in request.path or 'add' in request.path or 'delete' in request.path:
+                if cnts.validEditor(session.hget(sessionid, 'authority')):
+                    return None
+                else:
+                    back['message'] = '您的权限不足'
+                    return jsonify(back)
+            elif 'start' in request.path:
+                if cnts.validCollect(session.hget(sessionid, 'authority')):
+                    return None
+                else:
+                    back['message'] = '您的权限不足'
+                    return jsonify(back)
+            return None
+    return jsonify(back)
 
 @bp.route('/get', methods=['POST'])
 def getSize():

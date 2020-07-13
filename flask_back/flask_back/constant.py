@@ -1,5 +1,7 @@
 import ast
 
+Roles = None
+
 page_size = 10
 
 ip_not_found = 408
@@ -62,6 +64,8 @@ if config is None:
     with open('config/config.cfg', 'r') as f:
         data = f.read().replace('\n', '')
         config = ast.literal_eval(data)
+RedisHost=config['redis_host']
+RedisPort=config['redis_port']
 PicturePath = config['PicturePath']
 mysqllink = config['mysql_username'] + ':' + config['mysql_password']+'@'+config['mysql_server']
 PcapPath = config['PcapPath']
@@ -83,6 +87,43 @@ special_character = {
     '\\t':'\t',
     '\\x1c':'\x1c'
 }
+
+def validEditor(authority):
+    if (int(authority) & Roles['Editor']) > 0:
+        return True
+    return False
+
+def validCollect(authority):
+    if (int(authority) & Roles['Editor']) > 0:
+        return True
+    return False
+
+def validDownload(authority):
+    if (int(authority) & Roles['Editor']) > 0:
+        return True
+    return False
+
+def validReaderAdmin(authority):
+    if (int(authority) & Roles['ReaderAdmin'] ) > 0:
+        return True
+    return False
+
+def validEditorAdmin(authority):
+    if (int(authority) & Roles['EditorAdmin']) > 0:
+        return True
+    return False
+    
+# 是否具有读写权限管理赋予能力
+def validAdmin(authority):
+    if (int(authority) & Roles['Admin']) > 0:
+        return True
+    return False
+
+# 最高权限用户的标记，该用户的权限不能更改，但是它能更改其他任何用户的权限
+def validSuperAdmin(authority):
+    if (int(authority) & Roles['SuperAdmin']) > 0:
+        return True
+    return False
 
 # import os
 # import time
