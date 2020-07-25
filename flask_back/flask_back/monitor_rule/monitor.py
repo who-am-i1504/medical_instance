@@ -16,8 +16,8 @@ bp = Blueprint('monitor', __name__, url_prefix='/monitor')
 @bp.before_request
 def validSession():
     back = {
-        "status":205,
-        "message":"您的登录已过期或者您的账号已退出，请先登录。",
+        "status":cnts.quit_login,
+        "message":cnts.quit_login_message,
         "data":{}
     }
     if request.path == '/login' or request.path == '/salt':
@@ -68,6 +68,128 @@ def get_count():
     
     return jsonify(back)
 
+def getHL7SQL(ip):
+    return "SELECT DISTINCT SUBSTRING_INDEX(main.`send_ip_port`,':',1) as `send_ip`, SUBSTRING_INDEX(main.`receiver_ip_port`,':',1) as `receiver_ip`, main.`sender_tag`, main.`receiver_tag`\
+        FROM `message` as main\
+        WHERE main.`send_ip_port` LIKE '{0}:%' or main.`receiver_ip_port` LIKE '{0}:%';".format(ip)
+
+def getDICOMSQL(ip):
+    return "SELECT DISTINCT SUBSTRING_INDEX(main.`send_ip_port`,':',1) as `send_ip`, SUBSTRING_INDEX(main.`receiver_ip_port`,':',1) as `receiver_ip`, main.`sender_tag`, main.`receiver_tag`\
+        FROM `patient_info` as main\
+        WHERE main.`send_ip_port` LIKE '{0}:%' or main.`receiver_ip_port` LIKE '{0}:%';".format(ip)
+
+def getASTMSQL(ip):
+    return "SELECT DISTINCT SUBSTRING_INDEX(main.`send_ip_port`,':',1) as `send_ip`, SUBSTRING_INDEX(main.`receiver_ip_port`,':',1) as `receiver_ip`, main.`sender_tag`, main.`receiver_tag`\
+        FROM `astm_main` as main\
+        WHERE main.`send_ip_port` LIKE '{0}:%' or main.`receiver_ip_port` LIKE '{0}:%';".format(ip)
+
+@bp.route('/hl7_graph', methods=['POST'])
+@jsonschema.validate('monitor', 'graph')
+def monitor_hl7_graph():
+    back = copy.deepcopy(cnts.back_message)
+    json_data = request.get_json()
+
+    addr = request.remote_addr
+    path = request.path
+    log.info(cnts.requestStart(addr, path, json_data))
+    
+    try:
+        result = db.session.execute(getHL7SQL(json_data['ip']))
+        db.session.commit()
+
+        log.info(cnts.databaseSuccess(addr, path, '`message`'))
+
+        data = result.fetchall()
+        back['data'] = []
+        if not data is None:
+            for i in data:
+                a = {}
+                for key in i.keys():
+                    a[key] = i[key]
+                back['data'].append(a)
+    except Exception as e:
+        back['message'] = cnts.database_error_message
+        back['status'] = cnts.database_error
+
+        log.error(cnts.errorLog(addr, path, 'database'))
+
+        return jsonify(back)
+
+    log.info(cnts.successLog(addr, path))
+
+    return jsonify(back)
+
+@bp.route('/dicom_graph', methods=['POST'])
+@jsonschema.validate('monitor', 'graph')
+def monitor_dicom_graph():
+    back = copy.deepcopy(cnts.back_message)
+    json_data = request.get_json()
+
+    addr = request.remote_addr
+    path = request.path
+    log.info(cnts.requestStart(addr, path, json_data))
+    
+    try:
+        result = db.session.execute(getDICOMSQL(json_data['ip']))
+        db.session.commit()
+
+        log.info(cnts.databaseSuccess(addr, path, '`patient_info`'))
+
+        data = result.fetchall()
+        back['data'] = []
+        if not data is None:
+            for i in data:
+                a = {}
+                for key in i.keys():
+                    a[key] = i[key]
+                back['data'].append(a)
+    except Exception as e:
+        back['message'] = cnts.database_error_message
+        back['status'] = cnts.database_error
+
+        log.error(cnts.errorLog(addr, path, 'database'))
+
+        return jsonify(back)
+
+    log.info(cnts.successLog(addr, path))
+
+    return jsonify(back)
+
+@bp.route('/astm_graph', methods=['POST'])
+@jsonschema.validate('monitor', 'graph')
+def monitor_astm_graph():
+    back = copy.deepcopy(cnts.back_message)
+    json_data = request.get_json()
+
+    addr = request.remote_addr
+    path = request.path
+    log.info(cnts.requestStart(addr, path, json_data))
+    
+    try:
+        result = db.session.execute(getASTMSQL(json_data['ip']))
+        db.session.commit()
+
+        log.info(cnts.databaseSuccess(addr, path, '`astm_main`'))
+
+        data = result.fetchall()
+        back['data'] = []
+        if not data is None:
+            for i in data:
+                a = {}
+                for key in i.keys():
+                    a[key] = i[key]
+                back['data'].append(a)
+    except Exception as e:
+        back['message'] = cnts.database_error_message
+        back['status'] = cnts.database_error
+
+        log.error(cnts.errorLog(addr, path, 'database'))
+
+        return jsonify(back)
+
+    log.info(cnts.successLog(addr, path))
+
+    return jsonify(back)
 
 def geneHL7Rule(hl7_type = None, seqnumber = None, version=None):
     rule = None

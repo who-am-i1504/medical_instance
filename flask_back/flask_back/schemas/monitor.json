@@ -1,4 +1,14 @@
 {
+    "graph":{
+        "type":"object",
+        "properties":{
+            "ip":{
+                "type":"string",
+                "pattern": "((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})(\\.((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})){3}"
+            }
+        },
+        "required":["ip"]
+    },
     "get":{
         "type":"object",
         "properties":{

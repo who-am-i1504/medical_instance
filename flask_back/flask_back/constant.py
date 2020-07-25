@@ -4,6 +4,9 @@ Roles = None
 
 page_size = 10
 
+quit_login = 205
+quit_login_message = "您的登录已过期或者您的账号已退出，请重新登录。"
+
 ip_not_found = 408
 ip_not_found_message = '您给定的ip地址不在黑名单中'
 

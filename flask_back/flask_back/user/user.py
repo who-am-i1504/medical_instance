@@ -34,19 +34,19 @@ def validSession():
     if request.path == '/login' or request.path == '/salt':
         return None
     back = {
-        "status":205,
-        "message":"您的登录已过期或者您的账号已退出，请先登录。",
+        "status":cnts.quit_login,
+        "message":cnts.quit_login_message,
         "data":{}
     }
     session=redis.Redis(connection_pool=reids_pool)
     if 'X-Token' in request.headers.keys():
         if session.exists(request.headers['X-Token']):
-            if 'update' in request.path or 'add' in request.path or 'delete' in request.path:
-                if cnts.validEditor(session.hget(request.headers['X-Token'], 'authority')):
-                    return None
-                else:
-                    back['message'] = '您的权限不足'
-                    return jsonify(back)
+            # if 'update' in request.path or 'add' in request.path or 'delete' in request.path:
+            #     if cnts.validEditor(session.hget(request.headers['X-Token'], 'authority')):
+            #         return None
+            #     else:
+            #         back['message'] = '您的权限不足'
+            #         return jsonify(back)
             return None
     return jsonify(back)
 
@@ -98,7 +98,7 @@ def login():
             # print(bcrypt.hashpw(i['password'], ))
             # print('here', bcrypt.checkpw(i['password'].encode('utf-8'), json_data['password'].encode('utf-8')))
             if i['username'] == json_data['username']:
-                print(i['username'], bcrypt.checkpw(i['password'].encode('utf-8'), json_data['password'].encode('utf-8')))
+                # print(i['username'], bcrypt.checkpw(i['password'].encode('utf-8'), json_data['password'].encode('utf-8')))
                 if bcrypt.checkpw(i['password'].encode('utf-8'), json_data['password'].encode('utf-8')):
                     log_tag = True
                     back['data']['username'] = i['username']
@@ -109,16 +109,21 @@ def login():
                     # back['data']['remote'] = addr
                     sessionId = secrets.token_urlsafe(16)
                     session.hmset(sessionId, back['data'])
+                    session.pexpire(sessionId, 172800000)
+                    if session.exists(i['uuid'].encode('utf-8')):
+                        session.delete(session.get(i['uuid'].encode('utf-8')))
                     back['data']['token'] = sessionId
+                    session.set(i['uuid'].encode('utf-8'), sessionId.encode('utf-8'), ex=172800, nx=True)
+
         if not log_tag:
             back['msg'] = '用户名或密码错误',
             back['code'] = 401
         global Roles
         back['data']['roles'] = copy.deepcopy(Roles)
     except Exception as e:
-        log.error(cnts.errorLog(addr, path, cnts.database_error_message))
+        log.error(cnts.errorLog(addr, path, str(e)))
         back['code'] = cnts.database_error
-        back['msg'] = cnts.database_error_message
+        back['msg'] = str(e)
         return jsonify(back)
     
     log.info(cnts.successLog(addr, path))
@@ -131,6 +136,8 @@ def logout():
     back = copy.deepcopy(cnts.back_message)
     json_data = request.get_json()
     session=redis.Redis(connection_pool=reids_pool)
+    uuid = session.hget(json_data['token'], 'uuid')
+    session.delete(uuid)
     session.delete(json_data['token'])
     return jsonify(back)
 
@@ -161,14 +168,14 @@ def list_users():
         if not cnts.validSuperAdmin(authority):
             if not cnts.validAdmin(authority):
                 if cnts.validEditorAdmin(authority) and cnts.validReaderAdmin(authority):
-                    size = db.session.execute('select COUNT(1) from `user` where `authority` < %d;' % (Roles['ReaderAdmin']))
+                    size = db.session.execute('select COUNT(1) from `user` where `authority` < %d or `authority` = 0;' % (Roles['ReaderAdmin']))
                     result = db.session.execute('select `username`, `uuid`, `authority` from `user` where `authority` < %d limit %d,%d;' % (Roles['ReaderAdmin'], (json_data['page'] - 1)*pageSize, pageSize))
                 elif cnts.validEditorAdmin(authority):
-                    size = db.session.execute('select COUNT(1) from `user` where `authority` = %d;' % (Roles['Editor']))
+                    size = db.session.execute('select COUNT(1) from `user` where `authority` = %d or `authority` = 0;' % (Roles['Editor']))
                     result = db.session.execute('select `username`, `uuid`, `authority` from `user` where `authority` = %d limit %d,%d;' % (Roles['Editor'], (json_data['page'] - 1)*pageSize, pageSize))
                 elif cnts.validReaderAdmin(authority):
-                    size = db.session.execute('select COUNT(1) from `user` where `authority` = %d;' % (Roles['Reader']))
-                    result = db.session.execute('select `username`, `uuid`, `authority` from `user` where `authority` = %d limit %d,%d;' % (Roles['Reader'], (json_data['page'] - 1)*pageSize, pageSize))
+                    size = db.session.execute('select COUNT(1) from `user` where `authority` = %d or `authority` = 0;' % (Roles['Reader']))
+                    result = db.session.execute('select `username`, `uuid`, `authority` from `user` where `authority` = %d or `authority` = 0 limit %d,%d;' % (Roles['Reader'], (json_data['page'] - 1)*pageSize, pageSize))
                 else:
                     back['message'] = '权限不足，请找管理员赋予权限'
                     back['status'] = 208
@@ -227,33 +234,39 @@ def addNewUser():
             return jsonify(back)
         use_authority = json_data['authority']
         if (use_authority & Roles['SuperAdmin']) > 0:
+            # print('here1')
             back['message'] = '您的权限不足'
             back['status'] = 208
             return jsonify(back)
         elif (use_authority & Roles['Admin']) > 0 and not cnts.validSuperAdmin(authority):
+            # print('here2')
             back['message'] = '您的权限不足'
             back['status'] = 208
             return jsonify(back)
-        elif ((use_authority & Roles['ReaderAdmin']) > 0 and not cnts.validAdmin(authority)) or (int(authority) & Roles['ReaderAdmin']) == 0:
+        elif ((use_authority & Roles['ReaderAdmin']) > 0 and not cnts.validAdmin(authority)) and (int(authority) & Roles['ReaderAdmin']) == 0:
+            # print('here3')
             back['message'] = '您的权限不足'
             back['status'] = 208
             return jsonify(back)
-        elif ((use_authority & Roles['EditorAdmin']) > 0 and not cnts.validAdmin(authority)) or (int(authority) & Roles['EditorAdmin']) == 0:
+        elif ((use_authority & Roles['EditorAdmin']) > 0 and not cnts.validAdmin(authority)) and (int(authority) & Roles['EditorAdmin']) == 0:
+            # print('here4')
             back['message'] = '您的权限不足'
             back['status'] = 208
             return jsonify(back)
-        elif (use_authority & Roles['Reader']) > 0 and not cnts.validReaderAdmin(authority) or (int(authority) & Roles['Reader']) == 0:
+        elif (use_authority & Roles['Reader']) > 0 and not cnts.validReaderAdmin(authority) and (int(authority) & Roles['Reader']) == 0:
+            # print('here5')
             back['message'] = '您没有读传播权限'
             back['status'] = 208
             return jsonify(back)
-        elif (use_authority & Roles['Editor']) > 0 and not cnts.validEditorAdmin(authority) or (int(authority) & Roles['Editor']) == 0:
-            back['message'] = '您没有写传播权限不足'
+        elif (use_authority & Roles['Editor']) > 0 and not cnts.validEditorAdmin(authority) and (int(authority) & Roles['Editor']) == 0:
+            # print('here6')
+            back['message'] = '您没有写传播权限'
             back['status'] = 208
             return jsonify(back)
-        elif use_authority == 0:
-            back['message'] = '用户不能没有权限'
-            back['status'] = 209
-            return jsonify(back)
+        # elif use_authority == 0:
+        #     back['message'] = '用户不能没有权限'
+        #     back['status'] = 209
+        #     return jsonify(back)
         uid = ''.join(str(uuid.uuid4()).split("-"))
         size = db.session.execute("SELECT COUNT(1) FROM `user` WHERE `username` = '%s';" % (json_data['username']))
         db.session.commit()
@@ -304,7 +317,6 @@ def updateUsername():
         user = db.session.execute("SELECT `username`,`authority` FROM `user` WHERE `uuid` = '%s';" % (json_data['uuid']))
         db.session.commit()
         user = user.fetchall()[0]
-        
         use_authority = user['authority']
         if (use_authority & Roles['Admin']) > 0 and not cnts.validSuperAdmin(authority):
             back['message'] = '您的权限不足'
@@ -314,6 +326,9 @@ def updateUsername():
             back['message'] = "新用户名不能与原用户名相同"
             back['status'] = 210
             return jsonify(back)
+        if session.exists(json_data['uuid']):
+            session.delete(session.get(json_data['uuid']))
+            session.delete[json_data['uuid']]
         result = db.session.execute("update `user` set `username` = '%s' where `uuid` = '%s';" % (json_data['username'], json_data['uuid']))
         db.session.commit()
     except Exception as e:
@@ -366,6 +381,9 @@ def updateUserPsd():
             back['message'] = "新密码不能与原密码相同"
             back['status'] = 210
             return jsonify(back)
+        if session.exists(json_data['uuid']):
+            session.delete(session.get(json_data['uuid']))
+            session.delete[json_data['uuid']]
         result = db.session.execute("update `user` set `password` = '%s' where `uuid` = '%s';" % (json_data['psd'], json_data['uuid']))
         db.session.commit()
     except Exception as e:
@@ -399,10 +417,10 @@ def updateAuthority():
             back['message'] = '请重新登录'
             back['status'] = 206
             return jsonify(back)
-        if not cnts.validAdmin(authority):
-            back['message'] = '您的权限不足'
-            back['status'] = 208
-            return jsonify(back)
+        # if not cnts.validAdmin(authority):
+        #     back['message'] = '您的权限不足'
+        #     back['status'] = 208
+        #     return jsonify(back)
         
         use_authority = json_data['authority']
         if (use_authority & Roles['SuperAdmin']) > 0:
@@ -413,26 +431,26 @@ def updateAuthority():
             back['message'] = '您的权限不足'
             back['status'] = 208
             return jsonify(back)
-        elif ((use_authority & Roles['ReaderAdmin']) > 0 and not cnts.validAdmin(authority)) or (int(authority) & Roles['ReaderAdmin']) == 0:
+        elif ((use_authority & Roles['ReaderAdmin']) > 0 and not cnts.validAdmin(authority)) and (int(authority) & Roles['ReaderAdmin']) == 0:
             back['message'] = '您的权限不足'
             back['status'] = 208
             return jsonify(back)
-        elif ((use_authority & Roles['EditorAdmin']) > 0 and not cnts.validAdmin(authority)) or (int(authority) & Roles['EditorAdmin']) == 0:
+        elif ((use_authority & Roles['EditorAdmin']) > 0 and not cnts.validAdmin(authority)) and (int(authority) & Roles['EditorAdmin']) == 0:
             back['message'] = '您的权限不足'
             back['status'] = 208
             return jsonify(back)
-        elif (use_authority & Roles['Reader']) > 0 and not cnts.validReaderAdmin(authority) or (int(authority) & Roles['Reader']) == 0:
+        elif (use_authority & Roles['Reader']) > 0 and not cnts.validReaderAdmin(authority) and (int(authority) & Roles['Reader']) == 0:
             back['message'] = '您没有读传播权限'
             back['status'] = 208
             return jsonify(back)
-        elif (use_authority & Roles['Editor']) > 0 and not cnts.validEditorAdmin(authority) or (int(authority) & Roles['Editor']) == 0:
-            back['message'] = '您没有写传播权限不足'
+        elif (use_authority & Roles['Editor']) > 0 and not cnts.validEditorAdmin(authority) and (int(authority) & Roles['Editor']) == 0:
+            back['message'] = '您没有写传播权限'
             back['status'] = 208
             return jsonify(back)
-        elif use_authority == 0:
-            back['message'] = '用户不能没有权限'
-            back['status'] = 209
-            return jsonify(back)
+        # elif use_authority == 0:
+        #     back['message'] = '用户不能没有权限'
+        #     back['status'] = 209
+        #     return jsonify(back)
 
         # print(authority, authority is None)
         user = db.session.execute("SELECT `authority` FROM `user` WHERE `uuid` = '%s';" % (json_data['uuid']))
@@ -448,27 +466,29 @@ def updateAuthority():
             back['message'] = '您的权限不足'
             back['status'] = 208
             return jsonify(back)
-        elif ((use_authority & Roles['ReaderAdmin']) > 0 and not cnts.validAdmin(authority)) or (int(authority) & Roles['ReaderAdmin']) == 0:
+        elif ((use_authority & Roles['ReaderAdmin']) > 0 and not cnts.validAdmin(authority)) and (int(authority) & Roles['ReaderAdmin']) == 0:
             back['message'] = '您的权限不足'
             back['status'] = 208
             return jsonify(back)
-        elif ((use_authority & Roles['EditorAdmin']) > 0 and not cnts.validAdmin(authority)) or (int(authority) & Roles['EditorAdmin']) == 0:
+        elif ((use_authority & Roles['EditorAdmin']) > 0 and not cnts.validAdmin(authority)) and (int(authority) & Roles['EditorAdmin']) == 0:
             back['message'] = '您的权限不足'
             back['status'] = 208
             return jsonify(back)
-        elif (use_authority & Roles['Reader']) > 0 and not cnts.validReaderAdmin(authority) or (int(authority) & Roles['Reader']) == 0:
+        elif (use_authority & Roles['Reader']) > 0 and not cnts.validReaderAdmin(authority) and (int(authority) & Roles['Reader']) == 0:
             back['message'] = '您没有读传播权限'
             back['status'] = 208
             return jsonify(back)
-        elif (use_authority & Roles['Editor']) > 0 and not cnts.validEditorAdmin(authority) or (int(authority) & Roles['Editor']) == 0:
+        elif (use_authority & Roles['Editor']) > 0 and not cnts.validEditorAdmin(authority) and (int(authority) & Roles['Editor']) == 0:
             back['message'] = '您没有写传播权限不足'
             back['status'] = 208
             return jsonify(back)
-        elif use_authority == 0:
-            back['message'] = '用户不能没有权限'
-            back['status'] = 209
-            return jsonify(back)
-        
+        # elif use_authority == 0:
+        #     back['message'] = '用户不能没有权限'
+        #     back['status'] = 209
+        #     return jsonify(back)
+        if session.exists(json_data['uuid']):
+            session.delete(session.get(json_data['uuid']))
+            session.delete[json_data['uuid']]
         result = db.session.execute("update `user` set `authority` = %d where `uuid` = '%s';" % (json_data['authority'], json_data['uuid']))
         db.session.commit()
     except Exception as e:
@@ -489,10 +509,13 @@ def getRoles():
     data = copy.deepcopy(Roles)
     session=redis.Redis(connection_pool=reids_pool)
     authority = session.hget(request.headers['X-Token'], 'authority')
+    res = {}
     for key in data.keys():
         if (data[key] & int(authority)) == 0:
-            data.pop(key, None)
-    back['data'] = data
+            pass
+        else:
+            res[key] = data[key]
+    back['data'] = res
     return jsonify(back)
 
 
@@ -546,9 +569,58 @@ def changePwd():
 
 @bp.route('/user/delete', methods=['POST'])
 def userDelete():
+    back = copy.deepcopy(cnts.back_message)
+    pageSize = cnts.page_size
+    sessionid = request.headers['X-Token']
+    json_data = request.get_json()
+    addr = request.remote_addr
+    path = request.path
+    log.info(cnts.requestStart(addr, path, json_data))
+    # token 和 UUID 验证，省略
+    try:
+        session=redis.Redis(connection_pool=reids_pool)
+        authority = session.hget(sessionid, 'authority')
+        if authority is None:
+            back['message'] = '请重新登录'
+            back['status'] = 206
+            return jsonify(back)
+        if not cnts.validAdmin(authority):
+            back['message'] = '您的权限不足'
+            back['status'] = 208
+            return jsonify(back)
+        
+        # print(authority, authority is None)
+        user = db.session.execute("SELECT `password`,`authority` FROM `user` WHERE `uuid` = '%s';" % (json_data['uuid']))
+        db.session.commit()
+        user = user.fetchall()[0]
+        
 
+        use_authority = user['authority']
+        if cnts.validSuperAdmin(use_authority):
+            back['message'] = '超级管理员的账户不能删除'
+            back['status'] = 207
+            return jsonify(back)
+        if (use_authority & Roles['Admin']) > 0 and not cnts.validSuperAdmin(authority):
+            back['message'] = '您的权限不足'
+            back['status'] = 207
+            return jsonify(back)
+        if session.exists(json_data['uuid']):
+            session.delete(session.get(json_data['uuid']))
+            session.delete[json_data['uuid']]
+        result = db.session.execute("delete from `user` where `uuid` = '%s';" % (json_data['uuid']))
+        db.session.commit()
+    except Exception as e:
+        
+        log.error(cnts.errorLog(addr, path, e))
+
+        back['status'] = cnts.database_error
+        back['message'] = str(e)
+        return jsonify(back)
     
+    log.info(cnts.successLog(addr, path))
 
+    return jsonify(back)
+    
 
 
 @bp.errorhandler(ValidationError)

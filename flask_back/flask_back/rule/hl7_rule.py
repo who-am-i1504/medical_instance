@@ -15,8 +15,8 @@ bp = Blueprint('rule_hl7', __name__, url_prefix='/rule/hl7')
 @bp.before_request
 def validSession():
     back = {
-        "status":205,
-        "message":"您的登录已过期或者您的账号已退出，请先登录。",
+        "status":cnts.quit_login,
+        "message":cnts.quit_login_message,
         "data":{}
     }
     if request.path == '/login' or request.path == '/salt':

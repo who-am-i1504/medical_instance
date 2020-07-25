@@ -3,10 +3,30 @@ from flask_back import db, jsonschema, ValidationError, log
 from flask_back.dao.sql import RuleAstm
 import flask_back.constant as cnts
 import copy
+from flask_back.user.user import reids_pool
+import redis
 
 bp = Blueprint('rule', __name__, url_prefix='/rule')
 
-
+@bp.before_request
+def validSession():
+    back = {
+        "status":cnts.quit_login,
+        "message":cnts.quit_login_message,
+        "data":{}
+    }
+    session=redis.Redis(connection_pool=reids_pool)
+    if 'X-Token' in request.headers.keys():
+        sessionid = request.headers['X-Token']
+        if session.exists(sessionid):
+            if 'update' in request.path or 'add' in request.path or 'delete' in request.path:
+                if cnts.validEditor(session.hget(sessionid, 'authority')):
+                    return None
+                else:
+                    back['message'] = '您的权限不足'
+                    return jsonify(back)
+            return None
+    return jsonify(back)
 @bp.route('/get', methods=['POST'])
 def get_rule_number():
     back = copy.deepcopy(cnts.back_message)
