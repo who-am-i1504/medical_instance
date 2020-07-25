@@ -68,6 +68,124 @@ def get_count():
     
     return jsonify(back)
 
+def getAllHL7SQL():
+    return "SELECT DISTINCT SUBSTRING_INDEX(main.`send_ip_port`,':',1) as `send_ip`, SUBSTRING_INDEX(main.`receiver_ip_port`,':',1) as `receiver_ip`, main.`sender_tag`, main.`receiver_tag`\
+        FROM `message` as main;"
+
+def getAllDICOMSQL():
+    return "SELECT DISTINCT SUBSTRING_INDEX(main.`send_ip_port`,':',1) as `send_ip`, SUBSTRING_INDEX(main.`receiver_ip_port`,':',1) as `receiver_ip`, main.`sender_tag`, main.`receiver_tag`\
+        FROM `patient_info` as main;"
+
+def getAllASTMSQL():
+    return "SELECT DISTINCT SUBSTRING_INDEX(main.`send_ip_port`,':',1) as `send_ip`, SUBSTRING_INDEX(main.`receiver_ip_port`,':',1) as `receiver_ip`, main.`sender_tag`, main.`receiver_tag`\
+        FROM `astm_main` as main;"
+
+@bp.route('/hl7_all_graph', methods=['GET'])
+def monitor_all_hl7_graph():
+    back = copy.deepcopy(cnts.back_message)
+    json_data = request.get_json()
+
+    addr = request.remote_addr
+    path = request.path
+    log.info(cnts.requestStart(addr, path, json_data))
+    
+    try:
+        result = db.session.execute(getAllHL7SQL())
+        db.session.commit()
+
+        log.info(cnts.databaseSuccess(addr, path, '`message`'))
+
+        data = result.fetchall()
+        back['data'] = []
+        if not data is None:
+            for i in data:
+                a = {}
+                for key in i.keys():
+                    a[key] = i[key]
+                back['data'].append(a)
+    except Exception as e:
+        back['message'] = cnts.database_error_message
+        back['status'] = cnts.database_error
+
+        log.error(cnts.errorLog(addr, path, 'database'))
+
+        return jsonify(back)
+
+    log.info(cnts.successLog(addr, path))
+
+    return jsonify(back)
+
+@bp.route('/dicom_all_graph', methods=['GET'])
+def monitor_all_dicom_graph():
+    back = copy.deepcopy(cnts.back_message)
+    json_data = request.get_json()
+
+    addr = request.remote_addr
+    path = request.path
+    log.info(cnts.requestStart(addr, path, json_data))
+    
+    try:
+        result = db.session.execute(getAllDICOMSQL())
+        db.session.commit()
+
+        log.info(cnts.databaseSuccess(addr, path, '`patient_info`'))
+
+        data = result.fetchall()
+        back['data'] = []
+        if not data is None:
+            for i in data:
+                a = {}
+                for key in i.keys():
+                    a[key] = i[key]
+                back['data'].append(a)
+    except Exception as e:
+        back['message'] = cnts.database_error_message
+        back['status'] = cnts.database_error
+
+        log.error(cnts.errorLog(addr, path, 'database'))
+
+        return jsonify(back)
+
+    log.info(cnts.successLog(addr, path))
+
+    return jsonify(back)
+
+@bp.route('/astm_all_graph', methods=['GET'])
+def monitor_all_astm_graph():
+    back = copy.deepcopy(cnts.back_message)
+    json_data = request.get_json()
+
+    addr = request.remote_addr
+    path = request.path
+    log.info(cnts.requestStart(addr, path, json_data))
+    
+    try:
+        result = db.session.execute(getAllASTMSQL())
+        db.session.commit()
+
+        log.info(cnts.databaseSuccess(addr, path, '`astm_main`'))
+
+        data = result.fetchall()
+        back['data'] = []
+        if not data is None:
+            for i in data:
+                a = {}
+                for key in i.keys():
+                    a[key] = i[key]
+                back['data'].append(a)
+    except Exception as e:
+        back['message'] = cnts.database_error_message
+        back['status'] = cnts.database_error
+
+        log.error(cnts.errorLog(addr, path, 'database'))
+
+        return jsonify(back)
+
+    log.info(cnts.successLog(addr, path))
+
+    return jsonify(back)
+
+
 def getHL7SQL(ip):
     return "SELECT DISTINCT SUBSTRING_INDEX(main.`send_ip_port`,':',1) as `send_ip`, SUBSTRING_INDEX(main.`receiver_ip_port`,':',1) as `receiver_ip`, main.`sender_tag`, main.`receiver_tag`\
         FROM `message` as main\
