@@ -116,12 +116,10 @@ def astm_rule_get():
             a['id'] = i.id
             a['value'] = i.value
             back['data'].append(a)
-    except:
-
-        log.error(cnts.errorLog(addr, path))
-
-        back['message'] = cnts.database_error_message
+    except Exception as e:
+        back['message'] = str(e)
         back['status'] = cnts.database_error
+        log.error(cnts.errorLog(addr, path, str(e)))
         return jsonify(back)
     back['page'] = json_data['page']
     back['size'] = size
@@ -157,12 +155,10 @@ def astm_rule_delete():
                 log.info(cnts.successLog(addr, path))
 
                 return jsonify(back)
-        except:
-
-            log.error(cnts.errorLog(addr, path))
-
+        except Exception as e:
+            back['message'] = str(e)
             back['status'] = cnts.database_error
-            back['message'] = cnts.database_error_message
+            log.error(cnts.errorLog(addr, path, str(e)))
             return jsonify(back)
     try:
         db.session.execute(
@@ -172,12 +168,10 @@ def astm_rule_delete():
         log.info(cnts.databaseSuccess(addr, path, '`rule_astm`'))
 
         pass
-    except:
-
-        log.error(cnts.errorLog(addr, path))
-
+    except Exception as e:
+        back['message'] = str(e)
         back['status'] = cnts.database_error
-        back['message'] = cnts.database_error_message
+        log.error(cnts.errorLog(addr, path, str(e)))
         return jsonify(back)
     
     log.info(cnts.successLog(addr, path))
@@ -206,12 +200,10 @@ def get_one():
         back['data'] = {}
         back['data']['id'] = data.id
         back['data']['value'] = data.value
-    except:
-        
-        log.error(cnts.errorLog(addr, path))
-
+    except Exception as e:
+        back['message'] = str(e)
         back['status'] = cnts.database_error
-        back['message'] = cnts.database_error_message
+        log.error(cnts.errorLog(addr, path, str(e)))
         return jsonify(back)
     
     log.info(cnts.successLog(addr, path))

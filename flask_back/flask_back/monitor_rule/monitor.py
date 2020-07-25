@@ -61,10 +61,10 @@ def monitor_hl7_page():
                     # a[key] = i[key]
                 back['data'].append(a)
     except Exception as e:
-        back['message'] = cnts.database_error_message
+        back['message'] = str(e)
         back['status'] = cnts.database_error
 
-        log.error(cnts.errorLog(addr, path, 'database'))
+        log.error(cnts.errorLog(addr, path, str(e)))
 
         return jsonify(back)
 
@@ -116,10 +116,10 @@ def monitor_hl7_id():
                     else:
                         back['data'][j] = data[j]
                 # back['data'][j] = data[j]
-    except:
-        back['message'] = cnts.database_error_message
+    except Exception as e:
+        back['message'] = str(e)
         back['status'] = cnts.database_error
-        log.error(cnts.errorLog(addr, path, 'database'))
+        log.error(cnts.errorLog(addr, path, str(e)))
 
         return jsonify(back)
 
@@ -179,11 +179,10 @@ def monitor_astm_page():
                             a[key] = i[key]
                     # a[key] = i[key]
                 back['data'].append(a)
-    except:
-        back['message'] = cnts.database_error_message
+    except Exception as e:
+        back['message'] = str(e)
         back['status'] = cnts.database_error
-
-        log.info(cnts.errorLog(addr, path, 'database'))
+        log.error(cnts.errorLog(addr, path, str(e)))
 
         return jsonify(back)
 
@@ -235,10 +234,10 @@ def monitor_astm_id():
                     else:
                         back['data'][j] = data[j]
                 # back['data'][j] = data[j]
-    except:
-        back['message'] = cnts.database_error_message
+    except Exception as e:
+        back['message'] = str(e)
         back['status'] = cnts.database_error
-        log.error(cnts.errorLog(addr, path, 'database'))
+        log.error(cnts.errorLog(addr, path, str(e)))
 
         return jsonify(back)
 
@@ -343,11 +342,10 @@ def monitor_dicom_page():
                         a[i] = image[index][i]
             back['data'].append(a)
             # for i in 
-    except:
-        back['message'] = cnts.database_error_message
+    except Exception as e:
+        back['message'] = str(e)
         back['status'] = cnts.database_error
-
-        log.info(cnts.errorLog(addr, path, 'database'))
+        log.error(cnts.errorLog(addr, path, str(e)))
 
         return jsonify(back)
 
@@ -443,10 +441,10 @@ def monitor_dicom_id():
                         back['data'][i] = '无'
                     else:
                         back['data'][i] = image[index][i]
-    except:
-        back['message'] = cnts.database_error_message
+    except Exception as e:
+        back['message'] = str(e)
         back['status'] = cnts.database_error
-        log.error(cnts.errorLog(addr, path, 'database'))
+        log.error(cnts.errorLog(addr, path, str(e)))
 
         return jsonify(back)
 
@@ -489,11 +487,10 @@ def monitor_get():
                 a['id'] = i.id
                 a['ip'] = i.ip
                 back['data'].append(a)
-    except:
-        back['message'] = cnts.database_error_message
+    except Exception as e:
+        back['message'] = str(e)
         back['status'] = cnts.database_error
-
-        log.error(cnts.errorLog(addr, path, 'database'))
+        log.error(cnts.errorLog(addr, path, str(e)))
 
         return jsonify(back)
 
@@ -530,11 +527,10 @@ def monitor_getOne():
                 a['id'] = i.id
                 a['ip'] = i.ip
                 back['data'] = a
-    except:
-        back['message'] = cnts.database_error_message
+    except Exception as e:
+        back['message'] = str(e)
         back['status'] = cnts.database_error
-
-        log.error(cnts.errorLog(addr, path, 'database'))
+        log.error(cnts.errorLog(addr, path, str(e)))
 
         return jsonify(back)
 
@@ -567,11 +563,10 @@ def monitor_add():
         a['id'] = data.id
         a['ip'] = data.ip
         back['data'] = a
-    except:
-        back['message'] = cnts.database_error_message
+    except Exception as e:
+        back['message'] = str(e)
         back['status'] = cnts.database_error
-        
-        log.error(cnts.errorLog(addr, path, 'database'))
+        log.error(cnts.errorLog(addr, path, str(e)))
 
         return jsonify(back)
 
@@ -600,11 +595,10 @@ def monitor_update():
 
         log.info(cnts.databaseSuccess(addr, path, '`monitor_result`'))
 
-    except:
+    except Exception as e:
+        back['message'] = str(e)
         back['status'] = cnts.database_error
-        back['message'] = cnts.database_error_message
-
-        log.error(cnts.errorLog(addr, path, 'database'))
+        log.error(cnts.errorLog(addr, path, str(e)))
 
         return jsonify(back)
     
@@ -642,11 +636,10 @@ def monitor_delete():
                 log.info(cnts.successLog(addr, path))
 
                 return jsonify(back)
-        except:
+        except Exception as e:
+            back['message'] = str(e)
             back['status'] = cnts.database_error
-            back['message'] = cnts.database_error_message
-
-            log.error(cnts.errorLog(addr, path, 'database'))
+            log.error(cnts.errorLog(addr, path, str(e)))
 
             return jsonify(back)
     try:
@@ -656,11 +649,10 @@ def monitor_delete():
 
         log.info(cnts.databaseSuccess(addr, path, '`monitor_result`'))
 
-    except:
+    except Exception as e:
+        back['message'] = str(e)
         back['status'] = cnts.database_error
-        back['message'] = cnts.database_error_message
-
-        log.error(cnts.errorLog(addr, path, 'database'))
+        log.error(cnts.errorLog(addr, path, str(e)))
 
         return jsonify(back)
     
@@ -699,10 +691,10 @@ def monitor_get_ip():
                 for j in i.keys():
                     a[j] = i[j]
                 back['data'].append(a)
-    except:
+    except Exception as e:
+        back['message'] = str(e)
         back['status'] = cnts.database_error
-        back['message'] = cnts.database_error_message
-        log.error(cnts.errorLog(addr, path, 'database'))
+        log.error(cnts.errorLog(addr, path, str(e)))
         return jsonify(back)
         
     log.info(cnts.successLog(addr, path))
@@ -905,11 +897,10 @@ def monitor_hl7_ip():
                         else:
                             a[j] = i[j]
                 back['data'].append(a)
-    except:
+    except Exception as e:
+        back['message'] = str(e)
         back['status'] = cnts.database_error
-        back['message'] = cnts.database_error_message
-        
-        log.error(cnts.errorLog(addr, path, 'database'))
+        log.error(cnts.errorLog(addr, path, str(e)))
 
         return jsonify(back)
     
@@ -989,10 +980,9 @@ def monitor_astm_ip():
                             a[j] = i[j]
                 back['data'].append(a)
     except Exception as e:
+        back['message'] = str(e)
         back['status'] = cnts.database_error
-        back['message'] = cnts.database_error_message
-        
-        log.error(cnts.errorLog(addr, path, 'database'))
+        log.error(cnts.errorLog(addr, path, str(e)))
 
         return jsonify(back)
     
@@ -1076,10 +1066,9 @@ def monitor_dicom_ip():
                             b[j] = i[j]
                 back['data'].append(a)
     except Exception as e:
+        back['message'] = str(e)
         back['status'] = cnts.database_error
-        back['message'] = cnts.database_error_message
-        
-        log.error(cnts.errorLog(addr, path, 'database'))
+        log.error(cnts.errorLog(addr, path, str(e)))
 
         return jsonify(back)
     

@@ -53,12 +53,12 @@ def start():
         back['data']['protocol'] = collect.protocol
         back['data']['time'] = str(collect.time) + '分钟'
         back['data']['submit'] = collect.submit.strftime('%Y-%m-%d %H:%M:%S')
-    except:
+    except Exception as e:
         
-        log.error(cnts.errorLog(addr, path, 'database'))
+        log.error(cnts.errorLog(addr, path, str(e)))
 
         back['status'] = cnts.database_error
-        back['message'] = cnts.database_error_message
+        back['message'] = str(e)
         return jsonify(back)
     
     log.info(cnts.successLog(addr, path))
@@ -118,11 +118,11 @@ def getByPage():
                 a['size'] = '%.2f'%(i.size / 1024 / 1024) + 'MB'
             back['data'].append(a)
         # print('here')
-    except:
-        back['message'] = cnts.database_error_message
+    except Exception as e:
+        back['message'] = str(e)
         back['status'] = cnts.database_error
 
-        log.error(cnts.errorLog(addr, path, 'database'))
+        log.error(cnts.errorLog(addr, path, str(e)))
 
         return jsonify(back)
     back['page'] = json_data['page']
@@ -172,8 +172,8 @@ def getOne():
             else:
                 a['size'] = '%.2f'%(i.size / 1024 / 1024) + 'MB'
             back['data'] = a
-    except:
-        back['message'] = cnts.database_error_message
+    except Exception as e:
+        back['message'] = str(e)
         back['status'] = cnts.database_error
 
         log.error(cnts.errorLog(addr, path, 'database'))

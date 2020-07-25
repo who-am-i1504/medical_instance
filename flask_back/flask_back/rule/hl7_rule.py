@@ -81,11 +81,10 @@ def hl7_rule_add():
         log.info(cnts.databaseSuccess(addr, path, '`rule_hl7`'))
 
         data = inSql
-    except:
+    except Exception as e:
+        back['message'] = str(e)
         back['status'] = cnts.database_error
-        back['message'] = cnts.database_error_message
-
-        log.error(cnts.errorLog(addr, path))
+        log.error(cnts.errorLog(addr, path, str(e)))
 
         return jsonify(back)
     back['data'] = {}
@@ -118,11 +117,10 @@ def hl7_rule_update():
         
         log.info(cnts.databaseSuccess(addr, path, '`rule_hl7`'))
 
-    except:
-        back['message'] = cnts.database_error_message
+    except Exception as e:
+        back['message'] = str(e)
         back['status'] = cnts.database_error
-
-        log.error(cnts.errorLog(addr, path))
+        log.error(cnts.errorLog(addr, path, str(e)))
 
         return jsonify(back)
     
@@ -153,12 +151,10 @@ def hl7_rule_delete():
                 log.info(cnts.successLog(addr, path))
 
                 return jsonify(back)
-        except:
-
+        except Exception as e:
+            back['message'] = str(e)
             back['status'] = cnts.database_error
-            back['message'] = cnts.database_error_message
-
-            log.error(cnts.errorLog(addr, path))
+            log.error(cnts.errorLog(addr, path, str(e)))
 
             return jsonify(back)
     try:
@@ -167,11 +163,10 @@ def hl7_rule_delete():
 
         log.info(cnts.databaseSuccess(addr, path, '`rule_hl7`'))
 
-    except:
+    except Exception as e:
+        back['message'] = str(e)
         back['status'] = cnts.database_error
-        back['message'] = cnts.database_error_message
-
-        log.error(cnts.errorLog(addr, path))
+        log.error(cnts.errorLog(addr, path, str(e)))
 
         return jsonify(back)
     
@@ -206,11 +201,10 @@ def hl7_rule_get():
             a['id'] = i.id
             a['value'] = i.value
             back['data'].append(a)
-    except:
-        back['message'] = cnts.database_error_message
+    except Exception as e:
+        back['message'] = str(e)
         back['status'] = cnts.database_error
-
-        log.error(cnts.errorLog(addr, path))
+        log.error(cnts.errorLog(addr, path, str(e)))
 
         return jsonify(back)
     back['page'] = json_data['page']
@@ -237,11 +231,10 @@ def getOne():
         back['data'] = {}
         back['data']['id'] = data.id
         back['data']['value'] = data.value
-    except:
-        message = cnts.database_error
+    except Exception as e:
+        back['message'] = str(e)
         back['status'] = cnts.database_error
-        back['message'] = cnts.database_error_message
-        log.error(cnts.errorLog(addr, path))
+        log.error(cnts.errorLog(addr, path, str(e)))
         return jsonify(back)
     log.info(cnts.successLog(addr, path))
     return jsonify(back)
