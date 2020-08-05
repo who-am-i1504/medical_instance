@@ -10,39 +10,22 @@ from flask_back.user.user import reids_pool
 
 bp = Blueprint('picture_download', __name__, url_prefix='/picture')
 
-@bp.before_request
-def validSession():
-    back = {
-        "status":cnts.quit_login,
-        "message":cnts.quit_login_message,
-        "data":{}
-    }
-    if request.path == '/login' or request.path == '/salt':
-        return None
-    session=redis.Redis(connection_pool=reids_pool)
-    if 'X-Token' in request.headers.keys():
-        sessionid = request.headers['X-Token']
-        if session.exists(sessionid):
-            if 'update' in request.path or 'add' in request.path or 'delete' in request.path:
-                if cnts.validEditor(session.hget(sessionid, 'authority')):
-                    return None
-                else:
-                    back['message'] = '您的权限不足'
-                    return jsonify(back)
-            elif 'start' in request.path:
-                if cnts.validCollect(session.hget(sessionid, 'authority')):
-                    return None
-                else:
-                    back['message'] = '您的权限不足'
-                    return jsonify(back)
-            elif 'download' in request.path:
-                if cnts.validDownload(session.hget(sessionid, 'authority')):
-                    return None
-                else:
-                    back['message'] = '您的权限不足'
-                    return jsonify(back)
-            return None
-    return jsonify(back)
+# @bp.before_request
+# def validSession():
+#     back = {
+#         "status":cnts.quit_login,
+#         "message":cnts.quit_login_message,
+#         "data":{}
+#     }
+#     session=redis.Redis(connection_pool=reids_pool)
+#     if 'X-Token' in request.headers.keys():
+#         sessionid = request.headers['X-Token']
+#         if session.exists(sessionid):
+#             if cnts.validReader(session.hget(sessionid, 'authority')):
+#                 back['message'] = '您的权限不足'
+#                 return jsonify(back)
+#             return None
+#     return jsonify(back)
 
 @bp.route('/download/<string:pic_name>', methods=['GET'])
 def download_one(pic_name):

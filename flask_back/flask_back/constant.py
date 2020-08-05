@@ -91,6 +91,12 @@ special_character = {
     '\\x1c':'\x1c'
 }
 
+
+def validReader(authority):
+    if (int(authority) & Roles['Reader']) > 0:
+        return True
+    return False
+
 def validEditor(authority):
     if (int(authority) & Roles['Editor']) > 0:
         return True

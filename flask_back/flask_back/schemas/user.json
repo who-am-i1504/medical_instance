@@ -1,4 +1,13 @@
 {
+    "userLog":{
+        "type":"object",
+        "properties":{
+            "uuid":{
+                "type":"string"
+            }
+        },
+        "required":["uuid"]
+    },
     "login":{
         "type":"object",
         "properties":{
@@ -84,7 +93,7 @@
                 "type":"string"
             }
         },
-        "required":["username", "uuid"]
+        "required":["uuid", "psd"]
     },
     "updateAuthority":{
         "type":"object",

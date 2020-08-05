@@ -8,9 +8,22 @@ import redis
 import bcrypt
 import secrets
 import uuid
+import datetime
 # import time
 reids_pool = redis.ConnectionPool(host=RedisHost, port=RedisPort, decode_responses=True)
 
+uLogType = ['upsd', 'apsd', 'new', 'cauth', 'cname']
+upsd=0
+apsd=1
+newLog = 2
+cauth = 3
+cname = 4
+def user_log(back, ltype, value, uuid):
+    if back['status'] == 200:
+        # 写入日志
+        db.session.execute("insert into `user_record` values(NULL, '%s', '%s', NOW(), '%s');" %(ltype, value, uuid))
+        db.session.commit()
+        pass
 
 def readRole():
     roles = {}
@@ -24,6 +37,13 @@ Roles = None
 C_SALT='$2a$10$IK/.QmdsZQJimvJ2PIaJTe'
 
 bp = Blueprint('user', __name__)
+
+@bp.after_request
+def user_record(environ):
+    # print(type(environ), environ)
+    return environ
+    pass
+
 
 @bp.before_request
 def validSession():
@@ -49,6 +69,77 @@ def validSession():
             #         return jsonify(back)
             return None
     return jsonify(back)
+
+@bp.route('/user/log', methods=['POST'])
+@jsonschema.validate('user', 'userLog')
+def getUserLog():
+    back = copy.deepcopy(cnts.back_message)
+    sessionid = request.headers['X-Token']
+    json_data = request.get_json()
+    addr = request.remote_addr
+    path = request.path
+    log.info(cnts.requestStart(addr, path, json_data))
+    # token 和 UUID 验证，省略
+    try:
+        session=redis.Redis(connection_pool=reids_pool)
+        authority = session.hget(sessionid, 'authority')
+        if authority is None:
+            back['message'] = '请重新登录'
+            back['status'] = 206
+            return jsonify(back)
+        if not cnts.validAdmin(authority):
+            back['message'] = '您的权限不足'
+            back['status'] = 208
+            return jsonify(back)
+        
+        # print(authority, authority is None)
+        user = db.session.execute("SELECT `username`,`authority` FROM `user` WHERE `uuid` = '%s';" % (json_data['uuid']))
+        db.session.commit()
+        user = user.fetchall()
+        if len(user) <= 0:
+            back['status'] = 208
+            back['message'] = '您的账户不存在'
+            return jsonify(back)
+        user = user[0]
+        use_authority = user['authority']
+        if (use_authority & Roles['Admin']) > 0 and not cnts.validSuperAdmin(authority):
+            back['message'] = '您的权限不足'
+            back['status'] = 207
+            return jsonify(back)
+        
+        result = db.session.execute("SELECT * FROM `user_record` WHERE `uuid` = '%s' ORDER BY `time`;" % (json_data['uuid']))
+        db.session.commit()
+        result = result.fetchall()
+        back['data'] = []
+        for item in result:
+            nItem = {}
+            nItem['time'] = int(item['time'].timestamp() * 1000)
+            nItem['opreation'] = item['opreation']
+            if nItem['opreation'] == 'new':
+                value = {}
+                itemName = ['username', 'password', 'authority']
+                i = 0
+                for s in item['value'].split('\t'):
+                    value[itemName[i]] = s
+                    i += 1
+                nItem['value'] = value
+            else:
+                nItem['value'] = item['value']
+            back['data'].append(nItem)
+            back['now'] = int(datetime.datetime.now().timestamp() * 1000)
+
+    except Exception as e:
+        
+        log.error(cnts.errorLog(addr, path, e))
+
+        back['code'] = cnts.database_error
+        back['msg'] = str(e)
+        return jsonify(back)
+    
+    log.info(cnts.successLog(addr, path))
+
+    return jsonify(back)
+
 
 @bp.route('/salt', methods=['GET'])
 def generateSalt():
@@ -276,6 +367,9 @@ def addNewUser():
             return jsonify(back)
         result = db.session.execute("insert into `user` (`uuid`, `username`, `password`, `authority`) values('%s', '%s', '%s', %d)" % (uid, json_data['username'], json_data['psd'], use_authority))
         db.session.commit()
+        
+        user_log(back, uLogType[newLog], "" + json_data['username'] + '\t' + '*' * 10 + json_data['psd'][-4:-1] + '\t' + str(use_authority), uid)
+
     except Exception as e:
         
         log.error(cnts.errorLog(addr, path, e))
@@ -316,7 +410,12 @@ def updateUsername():
         # print(authority, authority is None)
         user = db.session.execute("SELECT `username`,`authority` FROM `user` WHERE `uuid` = '%s';" % (json_data['uuid']))
         db.session.commit()
-        user = user.fetchall()[0]
+        user = user.fetchall()
+        if len(user) <= 0:
+            back['status'] = 208
+            back['message'] = '您的账户不存在'
+            return jsonify(back)
+        user = user[0]
         use_authority = user['authority']
         if (use_authority & Roles['Admin']) > 0 and not cnts.validSuperAdmin(authority):
             back['message'] = '您的权限不足'
@@ -331,6 +430,7 @@ def updateUsername():
             session.delete[json_data['uuid']]
         result = db.session.execute("update `user` set `username` = '%s' where `uuid` = '%s';" % (json_data['username'], json_data['uuid']))
         db.session.commit()
+        user_log(back, uLogType[cname], "" + json_data['username'], user['uuid'])
     except Exception as e:
         
         log.error(cnts.errorLog(addr, path, e))
@@ -370,7 +470,12 @@ def updateUserPsd():
         # print(authority, authority is None)
         user = db.session.execute("SELECT `password`,`authority` FROM `user` WHERE `uuid` = '%s';" % (json_data['uuid']))
         db.session.commit()
-        user = user.fetchall()[0]
+        user = user.fetchall()
+        if len(user) <= 0:
+            back['status'] = 208
+            back['message'] = '您的账户不存在'
+            return jsonify(back)
+        user = user[0]
         
         use_authority = user['authority']
         if (use_authority & Roles['Admin']) > 0 and not cnts.validSuperAdmin(authority):
@@ -386,6 +491,7 @@ def updateUserPsd():
             session.delete[json_data['uuid']]
         result = db.session.execute("update `user` set `password` = '%s' where `uuid` = '%s';" % (json_data['psd'], json_data['uuid']))
         db.session.commit()
+        user_log(back, uLogType[apsd], '*' * 10 + json_data['psd'][-4:-1], json_data['uuid'])
     except Exception as e:
         
         log.error(cnts.errorLog(addr, path, e))
@@ -455,8 +561,14 @@ def updateAuthority():
         # print(authority, authority is None)
         user = db.session.execute("SELECT `authority` FROM `user` WHERE `uuid` = '%s';" % (json_data['uuid']))
         db.session.commit()
-        user = user.fetchall()[0]
         
+        user = user.fetchall()
+        if len(user) <= 0:
+            back['status'] = 208
+            back['message'] = '您的账户不存在'
+            return jsonify(back)
+        user = user[0]
+
         use_authority = user['authority']
         if (use_authority & Roles['SuperAdmin']) > 0:
             back['message'] = '您的权限不足'
@@ -486,11 +598,14 @@ def updateAuthority():
         #     back['message'] = '用户不能没有权限'
         #     back['status'] = 209
         #     return jsonify(back)
+        if use_authority == json_data['authority']:
+            return jsonify(back)
         if session.exists(json_data['uuid']):
             session.delete(session.get(json_data['uuid']))
             session.delete[json_data['uuid']]
         result = db.session.execute("update `user` set `authority` = %d where `uuid` = '%s';" % (json_data['authority'], json_data['uuid']))
         db.session.commit()
+        user_log(back, uLogType[cauth], "" + str(json_data['authority']), json_data['uuid'])
     except Exception as e:
         
         log.error(cnts.errorLog(addr, path, e))
@@ -555,7 +670,7 @@ def changePwd():
         
         back['status'] = 202
         back['message'] = '旧密码与数据库中密码不一致'
-
+        user_log(back, uLogType[upsd], '*' * 10 + json_data['newPsd'][-4:-1], users[0]['uuid'])
     except:
         log.error(cnts.errorLog(addr, path, cnts.database_error_message))
 
@@ -608,6 +723,7 @@ def userDelete():
             session.delete(session.get(json_data['uuid']))
             session.delete[json_data['uuid']]
         result = db.session.execute("delete from `user` where `uuid` = '%s';" % (json_data['uuid']))
+        db.session.execute("delete from `user_record` where `uuid` = '%s';" % (json_data['uuid']))
         db.session.commit()
     except Exception as e:
         
