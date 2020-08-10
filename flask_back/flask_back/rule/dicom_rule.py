@@ -5,9 +5,42 @@ import flask_back.constant as cnts
 import copy
 import redis
 from flask_back.user.user import reids_pool
+import json
 
 bp = Blueprint('rule_dicom', __name__, url_prefix='/rule/dicom')
 
+@bp.after_request
+def record_log(response):
+    
+    try:
+        session=redis.Redis(connection_pool=reids_pool)
+        if 'X-Token' in request.headers.keys():
+            sessionid = request.headers['X-Token']
+            if session.exists(sessionid):
+                # print('1')
+                req = json.dumps(request.get_json())
+                # print('2')
+                resp = ''
+                if 'get' in request.path:
+                    resp = '......'
+                else:
+                    resp = json.dumps(response.get_json())
+                    if len(resp) > 100:
+                        resp = '......'
+                # print('3')
+                authority = session.hget(sessionid, 'authority')
+                # print('4')
+                name = session.hget(sessionid, 'username')
+                # print('5')
+                uuid = session.hget(sessionid, 'uuid')
+                # print('6')
+                db.session.execute("INSERT INTO `logs` VALUES(NULL, '%s', '%s', '%s', '%s', NOW(), '%s', '%s', %s);" % (str(request.remote_addr), str(request.path), req, resp, str(uuid), str(name), str(authority)))
+                db.session.commit()
+    except Exception as e:
+        
+        pass
+    finally:
+        return response
 
 @bp.before_request
 def validSession():

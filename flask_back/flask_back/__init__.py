@@ -32,6 +32,7 @@ from .monitor_rule import monitor
 from .picture import download
 from .user import user
 import flask_back.helloworld as ap
+from .construct import filecontruct
 app.register_blueprint(ap.bp)
 app.register_blueprint(hl7_rule.bp)
 app.register_blueprint(dicom_rule.bp)
@@ -41,6 +42,7 @@ app.register_blueprint(collect.bp)
 app.register_blueprint(download.bp)
 app.register_blueprint(user.bp)
 app.register_blueprint(rule.bp)
+app.register_blueprint(filecontruct.bp)
 try:
     os.makedirs(app.instance_path)
 except OSError:

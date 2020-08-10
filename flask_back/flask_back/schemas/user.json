@@ -106,5 +106,62 @@
             }
         },
         "required":["authority", "uuid"]
+    },
+    "getLog":{
+        "type":"object",
+        "properties":{
+            "pageSize":{
+                "type":"integer"
+            },
+            "page":{
+                "type":"integer"
+            }
+        },
+        "required":["page"]
+    },
+    "delete":{
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "integer"
+            },
+            "value":{
+                "type":"string"
+            }
+        },
+        "required": ["id"]
+    },
+    "getByUuid":{
+        "type": "object",
+        "properties": {
+            "pageSize":{
+                "type":"integer"
+            },
+            "page":{
+                "type":"integer"
+            },
+            "uuid":{
+                "type":"string"
+            },
+            "username":{
+                "type":"string"
+            }
+        },
+        "required": ["page", "uuid"]
+    },
+    "getByName":{
+        "type": "object",
+        "properties": {
+            "pageSize":{
+                "type":"integer"
+            },
+            "page":{
+                "type":"integer"
+            },
+            "username":{
+                "type":"string"
+            }
+        },
+        "required": ["page", "username"]
     }
 }

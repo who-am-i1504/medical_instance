@@ -1,0 +1,42 @@
+{
+    "deleteFile":{
+        "type":"object",
+        "properties":{
+            "filename":{
+                "type":"string"
+            }
+        },
+        "required":["filename"]
+    },
+    "consParam":{
+        "type":"object",
+        "protperties":{
+            "cons_type":{
+                "type":"string",
+                "pattern":"[TCP_CONSTRUCT|HTTP_DOWNLOAD_CONSTRUCT|PDU_CONSTRUCT]"
+            },
+            "filename":{
+                "type":"string"
+            }
+        },
+        "required":["cons_type", "filename"]
+    },
+    "file_para":{
+        "type":"object",
+        "protperties":{
+            "filename":{
+                "type":"string"
+            },
+            "required":["filename"]
+        }
+    },
+    "dir_para":{
+        "type":"object",
+        "protperties":{
+            "dirname":{
+                "type":"string"
+            }
+        },
+        "required":["dirname"]
+    }
+}

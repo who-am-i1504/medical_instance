@@ -27,6 +27,10 @@ bp = Blueprint('picture_download', __name__, url_prefix='/picture')
 #             return None
 #     return jsonify(back)
 
+@bp.route('/log/download', methods=['GET'])
+def logDownload():
+    return send_from_directory(os.path.join(os.getcwd()), 'current.log', as_attachment=True)
+
 @bp.route('/download/<string:pic_name>', methods=['GET'])
 def download_one(pic_name):
     if request.method == 'GET':
