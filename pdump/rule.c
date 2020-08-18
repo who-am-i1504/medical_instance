@@ -180,7 +180,7 @@ int Ftp_PORT(struct JudgeFirst * root, struct rte_mbuf * target)
 	uint8_t status = 0;
 	if (i == current_length)
 		return 0;
-	for (int j = i; ((*(q + j) <= '9' && *(q + j) >= '0') || *(q + j) == ',') && j < current_length; j++)
+	for (int j = i + 1; ((*(q + j) <= '9' && *(q + j) >= '0') || *(q + j) == ',') && j < current_length; j++)
 	{
 		if (status >= 6)
 			return 0;
@@ -252,11 +252,19 @@ int AddInListFtp(struct JudgeFirst * root, struct rte_mbuf * target)
 	memcpy(pasv2.character, "PORT", sizeof(char) * 4);
 	if (current_length > 59)
 	{
-		memcpy(ch_trans_int.p, p + 54,sizeof(char) * 4);
+                //printf("enter judge\n");
+        char* data = rte_pktmbuf_mtod(target, char *); 
+		memcpy(ch_trans_int.p, data + 54,sizeof(char) * 4);
 		if (pasv1.number == ch_trans_int.number)
+                {
+                     //printf("pasv\n");
 			return Ftp_227(root, target);
+                }
 		if (pasv2.number == ch_trans_int.number)
+                {
+                     //printf("port\n");
 			return Ftp_PORT(root, target);
+                }
 		
 		/*for(int i = 0; i < size; i++)
 		{
@@ -264,6 +272,7 @@ int AddInListFtp(struct JudgeFirst * root, struct rte_mbuf * target)
 				return 1;
 		}*/
 	}
+    return 0;
 	
 }
 

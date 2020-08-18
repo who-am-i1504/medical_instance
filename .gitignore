@@ -32,3 +32,5 @@
 /d2-admin-start-kit/*.njsproj
 /d2-admin-start-kit/*.sln
 /d2-admin-start-kit/*.sw?
+
+/uploadpcap/
