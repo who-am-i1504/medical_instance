@@ -538,7 +538,7 @@ def construct(absPath, target, typer):
         
         if not value is None:
             # 追加
-            if key1 == value.getValue(head):
+            if key1 == value.getValue(head) and value[head] != value[after]:
                 # 重传数据包
                 # 略过
                 continue

@@ -1,0 +1,2036 @@
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			4
+ -packets transmitted hl7 Packets to vdev:		0
+ -packets transmitted astm Packets to vdev:		0
+ -packets transmitted dicom Packets to vdev:			0
+ -packets transmitted http Packets to vdev:			0
+ -packets transmitted ftp Packets to vdev:			0
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			0
+ -packets transmitted hl7 Packets to vdev:		0
+ -packets transmitted astm Packets to vdev:		0
+ -packets transmitted dicom Packets to vdev:			0
+ -packets transmitted http Packets to vdev:			0
+ -packets transmitted ftp Packets to vdev:			0
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			4
+ -packets transmitted hl7 Packets to vdev:		0
+ -packets transmitted astm Packets to vdev:		0
+ -packets transmitted dicom Packets to vdev:			0
+ -packets transmitted http Packets to vdev:			0
+ -packets transmitted ftp Packets to vdev:			0
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			1
+ -packets transmitted hl7 Packets to vdev:		0
+ -packets transmitted astm Packets to vdev:		0
+ -packets transmitted dicom Packets to vdev:			0
+ -packets transmitted http Packets to vdev:			0
+ -packets transmitted ftp Packets to vdev:			0
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			0
+ -packets transmitted hl7 Packets to vdev:		0
+ -packets transmitted astm Packets to vdev:		0
+ -packets transmitted dicom Packets to vdev:			0
+ -packets transmitted http Packets to vdev:			0
+ -packets transmitted ftp Packets to vdev:			0
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			4
+ -packets transmitted hl7 Packets to vdev:		0
+ -packets transmitted astm Packets to vdev:		0
+ -packets transmitted dicom Packets to vdev:			0
+ -packets transmitted http Packets to vdev:			0
+ -packets transmitted ftp Packets to vdev:			0
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			4
+ -packets transmitted hl7 Packets to vdev:		0
+ -packets transmitted astm Packets to vdev:		0
+ -packets transmitted dicom Packets to vdev:			0
+ -packets transmitted http Packets to vdev:			0
+ -packets transmitted ftp Packets to vdev:			0
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			0
+ -packets transmitted hl7 Packets to vdev:		0
+ -packets transmitted astm Packets to vdev:		0
+ -packets transmitted dicom Packets to vdev:			0
+ -packets transmitted http Packets to vdev:			0
+ -packets transmitted ftp Packets to vdev:			0
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			0
+ -packets transmitted hl7 Packets to vdev:		0
+ -packets transmitted astm Packets to vdev:		0
+ -packets transmitted dicom Packets to vdev:			0
+ -packets transmitted http Packets to vdev:			0
+ -packets transmitted ftp Packets to vdev:			0
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			0
+ -packets transmitted hl7 Packets to vdev:		0
+ -packets transmitted astm Packets to vdev:		0
+ -packets transmitted dicom Packets to vdev:			0
+ -packets transmitted http Packets to vdev:			0
+ -packets transmitted ftp Packets to vdev:			0
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			4
+ -packets transmitted hl7 Packets to vdev:		0
+ -packets transmitted astm Packets to vdev:		0
+ -packets transmitted dicom Packets to vdev:			0
+ -packets transmitted http Packets to vdev:			0
+ -packets transmitted ftp Packets to vdev:			0
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			4
+ -packets transmitted hl7 Packets to vdev:		0
+ -packets transmitted astm Packets to vdev:		0
+ -packets transmitted dicom Packets to vdev:			0
+ -packets transmitted http Packets to vdev:			0
+ -packets transmitted ftp Packets to vdev:			0
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			4
+ -packets transmitted hl7 Packets to vdev:		0
+ -packets transmitted astm Packets to vdev:		0
+ -packets transmitted dicom Packets to vdev:			0
+ -packets transmitted http Packets to vdev:			0
+ -packets transmitted ftp Packets to vdev:			0
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			164
+ -packets transmitted hl7 Packets to vdev:		0
+ -packets transmitted astm Packets to vdev:		0
+ -packets transmitted dicom Packets to vdev:			0
+ -packets transmitted http Packets to vdev:			0
+ -packets transmitted ftp Packets to vdev:			0
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			6
+ -packets transmitted hl7 Packets to vdev:		0
+ -packets transmitted astm Packets to vdev:		0
+ -packets transmitted dicom Packets to vdev:			0
+ -packets transmitted http Packets to vdev:			0
+ -packets transmitted ftp Packets to vdev:			0
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			60252
+ -packets transmitted hl7 Packets to vdev:		0
+ -packets transmitted astm Packets to vdev:		0
+ -packets transmitted dicom Packets to vdev:			58948
+ -packets transmitted http Packets to vdev:			1199
+ -packets transmitted ftp Packets to vdev:			0
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			82494
+ -packets transmitted hl7 Packets to vdev:		3432
+ -packets transmitted astm Packets to vdev:		0
+ -packets transmitted dicom Packets to vdev:			76783
+ -packets transmitted http Packets to vdev:			1355
+ -packets transmitted ftp Packets to vdev:			0
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			163031
+ -packets transmitted hl7 Packets to vdev:		361
+ -packets transmitted astm Packets to vdev:		0
+ -packets transmitted dicom Packets to vdev:			123534
+ -packets transmitted http Packets to vdev:			38464
+ -packets transmitted ftp Packets to vdev:			0
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			212263
+ -packets transmitted hl7 Packets to vdev:		1983
+ -packets transmitted astm Packets to vdev:		0
+ -packets transmitted dicom Packets to vdev:			207431
+ -packets transmitted http Packets to vdev:			28
+ -packets transmitted ftp Packets to vdev:			1475
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			351252
+ -packets transmitted hl7 Packets to vdev:		4978
+ -packets transmitted astm Packets to vdev:		0
+ -packets transmitted dicom Packets to vdev:			250164
+ -packets transmitted http Packets to vdev:			87670
+ -packets transmitted ftp Packets to vdev:			5498
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			299433
+ -packets transmitted hl7 Packets to vdev:		5080
+ -packets transmitted astm Packets to vdev:		0
+ -packets transmitted dicom Packets to vdev:			285018
+ -packets transmitted http Packets to vdev:			353
+ -packets transmitted ftp Packets to vdev:			5498
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			238865
+ -packets transmitted hl7 Packets to vdev:		4725
+ -packets transmitted astm Packets to vdev:		0
+ -packets transmitted dicom Packets to vdev:			225002
+ -packets transmitted http Packets to vdev:			348
+ -packets transmitted ftp Packets to vdev:			5498
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			299413
+ -packets transmitted hl7 Packets to vdev:		5080
+ -packets transmitted astm Packets to vdev:		0
+ -packets transmitted dicom Packets to vdev:			284965
+ -packets transmitted http Packets to vdev:			363
+ -packets transmitted ftp Packets to vdev:			5498
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			300264
+ -packets transmitted hl7 Packets to vdev:		5082
+ -packets transmitted astm Packets to vdev:		0
+ -packets transmitted dicom Packets to vdev:			285758
+ -packets transmitted http Packets to vdev:			353
+ -packets transmitted ftp Packets to vdev:			5498
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			92115
+ -packets transmitted hl7 Packets to vdev:		42644
+ -packets transmitted astm Packets to vdev:		0
+ -packets transmitted dicom Packets to vdev:			0
+ -packets transmitted http Packets to vdev:			1932
+ -packets transmitted ftp Packets to vdev:			0
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			28133
+ -packets transmitted hl7 Packets to vdev:		1767
+ -packets transmitted astm Packets to vdev:		0
+ -packets transmitted dicom Packets to vdev:			0
+ -packets transmitted http Packets to vdev:			23040
+ -packets transmitted ftp Packets to vdev:			0
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+Port 5 MAC: 02 70 63 61 70 04
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			419855
+ -packets transmitted hl7 Packets to vdev:		4079
+ -packets transmitted astm Packets to vdev:		2783
+ -packets transmitted dicom Packets to vdev:			286411
+ -packets transmitted http Packets to vdev:			118093
+ -packets transmitted ftp Packets to vdev:			5498
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+open_single_tx_pcap(): Couldn't open /home/white/Documents/project/medical_instance/pcap/1594081458/ for writing.
+EAL: Driver cannot attach the device (net_pcap=hl7)
+EAL: Failed to attach device on primary process
+EAL: Error - exiting with code: 1
+  Cause: vdev creation failed:create_mp_ring_vdev:1083
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+Port 5 MAC: 02 70 63 61 70 04
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			32
+ -packets transmitted hl7 Packets to vdev:		0
+ -packets transmitted astm Packets to vdev:		0
+ -packets transmitted dicom Packets to vdev:			27
+ -packets transmitted http Packets to vdev:			0
+ -packets transmitted ftp Packets to vdev:			0
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+Port 5 MAC: 02 70 63 61 70 04
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			93321
+ -packets transmitted hl7 Packets to vdev:		1247
+ -packets transmitted astm Packets to vdev:		3954
+ -packets transmitted dicom Packets to vdev:			85361
+ -packets transmitted http Packets to vdev:			11
+ -packets transmitted ftp Packets to vdev:			0
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+Port 5 MAC: 02 70 63 61 70 04
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			723498
+ -packets transmitted hl7 Packets to vdev:		13817
+ -packets transmitted astm Packets to vdev:		72229
+ -packets transmitted dicom Packets to vdev:			620036
+ -packets transmitted http Packets to vdev:			746
+ -packets transmitted ftp Packets to vdev:			8713
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+Port 5 MAC: 02 70 63 61 70 04
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			299311
+ -packets transmitted hl7 Packets to vdev:		4079
+ -packets transmitted astm Packets to vdev:		2783
+ -packets transmitted dicom Packets to vdev:			283598
+ -packets transmitted http Packets to vdev:			348
+ -packets transmitted ftp Packets to vdev:			5498
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+Port 5 MAC: 02 70 63 61 70 04
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			331024
+ -packets transmitted hl7 Packets to vdev:		4079
+ -packets transmitted astm Packets to vdev:		2783
+ -packets transmitted dicom Packets to vdev:			284704
+ -packets transmitted http Packets to vdev:			30985
+ -packets transmitted ftp Packets to vdev:			5498
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+Port 5 MAC: 02 70 63 61 70 04
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			323724
+ -packets transmitted hl7 Packets to vdev:		117602
+ -packets transmitted astm Packets to vdev:		180259
+ -packets transmitted dicom Packets to vdev:			284407
+ -packets transmitted http Packets to vdev:			22087
+ -packets transmitted ftp Packets to vdev:			4356
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+Port 5 MAC: 02 70 63 61 70 04
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			109828
+ -packets transmitted hl7 Packets to vdev:		11939
+ -packets transmitted astm Packets to vdev:		36871
+ -packets transmitted dicom Packets to vdev:			87046
+ -packets transmitted http Packets to vdev:			10480
+ -packets transmitted ftp Packets to vdev:			3895
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+Port 5 MAC: 02 70 63 61 70 04
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			265514
+ -packets transmitted hl7 Packets to vdev:		107719
+ -packets transmitted astm Packets to vdev:		152715
+ -packets transmitted dicom Packets to vdev:			251139
+ -packets transmitted http Packets to vdev:			665
+ -packets transmitted ftp Packets to vdev:			4370
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+Port 5 MAC: 02 70 63 61 70 04
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			285803
+ -packets transmitted hl7 Packets to vdev:		112058
+ -packets transmitted astm Packets to vdev:		174779
+ -packets transmitted dicom Packets to vdev:			269676
+ -packets transmitted http Packets to vdev:			350
+ -packets transmitted ftp Packets to vdev:			2758
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+Port 5 MAC: 02 70 63 61 70 04
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			300403
+ -packets transmitted hl7 Packets to vdev:		114694
+ -packets transmitted astm Packets to vdev:		179179
+ -packets transmitted dicom Packets to vdev:			286111
+ -packets transmitted http Packets to vdev:			1157
+ -packets transmitted ftp Packets to vdev:			3889
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+Port 5 MAC: 02 70 63 61 70 04
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			232260
+ -packets transmitted hl7 Packets to vdev:		98277
+ -packets transmitted astm Packets to vdev:		129111
+ -packets transmitted dicom Packets to vdev:			203601
+ -packets transmitted http Packets to vdev:			10968
+ -packets transmitted ftp Packets to vdev:			526
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+Port 5 MAC: 02 70 63 61 70 04
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			299294
+ -packets transmitted hl7 Packets to vdev:		117311
+ -packets transmitted astm Packets to vdev:		177151
+ -packets transmitted dicom Packets to vdev:			286046
+ -packets transmitted http Packets to vdev:			334
+ -packets transmitted ftp Packets to vdev:			3420
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+Port 5 MAC: 02 70 63 61 70 04
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			299478
+ -packets transmitted hl7 Packets to vdev:		114779
+ -packets transmitted astm Packets to vdev:		173568
+ -packets transmitted dicom Packets to vdev:			285753
+ -packets transmitted http Packets to vdev:			355
+ -packets transmitted ftp Packets to vdev:			3853
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+Port 5 MAC: 02 70 63 61 70 04
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			100413
+ -packets transmitted hl7 Packets to vdev:		76802
+ -packets transmitted astm Packets to vdev:		86286
+ -packets transmitted dicom Packets to vdev:			100172
+ -packets transmitted http Packets to vdev:			15
+ -packets transmitted ftp Packets to vdev:			0
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+Port 5 MAC: 02 70 63 61 70 04
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			102699
+ -packets transmitted hl7 Packets to vdev:		54302
+ -packets transmitted astm Packets to vdev:		78031
+ -packets transmitted dicom Packets to vdev:			101419
+ -packets transmitted http Packets to vdev:			2
+ -packets transmitted ftp Packets to vdev:			0
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+Port 5 MAC: 02 70 63 61 70 04
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			294538
+ -packets transmitted hl7 Packets to vdev:		116250
+ -packets transmitted astm Packets to vdev:		188651
+ -packets transmitted dicom Packets to vdev:			281086
+ -packets transmitted http Packets to vdev:			353
+ -packets transmitted ftp Packets to vdev:			5498
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+Port 5 MAC: 02 70 63 61 70 04
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			39767
+ -packets transmitted hl7 Packets to vdev:		34613
+ -packets transmitted astm Packets to vdev:		37850
+ -packets transmitted dicom Packets to vdev:			39044
+ -packets transmitted http Packets to vdev:			4
+ -packets transmitted ftp Packets to vdev:			0
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+Port 5 MAC: 02 70 63 61 70 04
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			66274
+ -packets transmitted hl7 Packets to vdev:		7532
+ -packets transmitted astm Packets to vdev:		29221
+ -packets transmitted dicom Packets to vdev:			54215
+ -packets transmitted http Packets to vdev:			334
+ -packets transmitted ftp Packets to vdev:			4878
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+Port 5 MAC: 02 70 63 61 70 04
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			579215
+ -packets transmitted hl7 Packets to vdev:		227111
+ -packets transmitted astm Packets to vdev:		394053
+ -packets transmitted dicom Packets to vdev:			541123
+ -packets transmitted http Packets to vdev:			11061
+ -packets transmitted ftp Packets to vdev:			10996
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+Port 5 MAC: 02 70 63 61 70 04
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+
+
+Signal 2 received, preparing to exit...
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			50532
+ -packets transmitted hl7 Packets to vdev:		4508
+ -packets transmitted astm Packets to vdev:		5734
+ -packets transmitted dicom Packets to vdev:			24991
+ -packets transmitted http Packets to vdev:			6802
+ -packets transmitted ftp Packets to vdev:			0
+
+
+Signal 2 received, preparing to exit...
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+Port 5 MAC: 02 70 63 61 70 04
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+
+
+Signal 2 received, preparing to exit...
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			50715
+ -packets transmitted hl7 Packets to vdev:		47213
+ -packets transmitted astm Packets to vdev:		47287
+ -packets transmitted dicom Packets to vdev:			48970
+ -packets transmitted http Packets to vdev:			456
+ -packets transmitted ftp Packets to vdev:			0
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+
+
+Signal 2 received, preparing to exit...
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			468460
+ -packets transmitted hl7 Packets to vdev:		273954
+ -packets transmitted astm Packets to vdev:		0
+ -packets transmitted dicom Packets to vdev:			0
+ -packets transmitted http Packets to vdev:			6512
+ -packets transmitted ftp Packets to vdev:			0
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: Error - exiting with code: 1
+  Cause: Mempool creation failed: Cannot allocate memory
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: Error - exiting with code: 1
+  Cause: Mempool creation failed: Cannot allocate memory
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			149736
+ -packets transmitted hl7 Packets to vdev:		9081
+ -packets transmitted astm Packets to vdev:		0
+ -packets transmitted dicom Packets to vdev:			0
+ -packets transmitted http Packets to vdev:			19485
+ -packets transmitted ftp Packets to vdev:			0
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			219689
+ -packets transmitted hl7 Packets to vdev:		94212
+ -packets transmitted astm Packets to vdev:		0
+ -packets transmitted dicom Packets to vdev:			0
+ -packets transmitted http Packets to vdev:			16952
+ -packets transmitted ftp Packets to vdev:			0
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+Port 4 MAC: 02 70 63 61 70 03
+Port 5 MAC: 02 70 63 61 70 04
+ No config file about mysql. so use the default config.
+
+ Connection success.
+ find 177 row.
+ find 8 row.
+find 7 row.
+ find 1 row.
+ find 8 row.
+ find 70 row.
+
+ Dictionary Tree conduct successfully.
+##### PDUMP DEBUG STATS #####
+ -packets dequeued:			96327
+ -packets transmitted hl7 Packets to vdev:		14739
+ -packets transmitted astm Packets to vdev:		16041
+ -packets transmitted dicom Packets to vdev:			52028
+ -packets transmitted http Packets to vdev:			12822
+ -packets transmitted ftp Packets to vdev:			0
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: No free hugepages reported in hugepages-2048kB
+EAL: No free hugepages reported in hugepages-2048kB
+EAL: FATAL: Cannot get hugepage information.
+EAL: Cannot get hugepage information.
+PANIC in main():
+Cannot init EAL
+5: [/home/white/Documents/project/DPDK/pdump/dpdk-pdump(_start+0x2e) [0x5618db82d27e]]
+4: [/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xf3) [0x7f8dccf621e3]]
+3: [/home/white/Documents/project/DPDK/pdump/dpdk-pdump(main+0x1a0) [0x5618db83a805]]
+2: [/home/white/Documents/project/DPDK/pdump/dpdk-pdump(__rte_panic+0xcd) [0x5618db739b2b]]
+1: [/home/white/Documents/project/DPDK/pdump/dpdk-pdump(rte_dump_stack+0x32) [0x5618db8f6ba2]]
+Aborted

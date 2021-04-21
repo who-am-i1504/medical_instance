@@ -233,7 +233,6 @@ int Ftp_PORT(struct JudgeFirst * root, struct rte_mbuf * target)
     current -> next = root;
     current -> ahead = p;
     return 1;
-	return 1;
 }
 
 int AddInListFtp(struct JudgeFirst * root, struct rte_mbuf * target)

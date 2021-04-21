@@ -248,6 +248,7 @@ class StateAstm(State):
             session.add(item)
             pass
         session.commit()
+        session.close()
         # print('success!')
 
 

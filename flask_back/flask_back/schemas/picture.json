@@ -1,0 +1,14 @@
+{
+    "dictory":{
+        "type":"object",
+        "properties":{
+            "pictures":{
+                "type":"array",
+                "item":{
+                    "type":"string"
+                }
+            }
+        },
+        "required":["pictures"]
+    }
+}

@@ -237,7 +237,7 @@ class CollectThread:
                             # print(a.start_time)
                             session.commit()
                         except:
-                            print("回滚")
+                            # print("回滚")
                             session.rollback()
                         finally:
                             session.close()
@@ -324,13 +324,13 @@ class CollectThread:
                         self.pcapPath.append(item)
                         process = self._runPopen(script)
                         try:
-                            print(item['id'])
+                            # print(item['id'])
                             a = session.query(CollectResult).filter(CollectResult.id == item['id']).one()
                             a.start_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                             # print(a.start_time)
                             session.commit()
                         except:
-                            print("回滚")
+                            # print("回滚")
                             session.rollback()
                         finally:
                             session.close()

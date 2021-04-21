@@ -1,4 +1,5 @@
 import ast
+from base64 import encodestring
 
 Roles = None
 
@@ -133,6 +134,47 @@ def validSuperAdmin(authority):
     if (int(authority) & Roles['SuperAdmin']) > 0:
         return True
     return False
+
+def tostring(data):
+    return str(encodestring(data), encoding='utf-8')
+
+def hash2string(data):
+    res = {}
+    for key in data.keys():
+        res[key] = tostring(data[key])
+    return res
+
+def array2string(data)->list:
+    res = []
+    for i in data:
+        res.append(tostring(i))
+    return res
+
+def transferURevoKey(key):
+    res = {}
+
+    res['m'] = key.m
+    res['K0'] = tostring(key.K0)
+    res['K1'] = tostring(key.K1)
+    res['K2'] = tostring(key.K2)
+    res['KJ'] = array2string(key.KJ)
+    res['Kijx'] = hash2string(key.Kijx)
+    res['attributes'] = key.attributes
+
+    return res
+
+
+def transferARevoKey(key):
+    res = {}
+
+    res['aid'] = key.aid
+    res['K'] = tostring(key.K)
+    res['L'] = tostring(key.L)
+    res['R'] = tostring(key.R)
+    res['kx'] = hash2string(key.kx)
+    res['attributes'] = key.attribute
+    return res
+
 
 # import os
 # import time

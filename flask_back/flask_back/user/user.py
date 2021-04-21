@@ -2,7 +2,7 @@ from flask import (request, jsonify, Blueprint, redirect)
 from flask_back import db, jsonschema, ValidationError, log
 from flask_back.dao.sql import RuleAstm
 import flask_back.constant as cnts
-from flask_back.constant import RedisHost, RedisPort
+from flask_back.constant import RedisHost, RedisPort, tostring
 import copy
 import redis
 import bcrypt
@@ -237,6 +237,15 @@ def login():
                     back['data']['username'] = i['username']
                     back['data']['uuid'] = i['uuid']
                     back['data']['authority'] = i['authority']
+                    if i['cert'] is not None:
+                        back['data']['cert']=tostring(i['cert'])
+                        back['data']['idnum'] = i['idnum']
+                        back['data']['attributes'] = i['attributes']
+                    else:
+                        back['data']['cert']="无"
+                        back['data']['idnum'] = "无"
+                        back['data']['attributes'] = "无"
+
                     # back['data']['name'] = i['name']
                     # back['data']['name'] = i['name']
                     # back['data']['remote'] = addr
@@ -261,7 +270,7 @@ def login():
         return jsonify(back)
 
     log.info(cnts.successLog(addr, path))
-
+    # print(back)
     return jsonify(back)
 
 
@@ -421,7 +430,7 @@ def addNewUser():
             back['message'] = '用户名已存在'
             back['status'] = 207
             return jsonify(back)
-        result = db.session.execute("insert into `user` (`uuid`, `username`, `password`, `authority`) values('%s', '%s', '%s', %d)" % (
+        result = db.session.execute("insert into `user` (`uuid`, `username`, `password`, `authority`, `idnum`, `cert`, `attributes`) values('%s', '%s', '%s', %d, null, null, null);" % (
             uid, json_data['username'], json_data['psd'], use_authority))
         db.session.commit()
 
@@ -1064,6 +1073,89 @@ def getLogByUUID():
         back['status'] = cnts.database_error
         back['message'] = str(e)
         return jsonify(back)
+    return jsonify(back)
+
+
+@bp.route('/attributes/get', methods=['POST'])
+@jsonschema.validate('user', 'list')
+def getUserAttributes():
+    back = copy.deepcopy(cnts.back_message)
+    pageSize = cnts.page_size
+    sessionid = request.headers['X-Token']
+    json_data = request.get_json()
+    if 'pageSize' in json_data.keys():
+        pageSize = json_data['pageSize']
+    addr = request.remote_addr
+    path = request.path
+    log.info(cnts.requestStart(addr, path, json_data))
+    # token 和 UUID 验证，省略
+    try:
+        session = redis.Redis(connection_pool=reids_pool)
+        authority = session.hget(sessionid, 'authority')
+        if authority is None:
+            back['message'] = '请重新登录'
+            back['status'] = 206
+            return jsonify(back)
+        size = None
+        result = None
+        # print('HERE')
+        if not cnts.validSuperAdmin(authority):
+            if not cnts.validAdmin(authority):
+                if cnts.validEditorAdmin(authority) and cnts.validReaderAdmin(authority):
+                    size = db.session.execute(
+                        'select COUNT(1) from `user` where `authority` < %d or `authority` = 0;' % (Roles['ReaderAdmin']))
+                    result = db.session.execute('select `username`, `uuid`, `attributes` from `user` where `authority` < %d limit %d,%d;' % (
+                        Roles['ReaderAdmin'], (json_data['page'] - 1)*pageSize, pageSize))
+                elif cnts.validEditorAdmin(authority):
+                    size = db.session.execute(
+                        'select COUNT(1) from `user` where `authority` = %d or `authority` = 0;' % (Roles['Editor']))
+                    result = db.session.execute('select `username`, `uuid`, `attributes` from `user` where `authority` = %d limit %d,%d;' % (
+                        Roles['Editor'], (json_data['page'] - 1)*pageSize, pageSize))
+                elif cnts.validReaderAdmin(authority):
+                    size = db.session.execute(
+                        'select COUNT(1) from `user` where `authority` = %d or `authority` = 0;' % (Roles['Reader']))
+                    result = db.session.execute('select `username`, `uuid`, `attributes` from `user` where `authority` = %d or `authority` = 0 limit %d,%d;' % (
+                        Roles['Reader'], (json_data['page'] - 1)*pageSize, pageSize))
+                else:
+                    back['message'] = '权限不足，请找管理员赋予权限'
+                    back['status'] = 208
+                    return jsonify(back)
+            else:
+                size = db.session.execute(
+                    'select COUNT(1) from `user` where `authority` < %d;' % (Roles['Admin']))
+                result = db.session.execute('select `username`, `uuid`, `attributes` from `user` where `authority` < %d limit %d,%d;' % (
+                    Roles['Admin'], (json_data['page'] - 1)*pageSize, pageSize))
+        else:
+            size = db.session.execute(
+                'select COUNT(1) from `user` where `authority` < %d;' % (Roles['SuperAdmin']))
+            result = db.session.execute('select `username`, `uuid`, `attributes` from `user` where `authority` < %d limit %d,%d;' % (
+                Roles['SuperAdmin'], (json_data['page'] - 1)*pageSize, pageSize))
+
+        db.session.commit()
+        back['size'] = size.fetchall()[0][0]
+        log.info(cnts.databaseSuccess(addr, path, '`user`'))
+
+        log_tag = False
+
+        users = result.fetchall()
+        back['data'] = []
+        for user in users:
+            u = {}
+            for pro in user.keys():
+                if pro == 'cert':
+                    continue
+                u[pro] = user[pro]
+            back['data'].append(u)
+    except Exception as e:
+
+        log.error(cnts.errorLog(addr, path, e))
+
+        back['code'] = cnts.database_error
+        back['msg'] = str(e)
+        return jsonify(back)
+
+    log.info(cnts.successLog(addr, path))
+
     return jsonify(back)
 
 

@@ -201,6 +201,7 @@ def readDcm(filename):
     session.add(study)
     session.add(image)
     session.commit()
+    session.close()
 
 from pydicom.data import get_testdata_files
 

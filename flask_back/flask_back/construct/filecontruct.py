@@ -112,9 +112,49 @@ def cons_params():
             'children':[]
         }
         for i in os.listdir(path):
+            size = os.path.getsize(os.path.join(path, i))
+            if (size / 1024 / 1024) > 1:
+                size = '%.2f'%(size / 1024 / 1024) + 'MB'
+            else:
+                size = '%.2f'%(size / 1024) + 'KB'
             back['data']['children'].append({
                 'name':i,
-                'type':'file'
+                'type':'file',
+                'size':size
+            })
+    except Exception as e:
+        back['status'] = 406
+        back['message'] = str(e)
+        return jsonify(back)
+    return jsonify(back)
+
+@bp.route('/getDirectory', methods=['POST'])
+@jsonschema.validate('construct', 'consParam')
+def getTargetDir():
+    back = copy.deepcopy(cnts.back_message)
+    jsno_data = request.get_json()
+    sessionid = request.headers['X-Token']
+    try:
+        if os.path.exists(os.path.join(UPLOAD_FOLDER, sessionid, ALLOWED_CONSTRUCT_DIRS[jsno_data['cons_type']])):
+            rmtree(os.path.join(UPLOAD_FOLDER, sessionid, ALLOWED_CONSTRUCT_DIRS[jsno_data['cons_type']]), ignore_errors=False, onerror=None)
+        # t = threadPool.submit(ALLOWED_CONSTRUCT_TYPE[jsno_data['cons_type']], os.path.join(UPLOAD_FOLDER, sessionid), jsno_data['filename'], ALLOWED_CONSTRUCT_DIRS[jsno_data['cons_type']])
+        time.sleep(10)
+        path = t.result()
+        back['data'] = {
+            'name':ALLOWED_CONSTRUCT_DIRS[jsno_data['cons_type']],
+            'type':'dir',
+            'children':[]
+        }
+        for i in os.listdir(path):
+            size = os.path.getsize(os.path.join(path, i))
+            if (size / 1024 / 1024) > 1:
+                size = '%.2f'%(size / 1024 / 1024) + 'MB'
+            else:
+                size = '%.2f'%(size / 1024) + 'KB'
+            back['data']['children'].append({
+                'name':i,
+                'type':'file',
+                'size':size
             })
     except Exception as e:
         back['status'] = 406

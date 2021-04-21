@@ -42,6 +42,24 @@
         },
         "required":["page"]
     },
+    "searchDICOM":{
+        "type":"object",
+        "properties":{
+            "page":{
+                "type":"integer"
+            },
+            "pageSize":{
+                "type":"integer"
+            },
+            "patient_name":{
+                "type":"string"
+            },
+            "patient_id":{
+                "type":"string"
+            }
+        },
+        "required":["page"]
+    },
     "getOne":{
         "type":"object",
         "properties":{

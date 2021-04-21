@@ -3,6 +3,7 @@ from sqlalchemy.orm import relationship, relation, sessionmaker
 from sqlalchemy import *
 from .constant import mysqllink
 import datetime
+from sqlalchemy.pool import NullPool
 
 Base = declarative_base()
 
@@ -221,5 +222,5 @@ class CollectResult(Base):
 
 
 engine = create_engine(
-    'mysql://' + mysqllink)
+    'mysql://' + mysqllink, poolclass=NullPool)
 DBSession = sessionmaker(bind=engine)

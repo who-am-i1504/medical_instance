@@ -11,7 +11,11 @@ import redis
 import json
 from flask_back.user.user import reids_pool
 # from .company_ip import qcdata
-
+import requests
+import json
+def Ip2Geo(ip):
+    res = requests.get("http://pypi.hitwh.net.cn:7788/ip/info?ip=" + ip + "&acc=city")
+    return json.loads(res.text)["data"]
 # MainCollect = CollectThread()
 
 bp = Blueprint('collect', __name__, url_prefix='/collect')
@@ -292,6 +296,36 @@ def getOne():
 
     return jsonify(back)
 
+
+@bp.route('/result/delete', methods=['POST'])
+@jsonschema.validate('collect', 'getById')
+def deleteOne():
+    back = copy.deepcopy(cnts.back_message)
+    json_data = request.get_json()
+
+    addr = request.remote_addr
+    path = request.path
+    log.info(cnts.requestStart(addr, path, json_data))
+
+    try:
+        result = db.session.execute(
+            'delete from `collect_result` where `id` = %d;' % (json_data['id']))
+        db.session.commit()
+
+        log.info(cnts.databaseSuccess(addr, path, '`collect_result`'))
+    except:
+        back['message'] = cnts.database_error_message
+        back['status'] = cnts.database_error
+
+        log.error(cnts.errorLog(addr, path, 'database'))
+
+        return jsonify(back)
+    
+    log.info(cnts.successLog(addr, path))
+
+    return jsonify(back)
+
+
 @bp.route('/result/ip_position', methods=['POST'])
 @jsonschema.validate('collect', 'ip_position')
 def getPosition():
@@ -304,12 +338,15 @@ def getPosition():
     # l = [json_data['ip']]
     # result = qcdata(l)
     # back['data] = result.pop(0)
+    res = Ip2Geo(json_data['ip'])
     back['data'] = {
         'ip': json_data['ip'],
-        'country':'中国',
-        'prov':'山东省',
-        'city': '威海市',
-        'company':"哈尔滨工业大学"
+        'country':res['country'],
+        'prov':res['province'],
+        'city': res['city'],
+        'company':"无",
+        'lngwgs':res['lngwgs'],
+        'latwgs':res['latwgs']
     }
     log.info(cnts.successLog(addr, path))
     return jsonify(back)
@@ -327,12 +364,15 @@ def getPositionByList():
     # back['data] = result
     back['data'] = []
     for i in json_data['ip_list']:
+        res = Ip2Geo(json_data['ip'])
         back['data'].append({
-            'ip': i,
-            'country':'中国',
-            'prov':'山东省',
-            'city': '威海市',
-            'company':"哈尔滨工业大学"
+            'ip': json_data['ip'],
+            'country':res['country'],
+            'prov':res['province'],
+            'city': res['city'],
+            'company':"无",
+            'lngwgs':res['lngwgs'],
+        '   latwgs':res['latwgs']
         })
     log.info(cnts.successLog(addr, path))
     return jsonify(back)
