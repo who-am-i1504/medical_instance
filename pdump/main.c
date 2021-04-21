@@ -30,6 +30,8 @@
 #define DST_PORT 36
 #define TCP_TAG 23
 #define TCP_TAG_VALUE 6
+#define FIN_TAG 47
+#define FIN_TAG_VALUE 1
 
 #define CMD_LINE_OPT_PDUMP "pdump"
 #define PDUMP_PORT_ARG "port"
@@ -145,10 +147,10 @@ struct rte_mempool *current_pool;
 struct Node * root;
 struct Node * root_dicom;
 struct Node * root_astm;
-struct JudgeFirst * hl7_root;
-struct JudgeFirst * dicom_root;
-struct JudgeFirst * astm_root;
-struct JudgeFirst * http_root;
+// struct JudgeFirst * hl7_root;
+// struct JudgeFirst * dicom_root;
+// struct JudgeFirst * astm_root;
+// struct JudgeFirst * http_root;
 struct JudgeFirst * ftp_root;
 int *dicom_rule;
 int dicom_size;
@@ -523,7 +525,7 @@ pdump_rxtx(struct rte_mbuf *rxtx_bufs[], const uint16_t nb_in_deq, struct pdump_
         //printf(" %d\n", nb_in_deq);
         for(int i = 0; i < nb_in_deq; i ++)
         {
-			if (rte_pktmbuf_data_len(rxtx_bufs[i])<=DST_PORT + 1)
+			if (!ETH_IPV4(rxtx_bufs[i]) || !InternetIPv4AndLength(rxtx_bufs[i]) || rte_pktmbuf_data_len(rxtx_bufs[i])<=DST_PORT + 1)
 			{
                 rte_pktmbuf_free(rxtx_bufs[i]);
 				continue;
@@ -542,55 +544,7 @@ pdump_rxtx(struct rte_mbuf *rxtx_bufs[], const uint16_t nb_in_deq, struct pdump_
 			}
             if (p->port == 0 || p->port == src_port.port || p->port == dst_port.port)
             {
-				if(p->dir & ENABLE_HTTP)
-				{
-					// printf("%d\t%d\n", rte_pktmbuf_pkt_len(rxtx_bufs[i]),rte_pktmbuf_data_len(rxtx_bufs[i]));
-					if (ProcessAll(http_root, rxtx_bufs[i]) > 0)
-					{
-						//printf(" Here \n");
-						struct rte_mbuf *s;
-						struct rte_mbuf *last;
-						s = rxtx_bufs[i];
-						bufs_http[clone_size_http] = rte_pktmbuf_clone(s, clone_pool);
-						last = bufs_http[clone_size_http];
-						s = s -> next;
-						while(s != NULL)
-						{
-							// printf("Here \n");
-							s = rte_pktmbuf_clone(s, clone_pool);
-							last -> next = s;
-							last = s;
-							s = s -> next;
-						}
-						clone_size_http ++;
-                        rte_pktmbuf_free(rxtx_bufs[i]);
-						continue;
-					}
-					else if (process_http(http_rule, http_size, rxtx_bufs[i]) > 0)
-					{
-						if (AddInList(http_root, rxtx_bufs[i]) > 0)
-						{
-							struct rte_mbuf *s;
-							struct rte_mbuf *last;
-							s = rxtx_bufs[i];
-							bufs_http[clone_size_http] = rte_pktmbuf_clone(s, clone_pool);
-							last = bufs_http[clone_size_http];
-							s = s -> next;
-							while(s != NULL)
-							{
-								//printf("Here \n");
-								s = rte_pktmbuf_clone(s, clone_pool);
-								last -> next = s;
-								last = s;
-								s = s -> next;
-							}
-							clone_size_http ++;
-						}
-                        rte_pktmbuf_free(rxtx_bufs[i]);
-						continue;
-					}
-				}
-				if(p->dir & ENABLE_FTP)
+                if(p->dir & ENABLE_FTP)
 				{
 					//printf("Here \n");
 					if (ProcessAllFtp(ftp_root, rxtx_bufs[i]) > 0)
@@ -615,18 +569,75 @@ pdump_rxtx(struct rte_mbuf *rxtx_bufs[], const uint16_t nb_in_deq, struct pdump_
 					}
 					else if (process_ftp(ftp_rule, ftp_size, rxtx_bufs[i]) > 0)
 					{
-						//printf("Here .\n");
-						if (AddInListFtp(ftp_root, rxtx_bufs[i])==1)
-						//printf("success!\n");
-                                                    ;
+						if (AddInListFtp(ftp_root, rxtx_bufs[i])==1);
                         rte_pktmbuf_free(rxtx_bufs[i]);
 						continue;
 					}
 				}
+                HNode *ipnode;
+                HNode *cNode;
+                // HNode *reverseNode;
+                ipnode = convertHNode(rxtx_bufs[i]);
+                // reverseNode = copyReverseHNode(ipnode);
+                cNode = getKey(ipnode);
+				if(p->dir & ENABLE_HTTP)
+				{
+					if (cNode != NULL && cNode->tag & ENABLE_HTTP)
+					{
+                        containsKey(cNode);
+						struct rte_mbuf *s;
+						struct rte_mbuf *last;
+						s = rxtx_bufs[i];
+						bufs_http[clone_size_http] = rte_pktmbuf_clone(s, clone_pool);
+						last = bufs_http[clone_size_http];
+						s = s -> next;
+						while(s != NULL)
+						{
+							// printf("Here \n");
+							s = rte_pktmbuf_clone(s, clone_pool);
+							last -> next = s;
+							last = s;
+							s = s -> next;
+						}
+						clone_size_http ++;
+                        free(ipnode);
+                        rte_pktmbuf_free(rxtx_bufs[i]);
+						continue;
+					}
+					else if (process_http(http_rule, http_size, rxtx_bufs[i]) > 0)
+					{
+						if (insertLinkedHashMap(ipnode))
+						{
+                            cNode = getKey(ipnode);
+                            cNode -> tag |= ENABLE_HTTP;
+                            // reverseNode -> tag = cNode->tag;
+                            // insertLinkedHashMap(reverseNode);
+							struct rte_mbuf *s;
+							struct rte_mbuf *last;
+							s = rxtx_bufs[i];
+							bufs_http[clone_size_http] = rte_pktmbuf_clone(s, clone_pool);
+							last = bufs_http[clone_size_http];
+							s = s -> next;
+							while(s != NULL)
+							{
+								s = rte_pktmbuf_clone(s, clone_pool);
+								last -> next = s;
+								last = s;
+								s = s -> next;
+							}
+							clone_size_http ++;
+						}
+                        free(ipnode);
+                        rte_pktmbuf_free(rxtx_bufs[i]);
+						continue;
+					}
+				}
+				
                 if (p->dir & ENABLE_HL7)
                 {
-                    if (ProcessAll(hl7_root, rxtx_bufs[i]) > 0)
+                    if (cNode != NULL && cNode->tag & ENABLE_HL7)
 					{
+                        containsKey(cNode);
 						struct rte_mbuf *s;
 						struct rte_mbuf *last;
 						s = rxtx_bufs[i];
@@ -646,8 +657,10 @@ pdump_rxtx(struct rte_mbuf *rxtx_bufs[], const uint16_t nb_in_deq, struct pdump_
 						//continue;
 		            }else if (process(root, rxtx_bufs[i]) > 0)
 					{
-						if (AddInList(hl7_root, rxtx_bufs[i]) > 0)
+						if (insertLinkedHashMap(ipnode))
 						{
+                            cNode = getKey(ipnode);
+                            cNode -> tag |= ENABLE_HL7;
 							struct rte_mbuf *s;
 							struct rte_mbuf *last;
 							s = rxtx_bufs[i];
@@ -664,15 +677,14 @@ pdump_rxtx(struct rte_mbuf *rxtx_bufs[], const uint16_t nb_in_deq, struct pdump_
 							}
 							clone_size_hl7 ++;
 						}
-                        // rte_pktmbuf_free(rxtx_bufs[i]);
-						//continue;
 					}
                 }
 				
 				if(p->dir & ENABLE_DICOM)
                 {
-                    if (ProcessAll(dicom_root, rxtx_bufs[i]) > 0)
+                    if (cNode != NULL && cNode->tag & ENABLE_DICOM)
 					{
+                        containsKey(cNode);
 						struct rte_mbuf *s;
 						struct rte_mbuf *last;
 						s = rxtx_bufs[i];
@@ -688,15 +700,12 @@ pdump_rxtx(struct rte_mbuf *rxtx_bufs[], const uint16_t nb_in_deq, struct pdump_
 							s = s -> next;
 						}
 						clone_size_dicom ++;
-                        // rte_pktmbuf_free(rxtx_bufs[i]);
-						// continue;
 					}else if (process_dicom(root_dicom, dicom_rule, dicom_size, rxtx_bufs[i]) > 0)
 					{
-						// printf("start.\n");
-						if (AddInList(dicom_root, rxtx_bufs[i]) > 0)
+						if (insertLinkedHashMap(ipnode))
 						{
-							
-							// printf("end.\n");
+                            cNode = getKey(ipnode);
+                            cNode -> tag |= ENABLE_DICOM;
 							struct rte_mbuf *s;
 							struct rte_mbuf *last;
 							s = rxtx_bufs[i];
@@ -705,7 +714,6 @@ pdump_rxtx(struct rte_mbuf *rxtx_bufs[], const uint16_t nb_in_deq, struct pdump_
 							s = s -> next;
 							while(s != NULL)
 							{
-								// printf("Here \n");
 								s = rte_pktmbuf_clone(s, clone_pool);
 								last -> next = s;
 								last = s;
@@ -713,15 +721,14 @@ pdump_rxtx(struct rte_mbuf *rxtx_bufs[], const uint16_t nb_in_deq, struct pdump_
 							}
 							clone_size_dicom ++;
 						}
-                        // rte_pktmbuf_free(rxtx_bufs[i]);
-						// continue;
 					}
                 }
 
                 if (p->dir & ENABLE_ASTM)
                 {
-                    if (ProcessAll(astm_root, rxtx_bufs[i]) > 0)
+                    if (cNode != NULL && cNode->tag & ENABLE_ASTM)
 					{
+                        containsKey(cNode);
 						struct rte_mbuf *s;
 						struct rte_mbuf *last;
 						s = rxtx_bufs[i];
@@ -741,8 +748,10 @@ pdump_rxtx(struct rte_mbuf *rxtx_bufs[], const uint16_t nb_in_deq, struct pdump_
 						// continue;
 					}else if (process(root_astm, rxtx_bufs[i]) > 0)
 					{
-						if (AddInList(astm_root, rxtx_bufs[i]) > 0)
+						if (insertLinkedHashMap(ipnode))
 						{
+                            cNode = getKey(ipnode);
+                            cNode -> tag |= ENABLE_ASTM;
 							struct rte_mbuf *s;
 							struct rte_mbuf *last;
 							s = rxtx_bufs[i];
@@ -759,11 +768,11 @@ pdump_rxtx(struct rte_mbuf *rxtx_bufs[], const uint16_t nb_in_deq, struct pdump_
 							}
 							clone_size_astm ++;
 						}
-                        // rte_pktmbuf_free(rxtx_bufs[i]);
-						// continue;
 						
 					}
                 }
+                if (cNode && get_8_num(rxtx_bufs[i], FIN_TAG) & FIN_TAG_VALUE)removeHNode(cNode);
+                free(ipnode);
 			}
             rte_pktmbuf_free(rxtx_bufs[i]);
 		}
@@ -1216,6 +1225,7 @@ dump_packets(void)
 
 	while (!quit_signal) {
 		current_time = (time(NULL) - start_time) / 60;
+        expireHNode(time(NULL), THRE_HOLD);
 		for (i = 0; i < num_tuples; i++) {
 			//printf("%d\n", i);
 			if (current_time >= pt -> time)
@@ -1344,10 +1354,11 @@ int main(int argc, char **argv)
 		goto end_software;
 	}
 	
-	hl7_root = initList();
-	astm_root = initList();
-	dicom_root = initList();
-	http_root = initList();
+	// hl7_root = initList();
+	// astm_root = initList();
+	// dicom_root = initList();
+	// http_root = initList();
+    initLHash();
 	ftp_root = initList();
 	
 	printf("\n Dictionary Tree conduct successfully.\n");
@@ -1362,10 +1373,10 @@ end_software:
     ret = rte_eal_cleanup();
     if(ret)
         printf("Error from rte_eal_cleanup(), %d\n", ret);
-	FreeList(hl7_root);
-	FreeList(astm_root);
-	FreeList(dicom_root);
-	FreeList(http_root);
+	// FreeList(hl7_root);
+	// FreeList(astm_root);
+	// FreeList(dicom_root);
+	// FreeList(http_root);
 	FreeList(ftp_root);
 	FreeSpace(root);
 	FreeSpace(root_astm);

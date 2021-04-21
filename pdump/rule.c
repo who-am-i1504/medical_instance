@@ -3,6 +3,405 @@
 //
 #include "rule.h"
 
+uint8_t get_8_num(struct rte_mbuf *target, int place)
+{
+    uint8_t res;
+    int current_length;
+    current_length = rte_pktmbuf_data_len(target);
+    char *q;
+    q = rte_pktmbuf_mtod(target, char *);
+    if (current_length < place + 8)
+        return 0;
+    res = *(uint8_t *)(q + place);
+    return res;
+}
+
+uint16_t get_16_num(struct rte_mbuf *target, int place)
+{
+    uint16_t res;
+    int current_length;
+    current_length = rte_pktmbuf_data_len(target);
+    char *q;
+    q = rte_pktmbuf_mtod(target, char *);
+    if (current_length < place + 16)
+        return 0;
+    res = *(uint16_t *)(q + place);
+    return res;
+}
+
+uint32_t get_32_num(struct rte_mbuf *target, int place)
+{
+    uint32_t res;
+    int current_length;
+    current_length = rte_pktmbuf_data_len(target);
+    char *q;
+    q = rte_pktmbuf_mtod(target, char *);
+    if (current_length < place + 32)
+        return 0;
+    res = *(uint32_t *)(q + place);
+    return res;
+}
+
+uint64_t get_64_Num(struct rte_mbuf *target, int place)
+{
+    uint64_t res;
+    int current_length;
+    current_length = rte_pktmbuf_data_len(target);
+    char *q;
+    q = rte_pktmbuf_mtod(target, char *);
+    if (current_length < place + 64)
+        return 0;
+    res = *(uint64_t *)(q + place);
+    return res;
+}
+
+int ETH_IPV4(struct rte_mbuf *target)
+{
+    if (get_16_num(target, ETH_IPV4_TAG) == ETH_IPV4_TAG_VALUE)return 1;
+    return 0;
+}
+
+int InterIPV4(struct rte_mbuf *target)
+{
+    uint8_t tag = get_8_num(target, IP_LENGTH_TAG);
+    if (tag & 64)return (int)tag;
+    return 0;
+}
+
+int InternetIPv4AndLength(struct rte_mbuf * target)
+{
+    int res;
+    res = (int)InterIPV4(target);
+    if (res) return (res | 15) * 4;
+    return 0;
+}
+
+int initLHash()
+{
+    memset(table, 0, sizeof(table));
+    head = (HNode *)malloc(sizeof(HNode));
+    tail = (HNode *)malloc(sizeof(HNode));
+    if (head == NULL)
+    {
+        if (tail != NULL)
+            free(tail);
+        return -1;
+    }
+    if (tail == NULL)
+    {
+        free(head);
+        return -1;
+    }
+    head -> lnext = tail;
+	head -> lpre = NULL;
+    tail -> lpre = head;
+	tail -> lnext = NULL;
+    return 0;
+}
+
+HNode * createHNode(uint32_t srcIP, uint32_t dstIp, uint16_t srcPort, uint16_t dstPort)
+{
+    HNode * p = NULL;
+    p = (HNode *)malloc(sizeof(HNode));
+    if (p == NULL)return NULL;
+    p -> src.src_dst.ip[0] = srcIP;
+    p -> src.src_dst.ip[1] = dstIp;
+    p -> src.out_in.port[0] = srcPort;
+    p -> src.out_in.port[1] = dstPort;
+    p -> dst.src_dst.ip[0] = p -> src.src_dst.ip[1];
+    p -> dst.src_dst.ip[1] = p -> src.src_dst.ip[0];
+    p -> dst.out_in.port[0] = p -> src.out_in.port[1];
+    p -> dst.out_in.port[1] = p -> src.out_in.port[0];
+	p->pre = NULL;
+	p->lpre = NULL;
+	p->next = NULL;
+	p->lnext = NULL;
+    return p;
+}
+
+// compute the hash code 
+uint16_t hash(HNode * node)
+{
+    if (node == NULL)return 0;
+    uint16_t res = node->src.src_dst.ip[0] >> 15 ^ node->src.src_dst.ip[0];
+    res ^= (node->src.src_dst.ip[1] >> 15) ^ node->src.src_dst.ip[1];
+    res ^= node->src.out_in.port[0];
+    res ^= node->src.out_in.port[1];
+    return res;
+}
+
+// compare two node whether equal
+int compareNode(HNode * n1, HNode *n2)
+{
+    if (n1->src.src_dst.ip_all == n2->src.src_dst.ip_all 
+        && n1->src.out_in.port_all == n2->src.out_in.port_all)
+		return 1;
+	if (n1->dst.src_dst.ip_all == n2->src.src_dst.ip_all 
+        && n1->dst.out_in.port_all == n2->src.out_in.port_all)
+		return 1;
+    return 0;
+}
+
+int copyHNode(HNode *from, HNode *to)
+{
+    if (from == NULL || to == NULL)return 0;
+	/*to->src.src_dst.ip_all = from->src.src_dst.ip_all;
+	to->src.out_in.port_all = from->src.out_in.port_all;
+	to->dst.src_dst.ip_all = from->dst.src_dst.ip_all;
+	to->dst.out_in.port_all = from->dst.out_in.port_all;
+	*/
+	to->src = from->src;
+	to->dst = from->dst;
+	to->tag = from->tag;
+    return 1;
+}
+
+HNode * copyReverseHNode(HNode *from)
+{
+    if (from == NULL)return 0;
+    HNode * to;
+    to = (HNode *)malloc(sizeof(HNode));
+    if (!to)return to;
+	/*to->src.src_dst.ip_all = from->src.src_dst.ip_all;
+	to->src.out_in.port_all = from->src.out_in.port_all;
+	to->dst.src_dst.ip_all = from->dst.src_dst.ip_all;
+	to->dst.out_in.port_all = from->dst.out_in.port_all;
+	*/
+	to->src = from->dst;
+	to->dst = from->src;
+	to->tag = from->tag;
+    return to;
+}
+
+// insert into hash table
+static int insertHash(HNode * node)
+{
+    uint16_t value = hash(node);
+    if (table[value] == NULL)
+    {
+        table[value] = node;
+        node -> pre = NULL;
+        node -> next = NULL;
+    }
+    else
+    {
+        HNode *p;
+        HNode *pre;
+        p = table[value];
+        for (;p != NULL; p = p -> next)
+        {
+            if (compareNode(p, node))
+            {
+                if (fractList(p))
+                    insertList(p);
+                free(node);
+                return 2;
+            }
+            pre = p;
+        }
+        pre -> next = node;
+        node -> pre = pre;
+        node -> next = NULL;
+    }
+    return 1;
+}
+
+// insert into LinkedList
+static int insertList(HNode * node)
+{
+    HNode *pre = tail -> lpre;
+    node -> lpre = pre;
+    node -> lnext = tail;
+    pre -> lnext = node;
+    tail -> lpre = node;
+    node -> timestamp = time(NULL);
+    return 1;
+}
+
+static int fractList(HNode *p)
+{
+    HNode *lp;
+    HNode *ln;
+    lp = p->lpre;
+    ln = p->lnext;
+    lp -> lnext = ln;
+    ln -> lpre = lp;
+    return 1;
+}
+// insert into LinkedHashMap
+int insertLinkedHashMap(HNode * node)
+{
+    HNode *p;
+    p = (HNode *)malloc(sizeof(HNode));
+    if (p == NULL)return 0;
+    if (!copyHNode(node, p))
+    {
+        free(p);
+        return 0;
+    }
+    switch (insertHash(p))
+    {
+        case 1:insertList(p);break;
+        case 2:return 1;
+        default:
+            free(p);
+		return 0;
+    }
+	return 1;
+}
+
+static int updateListNode(HNode *node)
+{
+    if (fractList(node))
+    {
+        insertList(node);
+        return 1;
+    }    
+    return 0;
+}
+
+static int removeHashNode(HNode * node)
+{
+    HNode * pre = node -> pre;
+    HNode * next = node -> next;
+    if (pre == NULL)
+    {
+        uint16_t val = hash(node);
+        table[val] = next;
+    }
+    else
+    {
+        pre -> next = next;
+    }
+    if (next != NULL)
+    {
+        next -> pre = pre;
+    }
+    return 1;
+}
+
+static int removeLinkedNode(HNode * node)
+{
+    if (node == head || node == tail)return 0;
+    HNode * pre = node -> lpre;
+    HNode * next = node -> lnext;
+    pre -> lnext = next;
+    next -> lpre = pre;
+	//fractList(node);
+    return 1;
+}
+
+// remove the expired HNode, 当前时间，超时阈值
+void expireHNode(uint64_t curT, uint64_t thres)
+{
+	
+    HNode *p = head -> lnext;
+    for (; p != head && p != tail && p != NULL; p = head -> lnext)
+    {
+        if (curT - p->timestamp >= thres)
+        {
+		//printf("here1\n");
+            if (removeHashNode(p) && fractList(p))
+            {
+                free(p);
+            }
+        }else break;
+    }
+	
+}
+
+int containsKey(HNode * node)
+{
+    HNode *lhead = table[hash(node)];
+    for (; lhead != NULL; lhead = lhead -> next)
+    {
+        if (compareNode(lhead, node))
+        {
+            updateListNode(lhead);
+            return 1;
+        }
+    }
+    return 0;
+}
+
+HNode* getKey(HNode * node)
+{
+    HNode *lhead = table[hash(node)];
+    for (; lhead != NULL; lhead = lhead -> next)
+    {
+        if (compareNode(lhead, node))
+        {
+            return lhead;
+        }
+    }
+    return NULL;
+}
+
+int containsKeyAndRemove(HNode *node)
+{
+    HNode *lhead = table[hash(node)];
+    for (; lhead != NULL; lhead = lhead -> next)
+    {
+        if (compareNode(lhead, node))
+        {
+            if (removeHashNode(lhead) && removeLinkedNode(lhead))
+                free(lhead);
+            return 1;
+        }
+    }
+    return 0;
+}
+
+int removeHNode(HNode * node)
+{
+    if (removeHashNode(node) && fractList(node))
+    {
+        free(node);
+        return 1;
+    }
+    return 0;
+}
+
+void destoryList()
+{
+    while(head)
+    {
+        HNode * p = head;
+        head = head -> lnext;
+        free(p);
+    }
+}
+
+void printAllNodes()
+{
+    int count = 0;
+    HNode * p = head -> lnext;
+    while(p != tail)
+    {
+        count ++;
+        p = p->lnext;
+    }
+
+    printf("\n\t当前节点总数为:\t%d\n", count);
+}
+
+HNode* convertHNode(struct rte_mbuf *target)
+{
+	HNode *current;
+    int current_length;
+    current_length = rte_pktmbuf_data_len(target);
+    char *q;
+    q = rte_pktmbuf_mtod(target, char *);
+    if (current_length < 40)
+        return 0;
+    char * src = q + 26;
+    char * dst = q + 30;
+    char * src_port = q + 34;
+    char * dst_port = q + 36;
+    current = createHNode(*(uint32_t *)src, *(uint32_t *)dst, *(uint16_t *)src_port, *(uint16_t *)dst_port);
+    return current;
+}
+
 struct JudgeFirst * initList()
 {
     struct JudgeFirst * root;
@@ -233,6 +632,7 @@ int Ftp_PORT(struct JudgeFirst * root, struct rte_mbuf * target)
     current -> next = root;
     current -> ahead = p;
     return 1;
+	return 1;
 }
 
 int AddInListFtp(struct JudgeFirst * root, struct rte_mbuf * target)
@@ -1025,3 +1425,4 @@ int process_ftp(int *num, int size, struct rte_mbuf * target)
 	}
 	return 0;
 }
+
