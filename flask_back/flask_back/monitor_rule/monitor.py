@@ -3,7 +3,7 @@ from flask import (request, jsonify, Blueprint)
 from flask_back import db, jsonschema, ValidationError, log
 import flask_back.constant as cnts
 from flask_back.dao.sql import MonitorRule
-
+from flask_back.constant import Ip2Geo
 from .active_find import submitParams
 import redis
 import json
@@ -1872,10 +1872,88 @@ def monitor_work():
     
     log.info(cnts.successLog(addr, path))
 
-    return back
+    return jsonify(back)
 
 
+@bp.route('/ip_on_position', methods=['GET'])
+def ipOnGeo():
+    back = copy.deepcopy(cnts.back_message)
 
+    addr = request.remote_addr
+    path = request.path
+    try:
+        result = db.session.execute("SELECT DISTINCT SUBSTRING_INDEX(main.`send_ip_port`,':',1) as `send_ip`, SUBSTRING_INDEX(main.`receiver_ip_port`,':',1) as `receiver_ip`, `sender_tag`, `receiver_tag` \
+                from `message` as main \
+                UNION \
+                SELECT DISTINCT SUBSTRING_INDEX(astm_main.`send_ip_port`,':',1) as `send_ip`, SUBSTRING_INDEX(astm_main.`receiver_ip_port`,':',1) as `receiver_ip`, `sender_tag`, `receiver_tag` \
+                from `astm_main` as astm_main \
+                UNION \
+                SELECT DISTINCT SUBSTRING_INDEX(dicom_main.`send_ip_port`,':',1) as `send_ip`, SUBSTRING_INDEX(dicom_main.`receiver_ip_port`,':',1) as `receiver_ip`, `sender_tag`, `receiver_tag` \
+                from `patient_info` as dicom_main;")
+        db.session.commit()
+        res = result.fetchall()
+        geoList={}
+        pmes = []
+        pmes_dic = {}
+        realation = {}
+        geo2ip = {}
+        ip2geo = {}
+        for item in res:
+            ip1 = item['send_ip']
+            tag1 = item['sender_tag']
+            if ip1 not in ip2geo:
+                r = Ip2Geo(ip1)
+                point = r['country'] + r['province'] + r['city']
+                if point == '':
+                    continue
+                if point not in geo2ip:
+                    geo2ip[point] = []
+                geo2ip[point].append(ip1)
+                ip2geo[ip1] = point+' '+ str(len(geo2ip[point]))
+                geoList[ip2geo[ip1]] = [float(r['lngwgs']), float(r['latwgs'])]
+                node = {
+                    'name':ip2geo[ip1],
+                    'value':tag1,
+                    'ip':ip1
+                }
+                pmes.append([node])
+                pmes_dic[ip1] = node
+            ip2 = item['receiver_ip']
+            tag2 = item['receiver_tag']
+            if ip2 not in ip2geo:
+                r = Ip2Geo(ip2)
+                point = r['country'] + r['province'] + r['city']
+                if point == '':
+                    continue
+                if point not in geo2ip:
+                    geo2ip[point] = []
+                geo2ip[point].append(ip2)
+                ip2geo[ip2] = point+' '+ str(len(geo2ip[point]))
+                geoList[ip2geo[ip2]] = [float(r['lngwgs']), float(r['latwgs'])]
+                node = {
+                    'name':ip2geo[ip2],
+                    'value':tag2,
+                    'ip':ip2
+                }
+                pmes.append([node])
+                pmes_dic[ip2] = node
+            if ip2geo[ip2] not in realation:
+                realation[ip2geo[ip2]] = [ip2geo[ip2],[]]
+            realation[ip2geo[ip2]][1].append([pmes_dic[ip1]])
+        back['data']={}
+        back['data']['geo_list'] = geoList
+        back['data']['points'] = pmes
+        back['data']['relations'] = []
+        for item in realation:
+            back['data']['relations'].append(realation[item])
+        pass
+    except Exception as e:
+        back['status'] = cnts.database_error
+        back['message'] = str(e)
+        
+        log.error(cnts.errorLog(addr, path, e))
+    
+    return jsonify(back)
 
 
 # @bp.route('/result/get', methods=['POST'])

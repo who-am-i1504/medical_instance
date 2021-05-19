@@ -2034,3 +2034,26 @@ Cannot init EAL
 2: [/home/white/Documents/project/DPDK/pdump/dpdk-pdump(__rte_panic+0xcd) [0x5618db739b2b]]
 1: [/home/white/Documents/project/DPDK/pdump/dpdk-pdump(rte_dump_stack+0x32) [0x5618db8f6ba2]]
 Aborted
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Multi-process socket /var/run/dpdk/rte/mp_socket
+EAL: Probing VFIO support...
+EAL: PCI device 0000:02:01.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:06.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:07.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+EAL: PCI device 0000:02:08.0 on NUMA socket -1
+EAL:   Invalid NUMA socket, default to 0
+EAL:   probe driver: 8086:100f net_e1000_em
+Port 0 MAC: 00 0c 29 b7 2a 21
+Port 1 MAC: 02 70 63 61 70 00
+Port 2 MAC: 02 70 63 61 70 01
+Port 3 MAC: 02 70 63 61 70 02
+ No config file about mysql. so use the default config.
+
+ Connection failed.

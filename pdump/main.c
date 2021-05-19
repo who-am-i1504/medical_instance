@@ -26,11 +26,11 @@
 #include <rte_pdump.h>
 #include "rule.h"
 
-#define SRC_PORT 34
-#define DST_PORT 36
-#define TCP_TAG 23
+#define SRC_PORT 0
+#define DST_PORT 2
+#define TCP_TAG 9
 #define TCP_TAG_VALUE 6
-#define FIN_TAG 47
+#define FIN_TAG 13
 #define FIN_TAG_VALUE 1
 
 #define CMD_LINE_OPT_PDUMP "pdump"
@@ -138,7 +138,7 @@ static struct pdump_tuples pdump_t[APP_ARG_TCPDUMP_MAX_TUPLES];
 // static struct rte_eth_conf port_conf_default1;
 static const struct rte_eth_conf port_conf_default = {
 	.rxmode = {
-		.max_rx_pkt_len = 70000,
+		.max_rx_pkt_len = 3000,
 	},
 };
 static volatile uint8_t quit_signal;
@@ -510,6 +510,7 @@ pdump_rxtx(struct rte_mbuf *rxtx_bufs[], const uint16_t nb_in_deq, struct pdump_
 	uint16_t clone_size_http = 0;
 	uint16_t clone_size_ftp = 0;
 	uint16_t clone_size_astm = 0;
+    
 
 	// /* first dequeue packets from ring of primary process */
 	// const uint16_t nb_in_deq = rte_ring_dequeue_burst(ring,
@@ -525,23 +526,30 @@ pdump_rxtx(struct rte_mbuf *rxtx_bufs[], const uint16_t nb_in_deq, struct pdump_
         //printf(" %d\n", nb_in_deq);
         for(int i = 0; i < nb_in_deq; i ++)
         {
-			if (!ETH_IPV4(rxtx_bufs[i]) || !InternetIPv4AndLength(rxtx_bufs[i]) || rte_pktmbuf_data_len(rxtx_bufs[i])<=DST_PORT + 1)
+			int res_eth = 0, res_ipv4 = 0, tcpPayLoadLen = 0;
+			res_eth = ETH_IPV4(rxtx_bufs[i]);
+			res_ipv4 = InternetIPv4AndLength(rxtx_bufs[i], res_eth);
+			tcpPayLoadLen = res_eth + res_ipv4;
+			
+			if (! res_eth || !res_ipv4 || rte_pktmbuf_data_len(rxtx_bufs[i])<=DST_PORT + 1)
 			{
                 rte_pktmbuf_free(rxtx_bufs[i]);
 				continue;
 			}
 			current_data = rte_pktmbuf_mtod(rxtx_bufs[i], char *);
-			if (*(current_data + TCP_TAG) != TCP_TAG_VALUE){
+			if (*(current_data + res_eth + TCP_TAG) != TCP_TAG_VALUE){
 				rte_pktmbuf_free(rxtx_bufs[i]);
 				continue;
 			}
 			if (p->port != 0)
             {
-            	src_port.p[0] = *(current_data + SRC_PORT + 1);
-            	src_port.p[1] = *(current_data + SRC_PORT);
-            	dst_port.p[0] = *(current_data + DST_PORT + 1);
-            	dst_port.p[1] = *(current_data + DST_PORT);
+            	src_port.p[0] = *(current_data + tcpPayLoadLen + SRC_PORT + 1);
+            	src_port.p[1] = *(current_data + tcpPayLoadLen + SRC_PORT);
+            	dst_port.p[0] = *(current_data + tcpPayLoadLen + DST_PORT + 1);
+            	dst_port.p[1] = *(current_data + tcpPayLoadLen + DST_PORT);
 			}
+			tcpPayLoadLen += TCPLength(rxtx_bufs[i], tcpPayLoadLen);
+			//printf("%d\t%d\t%d\n",res_eth, res_ipv4, tcpPayLoadLen);
             if (p->port == 0 || p->port == src_port.port || p->port == dst_port.port)
             {
                 if(p->dir & ENABLE_FTP)
@@ -567,7 +575,7 @@ pdump_rxtx(struct rte_mbuf *rxtx_bufs[], const uint16_t nb_in_deq, struct pdump_
                         rte_pktmbuf_free(rxtx_bufs[i]);
 						continue;
 					}
-					else if (process_ftp(ftp_rule, ftp_size, rxtx_bufs[i]) > 0)
+					else if (process_ftp(ftp_rule, ftp_size, rxtx_bufs[i],tcpPayLoadLen) > 0)
 					{
 						if (AddInListFtp(ftp_root, rxtx_bufs[i])==1);
                         rte_pktmbuf_free(rxtx_bufs[i]);
@@ -577,7 +585,7 @@ pdump_rxtx(struct rte_mbuf *rxtx_bufs[], const uint16_t nb_in_deq, struct pdump_
                 HNode *ipnode;
                 HNode *cNode;
                 // HNode *reverseNode;
-                ipnode = convertHNode(rxtx_bufs[i]);
+                ipnode = convertHNode(rxtx_bufs[i], res_eth, res_eth+res_ipv4);
                 // reverseNode = copyReverseHNode(ipnode);
                 cNode = getKey(ipnode);
 				if(p->dir & ENABLE_HTTP)
@@ -604,7 +612,7 @@ pdump_rxtx(struct rte_mbuf *rxtx_bufs[], const uint16_t nb_in_deq, struct pdump_
                         rte_pktmbuf_free(rxtx_bufs[i]);
 						continue;
 					}
-					else if (process_http(http_rule, http_size, rxtx_bufs[i]) > 0)
+					else if (process_http(http_rule, http_size, rxtx_bufs[i],tcpPayLoadLen) > 0)
 					{
 						if (insertLinkedHashMap(ipnode))
 						{
@@ -655,7 +663,7 @@ pdump_rxtx(struct rte_mbuf *rxtx_bufs[], const uint16_t nb_in_deq, struct pdump_
 						clone_size_hl7 ++;
                         // rte_pktmbuf_free(rxtx_bufs[i]);
 						//continue;
-		            }else if (process(root, rxtx_bufs[i]) > 0)
+		            }else if (process(root, rxtx_bufs[i],tcpPayLoadLen) > 0)
 					{
 						if (insertLinkedHashMap(ipnode))
 						{
@@ -700,7 +708,7 @@ pdump_rxtx(struct rte_mbuf *rxtx_bufs[], const uint16_t nb_in_deq, struct pdump_
 							s = s -> next;
 						}
 						clone_size_dicom ++;
-					}else if (process_dicom(root_dicom, dicom_rule, dicom_size, rxtx_bufs[i]) > 0)
+					}else if (process_dicom(root_dicom, dicom_rule, dicom_size, rxtx_bufs[i],tcpPayLoadLen) > 0)
 					{
 						if (insertLinkedHashMap(ipnode))
 						{
@@ -746,7 +754,7 @@ pdump_rxtx(struct rte_mbuf *rxtx_bufs[], const uint16_t nb_in_deq, struct pdump_
 						clone_size_astm ++;
                         // rte_pktmbuf_free(rxtx_bufs[i]);
 						// continue;
-					}else if (process(root_astm, rxtx_bufs[i]) > 0)
+					}else if (process(root_astm, rxtx_bufs[i],tcpPayLoadLen) > 0)
 					{
 						if (insertLinkedHashMap(ipnode))
 						{
@@ -771,7 +779,7 @@ pdump_rxtx(struct rte_mbuf *rxtx_bufs[], const uint16_t nb_in_deq, struct pdump_
 						
 					}
                 }
-                if (cNode && get_8_num(rxtx_bufs[i], FIN_TAG) & FIN_TAG_VALUE)removeHNode(cNode);
+                if (cNode && get_8_num(rxtx_bufs[i], res_eth + res_ipv4 + FIN_TAG) & FIN_TAG_VALUE)removeHNode(cNode);
                 free(ipnode);
 			}
             rte_pktmbuf_free(rxtx_bufs[i]);

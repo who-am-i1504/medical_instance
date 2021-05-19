@@ -27,6 +27,6 @@
     'JSONIFY_PRETTYPRINT_REGULAR': True,
     'JSONIFY_MIMETYPE': 'application/json',
     'TEMPLATES_AUTO_RELOAD': None,
-    'SQLALCHEMY_DATABASE_URI':'mysql+pymysql://remote:beauty1234.@10.246.229.255:3306/medical',
+    'SQLALCHEMY_DATABASE_URI':'mysql+pymysql://remote:beauty1234.@10.246.198.237:3306/medical',
     'SQLALCHEMY_TRACK_MODIFICATIONS':True,
 }

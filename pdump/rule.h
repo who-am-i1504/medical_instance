@@ -28,6 +28,7 @@
 
 #define ETH_IPV4_TAG 12
 #define ETH_IPV4_TAG_VALUE 8
+#define ETH_IPV4_TAG_VALUE1 524288
 #define IP_LENGTH_TAG 14
 #define IP_LENGTH_UNIT 4
 
@@ -89,8 +90,9 @@ uint32_t get_32_num(struct rte_mbuf *target, int place);
 uint64_t get_64_Num(struct rte_mbuf *target, int place);
 
 int ETH_IPV4(struct rte_mbuf *target);
-int InterIPV4(struct rte_mbuf *target);
-int InternetIPv4AndLength(struct rte_mbuf * target);
+int InterIPV4(struct rte_mbuf *target, int);
+int InternetIPv4AndLength(struct rte_mbuf * target, int);
+int TCPLength(struct rte_mbuf * target, int start);
 // 初始化链表和哈希表
 int initLHash();
 
@@ -131,7 +133,7 @@ int removeHNode(HNode * );
 void destoryList();
 void printAllNodes();
 
-HNode * convertHNode(struct rte_mbuf *);
+HNode * convertHNode(struct rte_mbuf *, int, int);
 
 struct JudgeFirst * initList();
 int Ftp_PORT(struct JudgeFirst *, struct rte_mbuf *);
@@ -159,9 +161,9 @@ int* build_to_dicom(int *, MYSQL *);
 int build_to_dicom_str(struct Node *, MYSQL *);
 int add(struct Node *,const char *);
 int getIndex(char);
-int process(struct Node *, struct rte_mbuf *);
-int process_dicom(struct Node *, int *, int, struct rte_mbuf *);
-int process_http(int *, int, struct rte_mbuf *);
-int process_ftp(int *, int, struct rte_mbuf *);
+int process(struct Node *, struct rte_mbuf *,int);
+int process_dicom(struct Node *, int *, int, struct rte_mbuf *,int);
+int process_http(int *, int, struct rte_mbuf *,int);
+int process_ftp(int *, int, struct rte_mbuf *,int);
 
 #endif //UNTITLED_RULE_H

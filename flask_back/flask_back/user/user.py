@@ -286,6 +286,33 @@ def logout():
     return jsonify(back)
 
 
+@bp.route('/attribute_policy', methods=['GET'])
+def attribute_policys():
+    back = copy.deepcopy(cnts.back_message)
+    addr = request.remote_addr
+    path = request.path
+    try:
+        result = db.session.execute('SELECT * FROM `attribute_policy`;')
+        
+        db.session.commit()
+        result = result.fetchall()
+        back['data'] = {}
+        for i in result:
+            back['data'][i['owner']] = i['policy']
+        log.info(cnts.databaseSuccess(addr, path, '`attribute_policy`'))
+
+    except Exception as e:
+
+        log.error(cnts.errorLog(addr, path, e))
+
+        back['code'] = cnts.database_error
+        back['msg'] = str(e)
+        return jsonify(back)
+
+    log.info(cnts.successLog(addr, path))
+
+    return jsonify(back)
+
 @bp.route('/user/list', methods=['POST'])
 @jsonschema.validate('user', 'list')
 def list_users():

@@ -57,23 +57,30 @@ uint64_t get_64_Num(struct rte_mbuf *target, int place)
 
 int ETH_IPV4(struct rte_mbuf *target)
 {
-    if (get_16_num(target, ETH_IPV4_TAG) == ETH_IPV4_TAG_VALUE)return 1;
+    if (get_16_num(target, ETH_IPV4_TAG) == ETH_IPV4_TAG_VALUE) return 14;
+	if (get_32_num(target, ETH_IPV4_TAG) == ETH_IPV4_TAG_VALUE1) return 16;
     return 0;
 }
 
-int InterIPV4(struct rte_mbuf *target)
+int InterIPV4(struct rte_mbuf *target, int start)
 {
-    uint8_t tag = get_8_num(target, IP_LENGTH_TAG);
+    uint8_t tag = get_8_num(target, start);
     if (tag & 64)return (int)tag;
     return 0;
 }
 
-int InternetIPv4AndLength(struct rte_mbuf * target)
+int InternetIPv4AndLength(struct rte_mbuf * target, int start)
 {
     int res;
-    res = (int)InterIPV4(target);
-    if (res) return (res | 15) * 4;
+    res = (int)InterIPV4(target, start);
+    if (res) return (res & 15) * 4;
     return 0;
+}
+
+int TCPLength(struct rte_mbuf * target, int start)
+{
+    uint8_t tag = get_8_num(target, start + 12);
+    return (int)((tag & 240) / 4);
 }
 
 int initLHash()
@@ -385,7 +392,7 @@ void printAllNodes()
     printf("\n\t当前节点总数为:\t%d\n", count);
 }
 
-HNode* convertHNode(struct rte_mbuf *target)
+HNode* convertHNode(struct rte_mbuf *target, int start, int nstart)
 {
 	HNode *current;
     int current_length;
@@ -394,10 +401,11 @@ HNode* convertHNode(struct rte_mbuf *target)
     q = rte_pktmbuf_mtod(target, char *);
     if (current_length < 40)
         return 0;
-    char * src = q + 26;
-    char * dst = q + 30;
-    char * src_port = q + 34;
-    char * dst_port = q + 36;
+	//printf("%d\t%d\n",start,nstart);
+    char * src = q + start + 12;
+    char * dst = q + start + 16;
+    char * src_port = q + nstart;
+    char * dst_port = q + nstart + 2;
     current = createHNode(*(uint32_t *)src, *(uint32_t *)dst, *(uint16_t *)src_port, *(uint16_t *)dst_port);
     return current;
 }
@@ -1252,7 +1260,7 @@ int getIndex(char p)
 	return (int)((uint8_t)p - 1);
 }
 
-int process(struct Node * root, struct rte_mbuf * target)
+int process(struct Node * root, struct rte_mbuf * target, int payLoadStart)
 {
     struct rte_mbuf * mbuf = target;
     int length, current_length;
@@ -1269,7 +1277,7 @@ int process(struct Node * root, struct rte_mbuf * target)
     int offset = 0;
     //int stack_num = 0;
     //printf("\n The first frame size is : %d  and segment size is : %d\n", current_length, length);
-    for (int i = 0; i < length; i ++, offset ++)
+    for (int i = payLoadStart; i < length; i ++, offset ++)
     {
         if (i >= current_length)
         {
@@ -1309,7 +1317,7 @@ int process(struct Node * root, struct rte_mbuf * target)
 
 
 
-int process_dicom(struct Node * root, int *num, int size, struct rte_mbuf *target)
+int process_dicom(struct Node * root, int *num, int size, struct rte_mbuf *target, int payLoadStart)
 {
 	struct rte_mbuf * mbuf = target;
     int length, current_length;
@@ -1322,17 +1330,17 @@ int process_dicom(struct Node * root, int *num, int size, struct rte_mbuf *targe
     int index = -1;
     int offset = 0;
 
-	for(int i = 0; current_length > 54 && i < size; i++)
+	for(int i = 0; current_length > payLoadStart + 1 && i < size; i++)
 	{
 		//printf("%d \n", *(num + i));
-		if(*(p + 54) == *(num + i))
+		if(*(p + payLoadStart) == *(num + i) && *(p+payLoadStart + 1) == 0)
 		{
 			//printf("%d \n", *(p + 54));
 			return 1;
 		}
 	} 
     //printf("\n The first frame size is : %d  and segment size is : %d\n", current_length, length);
-    for (int i = 0; i < length; i ++, offset ++)
+    /*for (int i = 0; i < length; i ++, offset ++)
     {
         if (i >= current_length)
         {
@@ -1363,11 +1371,11 @@ int process_dicom(struct Node * root, int *num, int size, struct rte_mbuf *targe
         {
 	        return 1;
         }
-    }
+    }*/
     return 0;
 }
 
-int process_http(int *num, int size, struct rte_mbuf * target)
+int process_http(int *num, int size, struct rte_mbuf * target, int payLoadStart)
 {
 	struct rte_mbuf * mbuf = target;
     int length, current_length;
@@ -1375,9 +1383,9 @@ int process_http(int *num, int size, struct rte_mbuf * target)
     current_length = rte_pktmbuf_data_len(target);
     char *p;
     p = rte_pktmbuf_mtod(target, char *);
-    if (current_length > 59)
+    if (current_length > payLoadStart + 5)
 	{
-		memcpy(ch_trans_int.p, p + 54,sizeof(char) * 4);
+		memcpy(ch_trans_int.p, p + payLoadStart,sizeof(char) * 4);
 		for(int i = 0; i < size; i++)
 		{
 			if (ch_trans_int.number == *(num + i))
@@ -1387,7 +1395,7 @@ int process_http(int *num, int size, struct rte_mbuf * target)
 	return 0;
 }
 
-int process_ftp(int *num, int size, struct rte_mbuf * target)
+int process_ftp(int *num, int size, struct rte_mbuf * target, int payLoadStart)
 {
 	struct rte_mbuf * mbuf = target;
 	union transfer_rule {
@@ -1406,9 +1414,9 @@ int process_ftp(int *num, int size, struct rte_mbuf * target)
     current_length = rte_pktmbuf_data_len(target);
     char *p;
     p = rte_pktmbuf_mtod(target, char *);
-    if (current_length > 59)
+    if (current_length > payLoadStart + 5)
 	{
-		memcpy(ch_trans_int.p, p + 54,sizeof(char) * 4);
+		memcpy(ch_trans_int.p, p + payLoadStart,sizeof(char) * 4);
 		if (pasv1.number == ch_trans_int.number || pasv2.number == ch_trans_int.number)
 			return 1;
 		//memcpy(ch_trans_int.p, p + 54,sizeof(char) * 4);

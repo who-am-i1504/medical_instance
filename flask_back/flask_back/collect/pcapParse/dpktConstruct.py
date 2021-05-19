@@ -86,6 +86,13 @@ def FINDeal(dic, value, pkt, key1, key2, writer, absPath, typer, src, dst):
     item1['data']=value[content:]
     writer.put(item1)
 
+def NFINDeal(value, writer, absPath, typer):
+    item1 = {}
+    item1['fileName'] = 'N_%s' % (value[fileTag])
+    item1['absPath'] = os.path.join(absPath, typer)  
+    item1['data']=value[content:]
+    writer.put(item1)
+
 def WriteFileOnly(writer, value, absPath, typer):
     item = {}
     item['fileName'] = 'Y_%s' % (value[fileTag])
@@ -149,6 +156,7 @@ def construct(absPath, target, typer):
                 if (now - value[timeTag]) >= TimeThreshold:
                     dic.pop(value[head], None)
                     dic.pop(value[after], None)
+                # NFINDeal(value, writer, absPath, typer)
             start = time.time()
        
         seq = pkt.seq + len(pkt.data)
@@ -162,7 +170,7 @@ def construct(absPath, target, typer):
         
         if not value is None:
             # 追加
-            if key1 == value[head]:
+            if key1 == value[head] and value[head] != value[after]:
                 # 重传数据包
                 # 略过
                 continue
@@ -222,7 +230,6 @@ def construct(absPath, target, typer):
                 dic[key1] = value
                 dic[key2] = value
                 continue
-
     # print(time.time() - allTime)
     while t.isAlive():
         writer.quit()

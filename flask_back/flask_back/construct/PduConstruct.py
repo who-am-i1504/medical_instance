@@ -406,7 +406,7 @@ class PDUStream:
                 if self.generate() is False:
                     break
         self.target.pop(self.dic[head], None)
-        self.target.pop(self.dic[head], None)
+        self.target.pop(self.dic[after], None)
         self.target.pop(self.dic[keyIndex], None)
         another = self.target.pop(self.dic[keyReverse], None)
         if another is not None:
@@ -515,16 +515,16 @@ def construct(absPath, target, typer):
         # if i <= 81:
         #     continue
         # 对pkt进行相应的处理
-        # now = time.time()
-        # if now - start >= TimeThreshold:
-        #     for key in list(dic.keys()):
-        #         if not key in dic:
-        #             continue
-        #         value = dic[key]
-        #         if (now - value[timeTag]) >= TimeThreshold:
-        #             dic.pop(value[head], None)
-        #             dic.pop(value[after], None)
-        #     start = time.time()
+        now = time.time()
+        if now - start >= TimeThreshold:
+            for key in list(dic.keys()):
+                if not key in dic:
+                    continue
+                value = dic[key]
+                if (now - value[timeTag]) >= TimeThreshold:
+                    dic.pop(value[head], None)
+                    dic.pop(value[after], None)
+            start = time.time()
        
         seq = pkt.seq + len(pkt.data)
 
@@ -538,7 +538,7 @@ def construct(absPath, target, typer):
         
         if not value is None:
             # 追加
-            if key1 == value.getValue(head) and value[head] != value[after]:
+            if key1 == value.getValue(head) and value.getValue(head) != value.getValue(after):
                 # 重传数据包
                 # 略过
                 continue

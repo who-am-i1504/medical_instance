@@ -4,6 +4,7 @@ from flask import (request, jsonify, Blueprint)
 # import db, jsonschema, ValidationError, log, CollectResult
 from flask_back import db, jsonschema, ValidationError, log
 from flask_back.dao.sql import CollectResult
+from flask_back.constant import Ip2Geo
 import flask_back.constant as cnts
 import copy
 import datetime
@@ -11,11 +12,7 @@ import redis
 import json
 from flask_back.user.user import reids_pool
 # from .company_ip import qcdata
-import requests
-import json
-def Ip2Geo(ip):
-    res = requests.get("http://pypi.hitwh.net.cn:7788/ip/info?ip=" + ip + "&acc=city")
-    return json.loads(res.text)["data"]
+
 # MainCollect = CollectThread()
 
 bp = Blueprint('collect', __name__, url_prefix='/collect')

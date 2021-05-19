@@ -1,6 +1,10 @@
 import ast
 from base64 import encodestring
-
+import json
+import requests
+def Ip2Geo(ip):
+    res = requests.get("http://pypi.hitwh.net.cn:7788/ip/info?ip=" + ip + "&acc=city")
+    return json.loads(res.text)["data"]
 Roles = None
 
 page_size = 10
